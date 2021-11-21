@@ -6,7 +6,9 @@ A Visual Studio Code extension to support paredit-like features for HTML/JSX
 
 ### Clojure
 
-The editor of choice here is VS Code with the Calva extension.
+Some parts of this extension will involve ClojureScript code. This section will detail how to get a running ClojureScript REPL in which said Cljs code can be loaded and played with.
+
+Make sure you're using VS Code and have the [Calva](https://marketplace.visualstudio.com/items?itemName=betterthantomorrow.calva) extension installed.
 
 To start a ClojureScript REPL:
 
