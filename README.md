@@ -16,7 +16,7 @@ To start a ClojureScript REPL:
 2. search for `Calva: Start a Project REPL and Connect...`
 3. Select the aforementioned command
 4. Select `shadow-cljs`
-5. Select `:lib`
+5. Select `:lib` checkbox then OK
 6. Open a new terminal and run `node -e "require('./out/cljs-lib/owlbear.js')"`
 7. Voila! Your code will now be re-compiled after every change. Try evaluating some code!
 
