@@ -1,0 +1,11 @@
+{:dependencies []
+ :source-paths ["cljs-lib/src"]
+ :builds       {:lib
+                {:target    :node-library
+                 :exports   {:lexer owlbear.lexer/lexer}
+                 :output-to "out/cljs-lib/owlbear.js"}
+                :test
+                {:target    :node-test
+                 :output-to "out/cljs-lib/owlbear-tests.js"
+                 :ns-regexp "-test$"
+                 :autorun   true}}}
