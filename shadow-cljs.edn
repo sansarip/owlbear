@@ -1,8 +1,8 @@
 {:dependencies []
- :source-paths ["cljs-lib/src"]
+ :source-paths ["src/cljs"]
  :builds       {:lib
                 {:target    :node-library
-                 :exports   {:lexer owlbear.lexer/lexer}
+                 :exports   {:lex owlbear.grammar/lex}
                  :output-to "out/cljs-lib/owlbear.js"}
                 :test
                 {:target    :node-test
