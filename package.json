@@ -1,6 +1,6 @@
 {
   "name": "owlbear",
-		"lint": "eslint src --ext ts",
+  "lint": "eslint src --ext ts",
   "displayName": "Owlbear",
   "description": "Support paredit-like features for HTML/JSX",
   "version": "0.0.1",
@@ -53,5 +53,9 @@
     "typescript": "^4.4.4",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0"
+  },
+  "dependencies": {
+    "antlr4": "4.8.0",
+    "owlbear-grammar": "^1.0.1"
   }
 }
