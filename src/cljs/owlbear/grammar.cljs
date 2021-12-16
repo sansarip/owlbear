@@ -224,7 +224,8 @@
                                        tag-open-bracket-index
                                        (inc tag-close-bracket-index))
                 tag-close-bracket-ctx* (last tag-ctxs)]
-            {:expected-tag-name tag-name
+            {:contexts tag-ctxs
+             :expected-tag-name tag-name
              :tag-name (some-> (some tag-name-ctx tag-ctxs) (ocall :?getText))
              :start-index tag-open-bracket-index
              :stop-index tag-close-bracket-index
@@ -250,7 +251,9 @@
   (when-let [{:keys [fwd-slurpable-ctx
                      current-ctx]} (forward-slurp-ctx-map
                                     (src->html-document-ctx src)
-                                    offset)]))
+                                    offset)]
+    (let [{:keys [start-offset stop-offset]} (end-tag current-ctx)
+          end-tag-text (subs src start-offset (inc stop-offset))])))
 
 (comment
   (ocall
@@ -267,4 +270,17 @@
            "  </div>\n"
            "</html>"))
      21))
-   :?getText))
+   :?getText)
+  (let [src (str "<html>\n"
+                 "  <div>\n"
+                 "    <h1>hello</h1>\n"
+                 "    <h2>bye</h2>\n"
+                 "  </div>\n"
+                 "  <div>\n"
+                 "    beans\n"
+                 "  </div>\n"
+                 "</html>") 
+        doc-ctx (src->html-document-ctx src)
+        [first-element] (ctx->html-elements-ctxs doc-ctx)
+        {:keys [start-offset stop-offset]} (end-tag first-element)]
+    (subs src start-offset (inc stop-offset))))
