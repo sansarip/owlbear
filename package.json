@@ -26,7 +26,8 @@
     "vscode:prepublish": "npm run package",
     "clean": "rimraf ./out && rimraf ./tsconfig.tsbuildinfo && rimraf ./cljs-out",
     "compile-cljs": "npx shadow-cljs compile :lib :test",
-    "owlbear-lib-test": "node ./out/cljs-lib/owlbear-tests.js",
+    "cljs-repl": "node -e \"require('./out/owlbear-grammar.js')\"",
+    "owlbear-grammar-test": "node ./out/owlbear-grammar-tests.js",
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
@@ -56,6 +57,6 @@
   },
   "dependencies": {
     "antlr4": "4.8.0",
-    "owlbear-grammar": "^1.0.1"
+    "owlbear-grammar": "^1.0.3"
   }
 }

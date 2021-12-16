@@ -1,11 +1,12 @@
-{:dependencies []
+{:dependencies [[binaryage/oops "0.7.1"]
+                [cljstache "2.0.6"]]
  :source-paths ["src/cljs"]
  :builds       {:lib
                 {:target    :node-library
-                 :exports   {:lex owlbear.grammar/lex}
-                 :output-to "out/cljs-lib/owlbear.js"}
+                 :exports   {:forward-slurp owlbear.grammar/forward-slurp}
+                 :output-to "out/owlbear-grammar.js"}
                 :test
                 {:target    :node-test
-                 :output-to "out/cljs-lib/owlbear-tests.js"
+                 :output-to "out/owlbear-grammar-test.js"
                  :ns-regexp "-test$"
-                 :autorun   true}}}
+                 :autorun true}}}

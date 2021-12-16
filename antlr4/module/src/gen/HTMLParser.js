@@ -1,6 +1,8 @@
 // Generated from /Users/sansarip/Dev/owlbear/antlr4/HTMLParser.g4 by ANTLR 4.8
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
+var HTMLParserVisitor = require('./HTMLParserVisitor').HTMLParserVisitor;
+
 var grammarFileName = "HTMLParser.g4";
 
 
@@ -206,6 +208,14 @@ HtmlDocumentContext.prototype.htmlElements = function(i) {
     }
 };
 
+HtmlDocumentContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitHtmlDocument(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -322,6 +332,14 @@ ScriptletOrSeaWsContext.prototype.SEA_WS = function() {
     return this.getToken(HTMLParser.SEA_WS, 0);
 };
 
+ScriptletOrSeaWsContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitScriptletOrSeaWs(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -386,6 +404,14 @@ HtmlElementsContext.prototype.htmlMisc = function(i) {
         return this.getTypedRuleContexts(HtmlMiscContext);
     } else {
         return this.getTypedRuleContext(HtmlMiscContext,i);
+    }
+};
+
+HtmlElementsContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitHtmlElements(this);
+    } else {
+        return visitor.visitChildren(this);
     }
 };
 
@@ -526,6 +552,14 @@ HtmlElementContext.prototype.script = function() {
 
 HtmlElementContext.prototype.style = function() {
     return this.getTypedRuleContext(StyleContext,0);
+};
+
+HtmlElementContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitHtmlElement(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -683,6 +717,14 @@ HtmlContentContext.prototype.htmlComment = function(i) {
     }
 };
 
+HtmlContentContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitHtmlContent(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -787,6 +829,14 @@ HtmlAttributeContext.prototype.ATTVALUE_VALUE = function() {
     return this.getToken(HTMLParser.ATTVALUE_VALUE, 0);
 };
 
+HtmlAttributeContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitHtmlAttribute(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -850,6 +900,14 @@ HtmlChardataContext.prototype.SEA_WS = function() {
     return this.getToken(HTMLParser.SEA_WS, 0);
 };
 
+HtmlChardataContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitHtmlChardata(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -908,6 +966,14 @@ HtmlMiscContext.prototype.htmlComment = function() {
 
 HtmlMiscContext.prototype.SEA_WS = function() {
     return this.getToken(HTMLParser.SEA_WS, 0);
+};
+
+HtmlMiscContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitHtmlMisc(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -976,6 +1042,14 @@ HtmlCommentContext.prototype.HTML_CONDITIONAL_COMMENT = function() {
     return this.getToken(HTMLParser.HTML_CONDITIONAL_COMMENT, 0);
 };
 
+HtmlCommentContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitHtmlComment(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -1038,6 +1112,14 @@ ScriptContext.prototype.SCRIPT_BODY = function() {
 
 ScriptContext.prototype.SCRIPT_SHORT_BODY = function() {
     return this.getToken(HTMLParser.SCRIPT_SHORT_BODY, 0);
+};
+
+ScriptContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitScript(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -1104,6 +1186,14 @@ StyleContext.prototype.STYLE_BODY = function() {
 
 StyleContext.prototype.STYLE_SHORT_BODY = function() {
     return this.getToken(HTMLParser.STYLE_SHORT_BODY, 0);
+};
+
+StyleContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof HTMLParserVisitor ) {
+        return visitor.visitStyle(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
