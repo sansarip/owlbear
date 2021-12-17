@@ -247,13 +247,31 @@
                   :current-ctx current-ctx})))
        last))
 
+(defn str-insert
+  "Insert c in string s at the given offset"
+  [s c offset]
+  (str (subs s 0 offset) c (subs s offset)))
+
+(defn str-remove
+  "Remove the string in between the given start and end offsets"
+  [s start-offset end-offset]
+  (str (subs s 0 start-offset) (subs s end-offset)))
+
 (defn forward-slurp [src offset]
   (when-let [{:keys [fwd-slurpable-ctx
                      current-ctx]} (forward-slurp-ctx-map
                                     (src->html-document-ctx src)
                                     offset)]
-    (let [{:keys [start-offset stop-offset]} (end-tag current-ctx)
-          end-tag-text (subs src start-offset (inc stop-offset))])))
+    (let [{current-ctx-end-tag-start-offset :start-offset
+           current-ctx-end-tag-stop-offset :stop-offset} (end-tag current-ctx)
+          current-ctx-end-tag-text (subs src
+                                         current-ctx-end-tag-start-offset
+                                         (inc current-ctx-end-tag-stop-offset))
+          fwd-slurpable-end-offset (oget fwd-slurpable-ctx :?stop.?stop)]
+      (-> src
+          (str-remove current-ctx-end-tag-start-offset (inc current-ctx-end-tag-stop-offset))
+          (str-insert current-ctx-end-tag-text (- (inc fwd-slurpable-end-offset)
+                                                  (count current-ctx-end-tag-text)))))))
 
 (comment
   (ocall
@@ -279,8 +297,9 @@
                  "  <div>\n"
                  "    beans\n"
                  "  </div>\n"
-                 "</html>") 
+                 "</html>")
         doc-ctx (src->html-document-ctx src)
-        [first-element] (ctx->html-elements-ctxs doc-ctx)
-        {:keys [start-offset stop-offset]} (end-tag first-element)]
-    (subs src start-offset (inc stop-offset))))
+        [first-element second-element] (ctx->html-elements-ctxs doc-ctx)
+        {:keys [start-offset stop-offset]} (end-tag first-element)
+        end-text (subs src start-offset (inc stop-offset))]
+    (print (forward-slurp src 22))))
