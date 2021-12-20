@@ -2,8 +2,9 @@
   (:require
    [antlr4 :as a4]
    [owlbear-grammar :as obg]
+   [owlbear.utilities :as obu]
    [oops.core :refer [oget oget+ ocall]]
-   [fs]))
+   [clojure.string :as string]))
 
 (def rule-index-map
   {:html-document 0
@@ -25,6 +26,7 @@
         parser (obg/HTMLParser. token-stream)
         _ (set! (.-buildParseTrees parser) true)]
     (.htmlDocument parser)))
+
 
 (defn html-element-ctx?
   "Given a context, 
@@ -232,74 +234,25 @@
              :start-offset (oget tag-open-bracket-ctx* :?symbol.?start)
              :stop-offset (oget tag-close-bracket-ctx* :?symbol.?stop)}))))))
 
-(defn forward-slurp-ctx-map
-  "Given a context and character offset, 
-   returns a map of the deepest context (containing the offset)
-   with a forward sibling slurpable context"
+(defn current-html-element-ctxs
+  "Given a context and a character offset, 
+   returns a lazy sequence of the HTML element contexts containing the given offset"
   [ctx offset]
-  (->> (ctx->html-elements-ctxs ctx)
-       (filter (fn [html-element-ctx]
-                 (range-in-html-element-ctx? html-element-ctx offset)))
-       (keep (fn [current-ctx]
-               ;; TODO: Make this work for other applicable slurpable context types as well, like HTML content contexts
-               (when-let [fwd-slurpable-ctx (next-sibling-html-element-ctx current-ctx)]
-                 {:fwd-slurpable-ctx fwd-slurpable-ctx
-                  :current-ctx current-ctx})))
-       last))
+  (filter #(range-in-html-element-ctx? % offset) (ctx->html-elements-ctxs ctx)))
 
-(defn str-insert
-  "Insert c in string s at the given offset"
-  [s c offset]
-  (str (subs s 0 offset) c (subs s offset)))
-
-(defn str-remove
-  "Remove the string in between the given start and end offsets"
-  [s start-offset end-offset]
-  (str (subs s 0 start-offset) (subs s end-offset)))
-
-(defn forward-slurp [src offset]
-  (when-let [{:keys [fwd-slurpable-ctx
-                     current-ctx]} (forward-slurp-ctx-map
-                                    (src->html-document-ctx src)
-                                    offset)]
-    (let [{current-ctx-end-tag-start-offset :start-offset
-           current-ctx-end-tag-stop-offset :stop-offset} (end-tag current-ctx)
-          current-ctx-end-tag-text (subs src
-                                         current-ctx-end-tag-start-offset
-                                         (inc current-ctx-end-tag-stop-offset))
-          fwd-slurpable-end-offset (oget fwd-slurpable-ctx :?stop.?stop)]
-      (-> src
-          (str-remove current-ctx-end-tag-start-offset (inc current-ctx-end-tag-stop-offset))
-          (str-insert current-ctx-end-tag-text (- (inc fwd-slurpable-end-offset)
-                                                  (count current-ctx-end-tag-text)))))))
-
-(comment
-  (ocall
-   (:current-ctx
-    (forward-slurp-ctx-map
-     (src->html-document-ctx
-      (str "<html>\n"
-           "  <div>\n"
-           "    <h1>hello</h1>\n"
-           "    <h2>bye</h2>\n"
-           "  </div>\n"
-           "  <div>\n"
-           "    beans\n"
-           "  </div>\n"
-           "</html>"))
-     21))
-   :?getText)
-  (let [src (str "<html>\n"
-                 "  <div>\n"
-                 "    <h1>hello</h1>\n"
-                 "    <h2>bye</h2>\n"
-                 "  </div>\n"
-                 "  <div>\n"
-                 "    beans\n"
-                 "  </div>\n"
-                 "</html>")
-        doc-ctx (src->html-document-ctx src)
-        [first-element second-element] (ctx->html-elements-ctxs doc-ctx)
-        {:keys [start-offset stop-offset]} (end-tag first-element)
-        end-text (subs src start-offset (inc stop-offset))]
-    (print (forward-slurp src 22))))
+(defn src-with-cursor-symbol->html-element-ctx-map
+  "Given a src string (and optionally a string), 
+   return the HTML element context at the cursor symbol"
+  ([src]
+   (src-with-cursor-symbol->html-element-ctx-map src "📍"))
+  ([src cursor-symbol]
+   (let [cursor-symbol-start-offset (string/index-of src cursor-symbol)
+         cursor-symbol-length (count cursor-symbol)
+         cursor-symbol-stop-offset (+ cursor-symbol-start-offset cursor-symbol-length)
+         actual-cursor-symbol-offset (- cursor-symbol-start-offset cursor-symbol-length)
+         src-without-cursor-symbol (obu/str-remove src cursor-symbol-start-offset cursor-symbol-stop-offset)
+         html-doc-ctx (src->html-document-ctx src-without-cursor-symbol)
+         current-html-element-ctx (last (current-html-element-ctxs html-doc-ctx actual-cursor-symbol-offset))]
+     {:current-ctx current-html-element-ctx
+      :src-without-cursor-symbol src-without-cursor-symbol
+      :cursor-offset actual-cursor-symbol-offset})))

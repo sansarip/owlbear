@@ -2,9 +2,7 @@
   (:require
    [cljs.test :refer [deftest is testing]]
    [cljstache.core :as fmt]
-   [clojure.set :as cljset]
    [clojure.string :as string]
-   [oops.core :refer [oget ocall]]
    [owlbear.grammar :as obg]))
 
 (def html-element-rule-index (:html-element obg/rule-index-map))
@@ -263,14 +261,3 @@
           "Correct stop tag stop index"))
     (testing "HTML element without end tag"
       (is (nil? actual-baz-end-tag)))))
-
-#_(deftest forward-slurp-test
-    (testing "Non-nested sibling html elements"
-    ;; Given
-      (let [expected-src "<div><h1>hello world</h1></div>"
-
-          ;; When
-            actual-src (obg/forward-slurp "<div><div><h1>hello world<h1>" 4)]
-
-      ;; Then
-        (is (= expected-src actual-src)))))
