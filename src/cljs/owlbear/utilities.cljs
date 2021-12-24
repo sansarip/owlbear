@@ -1,4 +1,5 @@
-(ns owlbear.utilities)
+(ns owlbear.utilities
+  "Utility functions not specific to the domain of Owlbear grammar")
 
 (defn str-insert
   "Insert c in string s at the given offset"
