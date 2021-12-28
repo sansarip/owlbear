@@ -35,7 +35,7 @@ You'll also need to edit your VS Code `settings.json` file with the proper Antlr
       "language": "JavaScript",
       "listeners": false,
       "visitors": false,
-      "importDir": "/Users/sansarip/Dev/owlbear/antlr4",
+      "importDir": "<absolute path to owlbear>/owlbear/antlr4",
       "outputDir": "./module/src/gen"
     }
 ```
