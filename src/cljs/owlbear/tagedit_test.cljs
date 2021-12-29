@@ -13,14 +13,11 @@
                                           "<h1>Hello World</h1>"))
             expected-src (str "<body>\n"
                               "<h1>Hello World</h1></body>")
-
             ;; When
             actual-src (obp/forward-slurp src cursor-offset)]
-
         ;; Then
         (is (= expected-src actual-src)
             "End tag moved to correct place")))
-
     (testing "Scope elevation when current context has no siblings"
       ;; Given
       (let [{src :src-without-cursor-symbol
@@ -33,14 +30,11 @@
                               "  <h1></h1>\n"
                               "\n"
                               "<h1>Hello World</h1></body>")
-
             ;; When
             actual-src (obp/forward-slurp src cursor-offset)]
-
         ;; Then
         (is (= expected-src actual-src)
             "End tag moved to correct place")))
-
     (testing "Nested sibling HTML elements"
       ;; Given
       (let [{src :src-without-cursor-symbol
@@ -65,7 +59,6 @@
                               "</html>")
             ;; When
             actual-src (obp/forward-slurp src cursor-offset)]
-
         ;; Then
         (is (= expected-src actual-src)
             "End tag moved to correct place"))))
@@ -81,11 +74,9 @@
 
             ;; When
             actual-src (obp/forward-slurp src cursor-offset)]
-
         ;; Then
         (is (nil? actual-src)
             "Extraneous character data gets dropped")))
-
     (testing "Nested sibling HTML element and character data"
       ;; Given
       (let [{src :src-without-cursor-symbol
@@ -102,11 +93,9 @@
                               "</html>")
             ;; When
             actual-src (obp/forward-slurp src cursor-offset)]
-
         ;; Then
         (is (= expected-src actual-src)
             "End tag moved to correct place"))))
-
   (testing "HTML comment"
     (testing "Root level sibling HTML element and comment"
       ;; Given
@@ -128,11 +117,9 @@
                               "multi-line comment --></html>\n")
             ;; When
             actual-src (obp/forward-slurp src cursor-offset)]
-
         ;; Then
         (is (= expected-src actual-src)
             "End tag moved to correct place")))
-
     (testing "Nested sibling HTML element and comment"
       ;; Given
       (let [{src :src-without-cursor-symbol
@@ -153,11 +140,9 @@
                               "</html>")
             ;; When
             actual-src (obp/forward-slurp src cursor-offset)]
-
         ;; Then
         (is (= expected-src actual-src)
             "End tag moved to correct place")))
-
     (testing "HTML element into HTML comment"
       ;; Given
       (let [{src :src-without-cursor-symbol
@@ -178,11 +163,9 @@
                               "</html>-->")
             ;; When
             actual-src (obp/forward-slurp src cursor-offset)]
-
         ;; Then
         (is (= expected-src actual-src)
             "End tag moved to correct place"))))
-
   (testing "HTML (element) style"
     (testing "Root level sibling HTML element and style"
       ;; Given
@@ -210,11 +193,9 @@
                               "</style></html>")
             ;; When
             actual-src (obp/forward-slurp src cursor-offset)]
-
         ;; Then
         (is (= expected-src actual-src)
             "End tag moved to correct place")))
-
     (testing "Nested sibling HTML element and style"
       ;; Given
       (let [{src :src-without-cursor-symbol
@@ -237,10 +218,9 @@
                               "</html>")
             ;; When
             actual-src (obp/forward-slurp src cursor-offset)]
-
         ;; Then
         (is (= expected-src actual-src)
-            "End tag moved to correct place"))))
+            "End tag moved to correct place")))))
 
 (deftest forward-barf-test
   (testing "HTML elements"
@@ -252,14 +232,11 @@
                                         "</body>"))
           expected-src (str "<body>\n"
                             "  </body><h1>Hello World</h1>")
-
           ;; When
           actual-src (obp/forward-barf src cursor-offset)]
-
       ;; Then
       (is (= expected-src actual-src)
           "End tag moved to correct place")))
-
   (testing "HTML character data"
     ;; Given
     (let [{src :src-without-cursor-symbol
@@ -269,14 +246,11 @@
                                         "</body>"))
           expected-src (str "<body>\n"
                             "  </body>Hello World\n")
-
           ;; When
           actual-src (obp/forward-barf src cursor-offset)]
-
       ;; Then
       (is (= expected-src actual-src)
           "End tag moved to correct place")))
-
   (testing "HTML comment"
     ;; Given
     (let [{src :src-without-cursor-symbol
@@ -296,11 +270,9 @@
                             "  multi-line comment -->\n")
           ;; When
           actual-src (obp/forward-barf src cursor-offset)]
-
       ;; Then
       (is (= expected-src actual-src)
           "End tag moved to correct place"))
-
     (testing "From HTML comment"
       ;; Given
       (let [{src :src-without-cursor-symbol
@@ -321,11 +293,9 @@
                               "</html> ")
             ;; When
             actual-src (obp/forward-barf src cursor-offset)]
-
         ;; Then
         (is (= expected-src actual-src)
             "End tag moved to correct place"))))
-
   (testing "HTML (element) style"
     ;; Given
     (let [{src :src-without-cursor-symbol
@@ -351,11 +321,9 @@
                             "  </style>\n")
           ;; When
           actual-src (obp/forward-barf src cursor-offset)]
-
       ;; Then
       (is (= expected-src actual-src)
           "End tag moved to correct place")))
-
   (testing "HTML (element) script"
     ;; Given
     (let [{src :src-without-cursor-symbol
@@ -377,7 +345,6 @@
                             "  </script>\n")
           ;; When
           actual-src (obp/forward-barf src cursor-offset)]
-
       ;; Then
       (is (= expected-src actual-src)
           "End tag moved to correct place"))))
