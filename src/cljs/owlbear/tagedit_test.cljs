@@ -242,53 +242,142 @@
         (is (= expected-src actual-src)
             "End tag moved to correct place"))))
 
-  (testing "HTML (element) script"
-    (testing "Root level sibling HTML element and script"
+(deftest forward-barf-test
+  (testing "HTML elements"
+    ;; Given
+    (let [{src :src-without-cursor-symbol
+           :keys [cursor-offset]} (obg/src-with-cursor-symbol->current-ctx-map
+                                   (str "<body>📍\n"
+                                        "  <h1>Hello World</h1>\n"
+                                        "</body>"))
+          expected-src (str "<body>\n"
+                            "  </body><h1>Hello World</h1>")
+
+          ;; When
+          actual-src (obp/forward-barf src cursor-offset)]
+
+      ;; Then
+      (is (= expected-src actual-src)
+          "End tag moved to correct place")))
+
+  (testing "HTML character data"
+    ;; Given
+    (let [{src :src-without-cursor-symbol
+           :keys [cursor-offset]} (obg/src-with-cursor-symbol->current-ctx-map
+                                   (str "<body>📍\n"
+                                        "  Hello World\n"
+                                        "</body>"))
+          expected-src (str "<body>\n"
+                            "  </body>Hello World\n")
+
+          ;; When
+          actual-src (obp/forward-barf src cursor-offset)]
+
+      ;; Then
+      (is (= expected-src actual-src)
+          "End tag moved to correct place")))
+
+  (testing "HTML comment"
+    ;; Given
+    (let [{src :src-without-cursor-symbol
+           :keys [cursor-offset]} (obg/src-with-cursor-symbol->current-ctx-map
+                                   (str "<html>📍\n"
+                                        "  <h1>\n"
+                                        "    Hello World\n"
+                                        "  </h1>\n"
+                                        "  <!-- This is a \n"
+                                        "  multi-line comment -->\n"
+                                        "</html>"))
+          expected-src (str "<html>\n"
+                            "  <h1>\n"
+                            "    Hello World\n"
+                            "  </h1>\n"
+                            "  </html><!-- This is a \n"
+                            "  multi-line comment -->\n")
+          ;; When
+          actual-src (obp/forward-barf src cursor-offset)]
+
+      ;; Then
+      (is (= expected-src actual-src)
+          "End tag moved to correct place"))
+
+    (testing "From HTML comment"
       ;; Given
       (let [{src :src-without-cursor-symbol
              :keys [cursor-offset]} (obg/src-with-cursor-symbol->current-ctx-map
-                                     (str "<html>📍\n"
+                                     (str "<!-- This 📍is a \n"
+                                          "multi-line comment\n"
+                                          "<html>\n"
                                           "  <h1>\n"
                                           "    Hello World\n"
                                           "  </h1>\n"
-                                          "</html>\n"
-                                          "<script>\n"
-                                          " alert('Hello World!');\n"
-                                          "</script>"))
-            expected-src (str "<html>\n"
+                                          "</html> -->"))
+            expected-src (str "<!-- This is a \n"
+                              "multi-line comment\n"
+                              "--><html>\n"
                               "  <h1>\n"
                               "    Hello World\n"
                               "  </h1>\n"
-                              "\n"
-                              "<script>\n"
-                              " alert('Hello World!');\n"
-                              "</script></html>")
+                              "</html> ")
             ;; When
-            actual-src (obp/forward-slurp src cursor-offset)]
+            actual-src (obp/forward-barf src cursor-offset)]
 
         ;; Then
         (is (= expected-src actual-src)
-            "End tag moved to correct place")))
+            "End tag moved to correct place"))))
 
-    (testing "Nested sibling HTML element and script"
-      ;; Given
-      (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obg/src-with-cursor-symbol->current-ctx-map
-                                     (str "<html>\n"
-                                          "<header>📍</header>\n"
-                                          "<script>\n"
-                                          " alert('Hello World!');\n"
-                                          "</script>\n"
-                                          "</html>"))
-            expected-src (str "<html>\n"
-                              "<header>\n"
-                              "<script>\n"
-                              " alert('Hello World!');\n"
-                              "</script></header>\n"
-                              "</html>")
-            ;; When
-            actual-src (obp/forward-slurp src cursor-offset)]
+  (testing "HTML (element) style"
+    ;; Given
+    (let [{src :src-without-cursor-symbol
+           :keys [cursor-offset]} (obg/src-with-cursor-symbol->current-ctx-map
+                                   (str "<html>📍\n"
+                                        "  <h1>\n"
+                                        "    Hello World\n"
+                                        "  </h1>\n"
+                                        "  <style>\n"
+                                        "    h1 {\n"
+                                        "      color: purple;\n"
+                                        "    }\n"
+                                        "  </style>\n"
+                                        "</html>"))
+          expected-src (str "<html>📍\n"
+                            "  <h1>\n"
+                            "    Hello World\n"
+                            "  </h1>\n"
+                            "  </html><style>\n"
+                            "    h1 {\n"
+                            "      color: purple;\n"
+                            "    }\n"
+                            "  </style>\n")
+          ;; When
+          actual-src (obp/forward-barf src cursor-offset)]
 
-        ;; Then
-        (is (= expected-src actual-src)
-            "End tag moved to correct place")))))
+      ;; Then
+      (is (= expected-src actual-src)
+          "End tag moved to correct place")))
+
+  (testing "HTML (element) script"
+    ;; Given
+    (let [{src :src-without-cursor-symbol
+           :keys [cursor-offset]} (obg/src-with-cursor-symbol->current-ctx-map
+                                   (str "<html>📍\n"
+                                        "  <h1>\n"
+                                        "    Hello World\n"
+                                        "  </h1>\n"
+                                        "  <script>\n"
+                                        "    alert('Hello World!');\n"
+                                        "  </script>\n"
+                                        "</html>"))
+          expected-src (str "<html>\n"
+                            "  <h1>\n"
+                            "    Hello World\n"
+                            "  </h1>\n"
+                            "  </html><script>\n"
+                            "    alert('Hello World!');\n"
+                            "  </script>\n")
+          ;; When
+          actual-src (obp/forward-barf src cursor-offset)]
+
+      ;; Then
+      (is (= expected-src actual-src)
+          "End tag moved to correct place"))))
