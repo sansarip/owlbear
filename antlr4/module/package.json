@@ -1,6 +1,6 @@
 {
   "name": "owlbear-grammar",
-  "version": "1.0.4",
+  "version": "1.0.5-SNAPSHOT",
   "description": "Lexers and parsers for the Owlbear VS Code extension",
   "main": "src/index.js",
   "scripts": {
