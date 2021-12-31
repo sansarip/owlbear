@@ -231,7 +231,7 @@
                                         "  <h1>Hello World</h1>\n"
                                         "</body>"))
           expected-src (str "<body>\n"
-                            "  </body><h1>Hello World</h1>")
+                            "  </body><h1>Hello World</h1>\n")
           ;; When
           actual-src (obp/forward-barf src cursor-offset)]
       ;; Then
@@ -244,8 +244,8 @@
                                    (str "<body>📍\n"
                                         "  Hello World\n"
                                         "</body>"))
-          expected-src (str "<body>\n"
-                            "  </body>Hello World\n")
+          expected-src (str "<body></body>\n"
+                            "  Hello World\n")
           ;; When
           actual-src (obp/forward-barf src cursor-offset)]
       ;; Then
@@ -277,14 +277,14 @@
       ;; Given
       (let [{src :src-without-cursor-symbol
              :keys [cursor-offset]} (obg/src-with-cursor-symbol->current-ctx-map
-                                     (str "<!-- This 📍is a \n"
+                                     (str "<!--   This 📍is a \n"
                                           "multi-line comment\n"
                                           "<html>\n"
                                           "  <h1>\n"
                                           "    Hello World\n"
                                           "  </h1>\n"
                                           "</html> -->"))
-            expected-src (str "<!-- This is a \n"
+            expected-src (str "<!--   This is a \n"
                               "multi-line comment\n"
                               "--><html>\n"
                               "  <h1>\n"
@@ -310,7 +310,7 @@
                                         "    }\n"
                                         "  </style>\n"
                                         "</html>"))
-          expected-src (str "<html>📍\n"
+          expected-src (str "<html>\n"
                             "  <h1>\n"
                             "    Hello World\n"
                             "  </h1>\n"
