@@ -21,16 +21,6 @@
    :tag-name 16
    :tag-slash 14})
 
-(defn src->html-document-ctx
-  "Given a src string, returns an HTML document parser tree"
-  [src]
-  (let [chars (a4/InputStream. (str src))
-        lexer (obg/HTMLLexer. chars)
-        token-stream (a4/CommonTokenStream. lexer)
-        parser (obg/HTMLParser. token-stream)
-        _ (set! (.-buildParseTrees parser) true)]
-    (.htmlDocument parser)))
-
 (defn rule?
   "Given a context and a `rule-index-map` keyword, 
    returns true if the context is a rule of the keyword's (rule index) value"
@@ -377,6 +367,18 @@
    returns a lazy sequence of the HTML element contexts containing the given offset"
   [ctx offset]
   (filter-current-ctxs offset (ctx->html-elements-ctxs ctx)))
+
+(defn src->html-document-ctx
+  "Given a src string, returns an HTML document parser tree"
+  [src]
+  (let [chars (a4/InputStream. (str src))
+        lexer (obg/HTMLLexer. chars)
+        _ (.removeErrorListeners lexer)
+        token-stream (a4/CommonTokenStream. lexer)
+        parser (obg/HTMLParser. token-stream)
+        _ (.removeErrorListeners parser)
+        _ (set! (.-buildParseTrees parser) true)]
+    (.htmlDocument parser)))
 
 (defn src-with-cursor-symbol->current-ctx-map
   "Given a src string (and optionally a string), 
