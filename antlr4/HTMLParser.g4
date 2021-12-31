@@ -52,7 +52,7 @@ htmlElement
     ;
 
 htmlContent
-    : htmlChardata? ((htmlElement | CDATA | htmlComment) htmlChardata?)*
+    : htmlChardata? ((htmlElement | CDATA | DTD | htmlComment) htmlChardata?)*
     ;
 
 htmlAttribute
