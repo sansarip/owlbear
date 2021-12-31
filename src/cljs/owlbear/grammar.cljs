@@ -11,6 +11,7 @@
   {:html-document 0
    :html-elements 2
    :html-element  3
+   :html-content 4
    :char-data 6
    :html-misc 7
    :html-comment 8})
@@ -33,9 +34,22 @@
   [ctx kw]
   (= (get token-type-map kw) (oget ctx :?symbol.?type)))
 
+(defn html-content-ctx?
+  "Given a context, 
+   returns true if the context is an HTML content context"
+  [ctx]
+  (and (some? ctx) (rule? ctx :html-content)))
+
+(defn html-content-ctx
+  "Given a context, 
+   returns the context if `html-content-ctx?` returns true"
+  [ctx]
+  (when (html-content-ctx? ctx)
+    ctx))
+
 (defn html-char-data-ctx?
   "Given a context, 
-   returns true if the context is an HTML character data ctx"
+   returns true if the context is an HTML character data context"
   [ctx]
   (and (some? ctx) (rule? ctx :char-data)))
 
@@ -185,6 +199,7 @@
    returns the sibling contexts for that context"
   [ctx]
   (rest (concat (oget ctx :?parentCtx.?children)
+                ;; Accounts for scenarios where an HTML element context has a parent HTML elements context
                 (oget ctx :?parentCtx.?parentCtx.?children))))
 
 (defn forward-ctx?
@@ -290,13 +305,14 @@
    a tag start offset (`:start-offset`), 
    and a tag stop offset (`:stop-offset`)"
   [ctx]
-  (when (html-comment-ctx? ctx)
-    (when-let [html-comment-txt (ocall ctx :?getText)]
-      (when (string/starts-with? html-comment-txt "<!--")
-        (let [html-comment-start-offset (oget ctx :?start.?start)]
-          {:tag-name "<!--"
-           :start-offset html-comment-start-offset
-           :stop-offset (+ html-comment-start-offset 3)})))))
+  (some-> (html-comment-ctx ctx)
+          (ocall :?getText)
+          (->> (re-find #"^<!--"))
+          (as-> $
+                (let [html-comment-start-offset (oget ctx :?start.?start)]
+                  {:tag-name $
+                   :start-offset html-comment-start-offset
+                   :stop-offset (-> (count $) dec (+ html-comment-start-offset))}))))
 
 (defn html-element-ctx-end-tag-map
   "Given an HTML element context, 
@@ -342,13 +358,24 @@
    a tag start offset (`:start-offset`), 
    and a tag stop offset (`:stop-offset`)"
   [ctx]
-  (when (html-comment-ctx? ctx)
-    (when-let [html-comment-txt (ocall ctx :?getText)]
-      (when (string/ends-with? html-comment-txt "-->")
-        (let [html-comment-stop-offset (oget ctx :?stop.?stop)]
-          {:tag-name "-->"
-           :start-offset (- html-comment-stop-offset 2)
-           :stop-offset html-comment-stop-offset})))))
+  (some-> (html-comment-ctx ctx)
+          (ocall :?getText)
+          (->> (re-find #"-->$"))
+          (as-> $
+                (let [html-comment-stop-offset (oget ctx :?stop.?stop)]
+                  {:tag-name $
+                   :start-offset (->> (count $) dec (- html-comment-stop-offset))
+                   :stop-offset html-comment-stop-offset}))))
+
+(defn html-comment-ctx-content
+  "Given an HTML comment context, 
+   returns a string representing the HTML comment's content 
+   (between its start and end tags)"
+  [ctx]
+  (let [{start-tag-stop-offset :stop-offset} (html-comment-ctx-start-tag-map ctx)
+        {end-tag-start-offset :start-offset} (html-comment-ctx-end-tag-map ctx)]
+    (some-> (ocall ctx :?getText)
+            (subs (inc start-tag-stop-offset) end-tag-start-offset))))
 
 (defn filter-current-ctxs
   "Given a list of contexts and a character offset, 
