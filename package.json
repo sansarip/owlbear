@@ -57,6 +57,6 @@
   },
   "dependencies": {
     "antlr4": "4.8.0",
-    "owlbear-grammar": "^1.0.4"
+    "owlbear-grammar": "^1.0.5-SNAPSHOT"
   }
 }
