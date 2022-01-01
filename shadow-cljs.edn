@@ -5,9 +5,9 @@
                 {:target    :node-library
                  :exports   {:html-forward-slurp owlbear.parser.html.tagedit.slurp/forward-slurp
                              :html-forward-barf owlbear.parser.html.tagedit.barf/forward-barf}
-                 :output-to "out/owlbear-grammar.js"}
+                 :output-to "out/cljs/owlbear.js"}
                 :test
                 {:target    :node-test
-                 :output-to "out/owlbear-grammar-test.js"
+                 :output-to "out/cljs/owlbear-test.js"
                  :ns-regexp "-test$"
                  :autorun true}}}
