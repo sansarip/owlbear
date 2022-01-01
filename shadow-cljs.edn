@@ -3,7 +3,8 @@
  :source-paths ["src/cljs"]
  :builds       {:lib
                 {:target    :node-library
-                 :exports   {:forward-slurp owlbear.tagedit/forward-slurp}
+                 :exports   {:forward-slurp owlbear.parser.html.tagedit.slurp/forward-slurp
+                             :forward-barf owlbear.parser.html.tagedit.barf/forward-barf}
                  :output-to "out/owlbear-grammar.js"}
                 :test
                 {:target    :node-test
