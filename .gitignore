@@ -111,3 +111,6 @@ out/
 
 # Antlr4
 .antlr/
+
+# MacOS
+.DS_Store
