@@ -25,6 +25,8 @@ options {
 	tokenVocab = HTMLLexer;
 }
 
+html: htmlElements*;
+
 htmlDocument:
 	scriptletOrSeaWs* XML? scriptletOrSeaWs* DTD? scriptletOrSeaWs* htmlElements*;
 
@@ -52,7 +54,13 @@ htmlAttribute: TAG_NAME (TAG_EQUALS ATTVALUE_VALUE)?;
 
 htmlChardata: HTML_TEXT | SEA_WS;
 
-htmlMisc: htmlComment | SEA_WS;
+htmlMisc:
+	htmlComment
+	| DTD
+	| XML
+	| CDATA
+	| SEA_WS
+	| htmlChardata;
 
 htmlComment: HTML_COMMENT | HTML_CONDITIONAL_COMMENT;
 

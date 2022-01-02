@@ -5,83 +5,93 @@ var grammarFileName = "HTMLParser.g4";
 
 
 var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
-    "\u0003\u0019\u0083\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004",
+    "\u0003\u0019\u008f\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004",
     "\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007",
     "\u0004\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f",
-    "\u0003\u0002\u0007\u0002\u001a\n\u0002\f\u0002\u000e\u0002\u001d\u000b",
-    "\u0002\u0003\u0002\u0005\u0002 \n\u0002\u0003\u0002\u0007\u0002#\n\u0002",
-    "\f\u0002\u000e\u0002&\u000b\u0002\u0003\u0002\u0005\u0002)\n\u0002\u0003",
-    "\u0002\u0007\u0002,\n\u0002\f\u0002\u000e\u0002/\u000b\u0002\u0003\u0002",
-    "\u0007\u00022\n\u0002\f\u0002\u000e\u00025\u000b\u0002\u0003\u0003\u0003",
-    "\u0003\u0003\u0004\u0007\u0004:\n\u0004\f\u0004\u000e\u0004=\u000b\u0004",
-    "\u0003\u0004\u0003\u0004\u0007\u0004A\n\u0004\f\u0004\u000e\u0004D\u000b",
-    "\u0004\u0003\u0005\u0003\u0005\u0003\u0005\u0007\u0005I\n\u0005\f\u0005",
-    "\u000e\u0005L\u000b\u0005\u0003\u0005\u0003\u0005\u0003\u0005\u0003",
-    "\u0005\u0003\u0005\u0003\u0005\u0003\u0005\u0005\u0005U\n\u0005\u0003",
-    "\u0005\u0005\u0005X\n\u0005\u0003\u0005\u0003\u0005\u0003\u0005\u0005",
-    "\u0005]\n\u0005\u0003\u0006\u0005\u0006`\n\u0006\u0003\u0006\u0003\u0006",
-    "\u0003\u0006\u0003\u0006\u0005\u0006f\n\u0006\u0003\u0006\u0005\u0006",
-    "i\n\u0006\u0007\u0006k\n\u0006\f\u0006\u000e\u0006n\u000b\u0006\u0003",
-    "\u0007\u0003\u0007\u0003\u0007\u0005\u0007s\n\u0007\u0003\b\u0003\b",
-    "\u0003\t\u0003\t\u0005\ty\n\t\u0003\n\u0003\n\u0003\u000b\u0003\u000b",
-    "\u0003\u000b\u0003\f\u0003\f\u0003\f\u0003\f\u0002\u0002\r\u0002\u0004",
-    "\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0002\u0007\u0003\u0002\b",
-    "\t\u0004\u0002\t\t\r\r\u0003\u0002\u0003\u0004\u0003\u0002\u0014\u0015",
-    "\u0003\u0002\u0016\u0017\u0002\u008d\u0002\u001b\u0003\u0002\u0002\u0002",
-    "\u00046\u0003\u0002\u0002\u0002\u0006;\u0003\u0002\u0002\u0002\b\\\u0003",
-    "\u0002\u0002\u0002\n_\u0003\u0002\u0002\u0002\fo\u0003\u0002\u0002\u0002",
-    "\u000et\u0003\u0002\u0002\u0002\u0010x\u0003\u0002\u0002\u0002\u0012",
-    "z\u0003\u0002\u0002\u0002\u0014|\u0003\u0002\u0002\u0002\u0016\u007f",
-    "\u0003\u0002\u0002\u0002\u0018\u001a\u0005\u0004\u0003\u0002\u0019\u0018",
-    "\u0003\u0002\u0002\u0002\u001a\u001d\u0003\u0002\u0002\u0002\u001b\u0019",
-    "\u0003\u0002\u0002\u0002\u001b\u001c\u0003\u0002\u0002\u0002\u001c\u001f",
-    "\u0003\u0002\u0002\u0002\u001d\u001b\u0003\u0002\u0002\u0002\u001e ",
-    "\u0007\u0005\u0002\u0002\u001f\u001e\u0003\u0002\u0002\u0002\u001f ",
-    "\u0003\u0002\u0002\u0002 $\u0003\u0002\u0002\u0002!#\u0005\u0004\u0003",
-    "\u0002\"!\u0003\u0002\u0002\u0002#&\u0003\u0002\u0002\u0002$\"\u0003",
-    "\u0002\u0002\u0002$%\u0003\u0002\u0002\u0002%(\u0003\u0002\u0002\u0002",
-    "&$\u0003\u0002\u0002\u0002\')\u0007\u0007\u0002\u0002(\'\u0003\u0002",
-    "\u0002\u0002()\u0003\u0002\u0002\u0002)-\u0003\u0002\u0002\u0002*,\u0005",
-    "\u0004\u0003\u0002+*\u0003\u0002\u0002\u0002,/\u0003\u0002\u0002\u0002",
-    "-+\u0003\u0002\u0002\u0002-.\u0003\u0002\u0002\u0002.3\u0003\u0002\u0002",
-    "\u0002/-\u0003\u0002\u0002\u000202\u0005\u0006\u0004\u000210\u0003\u0002",
-    "\u0002\u000225\u0003\u0002\u0002\u000231\u0003\u0002\u0002\u000234\u0003",
-    "\u0002\u0002\u00024\u0003\u0003\u0002\u0002\u000253\u0003\u0002\u0002",
-    "\u000267\t\u0002\u0002\u00027\u0005\u0003\u0002\u0002\u00028:\u0005",
-    "\u0010\t\u000298\u0003\u0002\u0002\u0002:=\u0003\u0002\u0002\u0002;",
-    "9\u0003\u0002\u0002\u0002;<\u0003\u0002\u0002\u0002<>\u0003\u0002\u0002",
-    "\u0002=;\u0003\u0002\u0002\u0002>B\u0005\b\u0005\u0002?A\u0005\u0010",
-    "\t\u0002@?\u0003\u0002\u0002\u0002AD\u0003\u0002\u0002\u0002B@\u0003",
-    "\u0002\u0002\u0002BC\u0003\u0002\u0002\u0002C\u0007\u0003\u0002\u0002",
-    "\u0002DB\u0003\u0002\u0002\u0002EF\u0007\f\u0002\u0002FJ\u0007\u0012",
-    "\u0002\u0002GI\u0005\f\u0007\u0002HG\u0003\u0002\u0002\u0002IL\u0003",
+    "\u0004\r\t\r\u0003\u0002\u0007\u0002\u001c\n\u0002\f\u0002\u000e\u0002",
+    "\u001f\u000b\u0002\u0003\u0003\u0007\u0003\"\n\u0003\f\u0003\u000e\u0003",
+    "%\u000b\u0003\u0003\u0003\u0005\u0003(\n\u0003\u0003\u0003\u0007\u0003",
+    "+\n\u0003\f\u0003\u000e\u0003.\u000b\u0003\u0003\u0003\u0005\u00031",
+    "\n\u0003\u0003\u0003\u0007\u00034\n\u0003\f\u0003\u000e\u00037\u000b",
+    "\u0003\u0003\u0003\u0007\u0003:\n\u0003\f\u0003\u000e\u0003=\u000b\u0003",
+    "\u0003\u0004\u0003\u0004\u0003\u0005\u0007\u0005B\n\u0005\f\u0005\u000e",
+    "\u0005E\u000b\u0005\u0003\u0005\u0003\u0005\u0007\u0005I\n\u0005\f\u0005",
+    "\u000e\u0005L\u000b\u0005\u0003\u0006\u0003\u0006\u0003\u0006\u0007",
+    "\u0006Q\n\u0006\f\u0006\u000e\u0006T\u000b\u0006\u0003\u0006\u0003\u0006",
+    "\u0003\u0006\u0003\u0006\u0003\u0006\u0003\u0006\u0003\u0006\u0005\u0006",
+    "]\n\u0006\u0003\u0006\u0005\u0006`\n\u0006\u0003\u0006\u0003\u0006\u0003",
+    "\u0006\u0005\u0006e\n\u0006\u0003\u0007\u0005\u0007h\n\u0007\u0003\u0007",
+    "\u0003\u0007\u0003\u0007\u0003\u0007\u0005\u0007n\n\u0007\u0003\u0007",
+    "\u0005\u0007q\n\u0007\u0007\u0007s\n\u0007\f\u0007\u000e\u0007v\u000b",
+    "\u0007\u0003\b\u0003\b\u0003\b\u0005\b{\n\b\u0003\t\u0003\t\u0003\n",
+    "\u0003\n\u0003\n\u0003\n\u0003\n\u0003\n\u0005\n\u0085\n\n\u0003\u000b",
+    "\u0003\u000b\u0003\f\u0003\f\u0003\f\u0003\r\u0003\r\u0003\r\u0003\r",
+    "\u0002\u0002\u000e\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016",
+    "\u0018\u0002\u0007\u0003\u0002\b\t\u0004\u0002\t\t\r\r\u0004\u0002\u0003",
+    "\u0003\u0005\u0005\u0003\u0002\u0014\u0015\u0003\u0002\u0016\u0017\u0002",
+    "\u009d\u0002\u001d\u0003\u0002\u0002\u0002\u0004#\u0003\u0002\u0002",
+    "\u0002\u0006>\u0003\u0002\u0002\u0002\bC\u0003\u0002\u0002\u0002\nd",
+    "\u0003\u0002\u0002\u0002\fg\u0003\u0002\u0002\u0002\u000ew\u0003\u0002",
+    "\u0002\u0002\u0010|\u0003\u0002\u0002\u0002\u0012\u0084\u0003\u0002",
+    "\u0002\u0002\u0014\u0086\u0003\u0002\u0002\u0002\u0016\u0088\u0003\u0002",
+    "\u0002\u0002\u0018\u008b\u0003\u0002\u0002\u0002\u001a\u001c\u0005\b",
+    "\u0005\u0002\u001b\u001a\u0003\u0002\u0002\u0002\u001c\u001f\u0003\u0002",
+    "\u0002\u0002\u001d\u001b\u0003\u0002\u0002\u0002\u001d\u001e\u0003\u0002",
+    "\u0002\u0002\u001e\u0003\u0003\u0002\u0002\u0002\u001f\u001d\u0003\u0002",
+    "\u0002\u0002 \"\u0005\u0006\u0004\u0002! \u0003\u0002\u0002\u0002\"",
+    "%\u0003\u0002\u0002\u0002#!\u0003\u0002\u0002\u0002#$\u0003\u0002\u0002",
+    "\u0002$\'\u0003\u0002\u0002\u0002%#\u0003\u0002\u0002\u0002&(\u0007",
+    "\u0006\u0002\u0002\'&\u0003\u0002\u0002\u0002\'(\u0003\u0002\u0002\u0002",
+    "(,\u0003\u0002\u0002\u0002)+\u0005\u0006\u0004\u0002*)\u0003\u0002\u0002",
+    "\u0002+.\u0003\u0002\u0002\u0002,*\u0003\u0002\u0002\u0002,-\u0003\u0002",
+    "\u0002\u0002-0\u0003\u0002\u0002\u0002.,\u0003\u0002\u0002\u0002/1\u0007",
+    "\u0007\u0002\u00020/\u0003\u0002\u0002\u000201\u0003\u0002\u0002\u0002",
+    "15\u0003\u0002\u0002\u000224\u0005\u0006\u0004\u000232\u0003\u0002\u0002",
+    "\u000247\u0003\u0002\u0002\u000253\u0003\u0002\u0002\u000256\u0003\u0002",
+    "\u0002\u00026;\u0003\u0002\u0002\u000275\u0003\u0002\u0002\u00028:\u0005",
+    "\b\u0005\u000298\u0003\u0002\u0002\u0002:=\u0003\u0002\u0002\u0002;",
+    "9\u0003\u0002\u0002\u0002;<\u0003\u0002\u0002\u0002<\u0005\u0003\u0002",
+    "\u0002\u0002=;\u0003\u0002\u0002\u0002>?\t\u0002\u0002\u0002?\u0007",
+    "\u0003\u0002\u0002\u0002@B\u0005\u0012\n\u0002A@\u0003\u0002\u0002\u0002",
+    "BE\u0003\u0002\u0002\u0002CA\u0003\u0002\u0002\u0002CD\u0003\u0002\u0002",
+    "\u0002DF\u0003\u0002\u0002\u0002EC\u0003\u0002\u0002\u0002FJ\u0005\n",
+    "\u0006\u0002GI\u0005\u0012\n\u0002HG\u0003\u0002\u0002\u0002IL\u0003",
     "\u0002\u0002\u0002JH\u0003\u0002\u0002\u0002JK\u0003\u0002\u0002\u0002",
-    "KW\u0003\u0002\u0002\u0002LJ\u0003\u0002\u0002\u0002MT\u0007\u000e\u0002",
-    "\u0002NO\u0005\n\u0006\u0002OP\u0007\f\u0002\u0002PQ\u0007\u0010\u0002",
-    "\u0002QR\u0007\u0012\u0002\u0002RS\u0007\u000e\u0002\u0002SU\u0003\u0002",
-    "\u0002\u0002TN\u0003\u0002\u0002\u0002TU\u0003\u0002\u0002\u0002UX\u0003",
-    "\u0002\u0002\u0002VX\u0007\u000f\u0002\u0002WM\u0003\u0002\u0002\u0002",
-    "WV\u0003\u0002\u0002\u0002X]\u0003\u0002\u0002\u0002Y]\u0007\b\u0002",
-    "\u0002Z]\u0005\u0014\u000b\u0002[]\u0005\u0016\f\u0002\\E\u0003\u0002",
-    "\u0002\u0002\\Y\u0003\u0002\u0002\u0002\\Z\u0003\u0002\u0002\u0002\\",
-    "[\u0003\u0002\u0002\u0002]\t\u0003\u0002\u0002\u0002^`\u0005\u000e\b",
-    "\u0002_^\u0003\u0002\u0002\u0002_`\u0003\u0002\u0002\u0002`l\u0003\u0002",
-    "\u0002\u0002af\u0005\b\u0005\u0002bf\u0007\u0006\u0002\u0002cf\u0007",
-    "\u0007\u0002\u0002df\u0005\u0012\n\u0002ea\u0003\u0002\u0002\u0002e",
-    "b\u0003\u0002\u0002\u0002ec\u0003\u0002\u0002\u0002ed\u0003\u0002\u0002",
-    "\u0002fh\u0003\u0002\u0002\u0002gi\u0005\u000e\b\u0002hg\u0003\u0002",
-    "\u0002\u0002hi\u0003\u0002\u0002\u0002ik\u0003\u0002\u0002\u0002je\u0003",
-    "\u0002\u0002\u0002kn\u0003\u0002\u0002\u0002lj\u0003\u0002\u0002\u0002",
-    "lm\u0003\u0002\u0002\u0002m\u000b\u0003\u0002\u0002\u0002nl\u0003\u0002",
-    "\u0002\u0002or\u0007\u0012\u0002\u0002pq\u0007\u0011\u0002\u0002qs\u0007",
-    "\u0018\u0002\u0002rp\u0003\u0002\u0002\u0002rs\u0003\u0002\u0002\u0002",
-    "s\r\u0003\u0002\u0002\u0002tu\t\u0003\u0002\u0002u\u000f\u0003\u0002",
-    "\u0002\u0002vy\u0005\u0012\n\u0002wy\u0007\t\u0002\u0002xv\u0003\u0002",
-    "\u0002\u0002xw\u0003\u0002\u0002\u0002y\u0011\u0003\u0002\u0002\u0002",
-    "z{\t\u0004\u0002\u0002{\u0013\u0003\u0002\u0002\u0002|}\u0007\n\u0002",
-    "\u0002}~\t\u0005\u0002\u0002~\u0015\u0003\u0002\u0002\u0002\u007f\u0080",
-    "\u0007\u000b\u0002\u0002\u0080\u0081\t\u0006\u0002\u0002\u0081\u0017",
-    "\u0003\u0002\u0002\u0002\u0014\u001b\u001f$(-3;BJTW\\_ehlrx"].join("");
+    "K\t\u0003\u0002\u0002\u0002LJ\u0003\u0002\u0002\u0002MN\u0007\f\u0002",
+    "\u0002NR\u0007\u0012\u0002\u0002OQ\u0005\u000e\b\u0002PO\u0003\u0002",
+    "\u0002\u0002QT\u0003\u0002\u0002\u0002RP\u0003\u0002\u0002\u0002RS\u0003",
+    "\u0002\u0002\u0002S_\u0003\u0002\u0002\u0002TR\u0003\u0002\u0002\u0002",
+    "U\\\u0007\u000e\u0002\u0002VW\u0005\f\u0007\u0002WX\u0007\f\u0002\u0002",
+    "XY\u0007\u0010\u0002\u0002YZ\u0007\u0012\u0002\u0002Z[\u0007\u000e\u0002",
+    "\u0002[]\u0003\u0002\u0002\u0002\\V\u0003\u0002\u0002\u0002\\]\u0003",
+    "\u0002\u0002\u0002]`\u0003\u0002\u0002\u0002^`\u0007\u000f\u0002\u0002",
+    "_U\u0003\u0002\u0002\u0002_^\u0003\u0002\u0002\u0002`e\u0003\u0002\u0002",
+    "\u0002ae\u0007\b\u0002\u0002be\u0005\u0016\f\u0002ce\u0005\u0018\r\u0002",
+    "dM\u0003\u0002\u0002\u0002da\u0003\u0002\u0002\u0002db\u0003\u0002\u0002",
+    "\u0002dc\u0003\u0002\u0002\u0002e\u000b\u0003\u0002\u0002\u0002fh\u0005",
+    "\u0010\t\u0002gf\u0003\u0002\u0002\u0002gh\u0003\u0002\u0002\u0002h",
+    "t\u0003\u0002\u0002\u0002in\u0005\n\u0006\u0002jn\u0007\u0004\u0002",
+    "\u0002kn\u0007\u0007\u0002\u0002ln\u0005\u0014\u000b\u0002mi\u0003\u0002",
+    "\u0002\u0002mj\u0003\u0002\u0002\u0002mk\u0003\u0002\u0002\u0002ml\u0003",
+    "\u0002\u0002\u0002np\u0003\u0002\u0002\u0002oq\u0005\u0010\t\u0002p",
+    "o\u0003\u0002\u0002\u0002pq\u0003\u0002\u0002\u0002qs\u0003\u0002\u0002",
+    "\u0002rm\u0003\u0002\u0002\u0002sv\u0003\u0002\u0002\u0002tr\u0003\u0002",
+    "\u0002\u0002tu\u0003\u0002\u0002\u0002u\r\u0003\u0002\u0002\u0002vt",
+    "\u0003\u0002\u0002\u0002wz\u0007\u0012\u0002\u0002xy\u0007\u0011\u0002",
+    "\u0002y{\u0007\u0018\u0002\u0002zx\u0003\u0002\u0002\u0002z{\u0003\u0002",
+    "\u0002\u0002{\u000f\u0003\u0002\u0002\u0002|}\t\u0003\u0002\u0002}\u0011",
+    "\u0003\u0002\u0002\u0002~\u0085\u0005\u0014\u000b\u0002\u007f\u0085",
+    "\u0007\u0007\u0002\u0002\u0080\u0085\u0007\u0006\u0002\u0002\u0081\u0085",
+    "\u0007\u0004\u0002\u0002\u0082\u0085\u0007\t\u0002\u0002\u0083\u0085",
+    "\u0005\u0010\t\u0002\u0084~\u0003\u0002\u0002\u0002\u0084\u007f\u0003",
+    "\u0002\u0002\u0002\u0084\u0080\u0003\u0002\u0002\u0002\u0084\u0081\u0003",
+    "\u0002\u0002\u0002\u0084\u0082\u0003\u0002\u0002\u0002\u0084\u0083\u0003",
+    "\u0002\u0002\u0002\u0085\u0013\u0003\u0002\u0002\u0002\u0086\u0087\t",
+    "\u0004\u0002\u0002\u0087\u0015\u0003\u0002\u0002\u0002\u0088\u0089\u0007",
+    "\n\u0002\u0002\u0089\u008a\t\u0005\u0002\u0002\u008a\u0017\u0003\u0002",
+    "\u0002\u0002\u008b\u008c\u0007\u000b\u0002\u0002\u008c\u008d\t\u0006",
+    "\u0002\u0002\u008d\u0019\u0003\u0002\u0002\u0002\u0015\u001d#\',05;",
+    "CJR\\_dgmptz\u0084"].join("");
 
 
 var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -93,17 +103,17 @@ var sharedContextCache = new antlr4.PredictionContextCache();
 var literalNames = [ null, null, null, null, null, null, null, null, null, 
                      null, "'<'", null, "'>'", "'/>'", "'/'", "'='" ];
 
-var symbolicNames = [ null, "HTML_COMMENT", "HTML_CONDITIONAL_COMMENT", 
-                      "XML", "CDATA", "DTD", "SCRIPTLET", "SEA_WS", "SCRIPT_OPEN", 
+var symbolicNames = [ null, "HTML_COMMENT", "CDATA", "HTML_CONDITIONAL_COMMENT", 
+                      "XML", "DTD", "SCRIPTLET", "SEA_WS", "SCRIPT_OPEN", 
                       "STYLE_OPEN", "TAG_OPEN", "HTML_TEXT", "TAG_CLOSE", 
                       "TAG_SLASH_CLOSE", "TAG_SLASH", "TAG_EQUALS", "TAG_NAME", 
                       "TAG_WHITESPACE", "SCRIPT_BODY", "SCRIPT_SHORT_BODY", 
                       "STYLE_BODY", "STYLE_SHORT_BODY", "ATTVALUE_VALUE", 
                       "ATTRIBUTE" ];
 
-var ruleNames =  [ "htmlDocument", "scriptletOrSeaWs", "htmlElements", "htmlElement", 
-                   "htmlContent", "htmlAttribute", "htmlChardata", "htmlMisc", 
-                   "htmlComment", "script", "style" ];
+var ruleNames =  [ "html", "htmlDocument", "scriptletOrSeaWs", "htmlElements", 
+                   "htmlElement", "htmlContent", "htmlAttribute", "htmlChardata", 
+                   "htmlMisc", "htmlComment", "script", "style" ];
 
 function HTMLParser (input) {
 	antlr4.Parser.call(this, input);
@@ -125,9 +135,9 @@ Object.defineProperty(HTMLParser.prototype, "atn", {
 
 HTMLParser.EOF = antlr4.Token.EOF;
 HTMLParser.HTML_COMMENT = 1;
-HTMLParser.HTML_CONDITIONAL_COMMENT = 2;
-HTMLParser.XML = 3;
-HTMLParser.CDATA = 4;
+HTMLParser.CDATA = 2;
+HTMLParser.HTML_CONDITIONAL_COMMENT = 3;
+HTMLParser.XML = 4;
 HTMLParser.DTD = 5;
 HTMLParser.SCRIPTLET = 6;
 HTMLParser.SEA_WS = 7;
@@ -148,17 +158,82 @@ HTMLParser.STYLE_SHORT_BODY = 21;
 HTMLParser.ATTVALUE_VALUE = 22;
 HTMLParser.ATTRIBUTE = 23;
 
-HTMLParser.RULE_htmlDocument = 0;
-HTMLParser.RULE_scriptletOrSeaWs = 1;
-HTMLParser.RULE_htmlElements = 2;
-HTMLParser.RULE_htmlElement = 3;
-HTMLParser.RULE_htmlContent = 4;
-HTMLParser.RULE_htmlAttribute = 5;
-HTMLParser.RULE_htmlChardata = 6;
-HTMLParser.RULE_htmlMisc = 7;
-HTMLParser.RULE_htmlComment = 8;
-HTMLParser.RULE_script = 9;
-HTMLParser.RULE_style = 10;
+HTMLParser.RULE_html = 0;
+HTMLParser.RULE_htmlDocument = 1;
+HTMLParser.RULE_scriptletOrSeaWs = 2;
+HTMLParser.RULE_htmlElements = 3;
+HTMLParser.RULE_htmlElement = 4;
+HTMLParser.RULE_htmlContent = 5;
+HTMLParser.RULE_htmlAttribute = 6;
+HTMLParser.RULE_htmlChardata = 7;
+HTMLParser.RULE_htmlMisc = 8;
+HTMLParser.RULE_htmlComment = 9;
+HTMLParser.RULE_script = 10;
+HTMLParser.RULE_style = 11;
+
+
+function HtmlContext(parser, parent, invokingState) {
+	if(parent===undefined) {
+	    parent = null;
+	}
+	if(invokingState===undefined || invokingState===null) {
+		invokingState = -1;
+	}
+	antlr4.ParserRuleContext.call(this, parent, invokingState);
+    this.parser = parser;
+    this.ruleIndex = HTMLParser.RULE_html;
+    return this;
+}
+
+HtmlContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
+HtmlContext.prototype.constructor = HtmlContext;
+
+HtmlContext.prototype.htmlElements = function(i) {
+    if(i===undefined) {
+        i = null;
+    }
+    if(i===null) {
+        return this.getTypedRuleContexts(HtmlElementsContext);
+    } else {
+        return this.getTypedRuleContext(HtmlElementsContext,i);
+    }
+};
+
+
+
+
+HTMLParser.HtmlContext = HtmlContext;
+
+HTMLParser.prototype.html = function() {
+
+    var localctx = new HtmlContext(this, this._ctx, this.state);
+    this.enterRule(localctx, 0, HTMLParser.RULE_html);
+    var _la = 0; // Token type
+    try {
+        this.enterOuterAlt(localctx, 1);
+        this.state = 27;
+        this._errHandler.sync(this);
+        _la = this._input.LA(1);
+        while((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << HTMLParser.HTML_COMMENT) | (1 << HTMLParser.CDATA) | (1 << HTMLParser.HTML_CONDITIONAL_COMMENT) | (1 << HTMLParser.XML) | (1 << HTMLParser.DTD) | (1 << HTMLParser.SCRIPTLET) | (1 << HTMLParser.SEA_WS) | (1 << HTMLParser.SCRIPT_OPEN) | (1 << HTMLParser.STYLE_OPEN) | (1 << HTMLParser.TAG_OPEN) | (1 << HTMLParser.HTML_TEXT))) !== 0)) {
+            this.state = 24;
+            this.htmlElements();
+            this.state = 29;
+            this._errHandler.sync(this);
+            _la = this._input.LA(1);
+        }
+    } catch (re) {
+    	if(re instanceof antlr4.error.RecognitionException) {
+	        localctx.exception = re;
+	        this._errHandler.reportError(this, re);
+	        this._errHandler.recover(this, re);
+	    } else {
+	    	throw re;
+	    }
+    } finally {
+        this.exitRule();
+    }
+    return localctx;
+};
 
 
 function HtmlDocumentContext(parser, parent, invokingState) {
@@ -215,72 +290,72 @@ HTMLParser.HtmlDocumentContext = HtmlDocumentContext;
 HTMLParser.prototype.htmlDocument = function() {
 
     var localctx = new HtmlDocumentContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 0, HTMLParser.RULE_htmlDocument);
+    this.enterRule(localctx, 2, HTMLParser.RULE_htmlDocument);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 25;
+        this.state = 33;
         this._errHandler.sync(this);
-        var _alt = this._interp.adaptivePredict(this._input,0,this._ctx)
+        var _alt = this._interp.adaptivePredict(this._input,1,this._ctx)
         while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
             if(_alt===1) {
-                this.state = 22;
+                this.state = 30;
                 this.scriptletOrSeaWs(); 
             }
-            this.state = 27;
+            this.state = 35;
             this._errHandler.sync(this);
-            _alt = this._interp.adaptivePredict(this._input,0,this._ctx);
+            _alt = this._interp.adaptivePredict(this._input,1,this._ctx);
         }
 
-        this.state = 29;
+        this.state = 37;
         this._errHandler.sync(this);
-        _la = this._input.LA(1);
-        if(_la===HTMLParser.XML) {
-            this.state = 28;
-            this.match(HTMLParser.XML);
-        }
-
-        this.state = 34;
-        this._errHandler.sync(this);
-        var _alt = this._interp.adaptivePredict(this._input,2,this._ctx)
-        while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
-            if(_alt===1) {
-                this.state = 31;
-                this.scriptletOrSeaWs(); 
-            }
+        var la_ = this._interp.adaptivePredict(this._input,2,this._ctx);
+        if(la_===1) {
             this.state = 36;
-            this._errHandler.sync(this);
-            _alt = this._interp.adaptivePredict(this._input,2,this._ctx);
-        }
+            this.match(HTMLParser.XML);
 
-        this.state = 38;
-        this._errHandler.sync(this);
-        _la = this._input.LA(1);
-        if(_la===HTMLParser.DTD) {
-            this.state = 37;
-            this.match(HTMLParser.DTD);
         }
-
-        this.state = 43;
+        this.state = 42;
         this._errHandler.sync(this);
-        var _alt = this._interp.adaptivePredict(this._input,4,this._ctx)
+        var _alt = this._interp.adaptivePredict(this._input,3,this._ctx)
         while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
             if(_alt===1) {
-                this.state = 40;
+                this.state = 39;
                 this.scriptletOrSeaWs(); 
             }
-            this.state = 45;
+            this.state = 44;
             this._errHandler.sync(this);
-            _alt = this._interp.adaptivePredict(this._input,4,this._ctx);
+            _alt = this._interp.adaptivePredict(this._input,3,this._ctx);
         }
 
-        this.state = 49;
+        this.state = 46;
+        this._errHandler.sync(this);
+        var la_ = this._interp.adaptivePredict(this._input,4,this._ctx);
+        if(la_===1) {
+            this.state = 45;
+            this.match(HTMLParser.DTD);
+
+        }
+        this.state = 51;
+        this._errHandler.sync(this);
+        var _alt = this._interp.adaptivePredict(this._input,5,this._ctx)
+        while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
+            if(_alt===1) {
+                this.state = 48;
+                this.scriptletOrSeaWs(); 
+            }
+            this.state = 53;
+            this._errHandler.sync(this);
+            _alt = this._interp.adaptivePredict(this._input,5,this._ctx);
+        }
+
+        this.state = 57;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
-        while((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << HTMLParser.HTML_COMMENT) | (1 << HTMLParser.HTML_CONDITIONAL_COMMENT) | (1 << HTMLParser.SCRIPTLET) | (1 << HTMLParser.SEA_WS) | (1 << HTMLParser.SCRIPT_OPEN) | (1 << HTMLParser.STYLE_OPEN) | (1 << HTMLParser.TAG_OPEN))) !== 0)) {
-            this.state = 46;
+        while((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << HTMLParser.HTML_COMMENT) | (1 << HTMLParser.CDATA) | (1 << HTMLParser.HTML_CONDITIONAL_COMMENT) | (1 << HTMLParser.XML) | (1 << HTMLParser.DTD) | (1 << HTMLParser.SCRIPTLET) | (1 << HTMLParser.SEA_WS) | (1 << HTMLParser.SCRIPT_OPEN) | (1 << HTMLParser.STYLE_OPEN) | (1 << HTMLParser.TAG_OPEN) | (1 << HTMLParser.HTML_TEXT))) !== 0)) {
+            this.state = 54;
             this.htmlElements();
-            this.state = 51;
+            this.state = 59;
             this._errHandler.sync(this);
             _la = this._input.LA(1);
         }
@@ -331,11 +406,11 @@ HTMLParser.ScriptletOrSeaWsContext = ScriptletOrSeaWsContext;
 HTMLParser.prototype.scriptletOrSeaWs = function() {
 
     var localctx = new ScriptletOrSeaWsContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 2, HTMLParser.RULE_scriptletOrSeaWs);
+    this.enterRule(localctx, 4, HTMLParser.RULE_scriptletOrSeaWs);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 52;
+        this.state = 60;
         _la = this._input.LA(1);
         if(!(_la===HTMLParser.SCRIPTLET || _la===HTMLParser.SEA_WS)) {
         this._errHandler.recoverInline(this);
@@ -398,33 +473,33 @@ HTMLParser.HtmlElementsContext = HtmlElementsContext;
 HTMLParser.prototype.htmlElements = function() {
 
     var localctx = new HtmlElementsContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 4, HTMLParser.RULE_htmlElements);
+    this.enterRule(localctx, 6, HTMLParser.RULE_htmlElements);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 57;
+        this.state = 65;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
-        while((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << HTMLParser.HTML_COMMENT) | (1 << HTMLParser.HTML_CONDITIONAL_COMMENT) | (1 << HTMLParser.SEA_WS))) !== 0)) {
-            this.state = 54;
+        while((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << HTMLParser.HTML_COMMENT) | (1 << HTMLParser.CDATA) | (1 << HTMLParser.HTML_CONDITIONAL_COMMENT) | (1 << HTMLParser.XML) | (1 << HTMLParser.DTD) | (1 << HTMLParser.SEA_WS) | (1 << HTMLParser.HTML_TEXT))) !== 0)) {
+            this.state = 62;
             this.htmlMisc();
-            this.state = 59;
+            this.state = 67;
             this._errHandler.sync(this);
             _la = this._input.LA(1);
         }
-        this.state = 60;
+        this.state = 68;
         this.htmlElement();
-        this.state = 64;
+        this.state = 72;
         this._errHandler.sync(this);
-        var _alt = this._interp.adaptivePredict(this._input,7,this._ctx)
+        var _alt = this._interp.adaptivePredict(this._input,8,this._ctx)
         while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
             if(_alt===1) {
-                this.state = 61;
+                this.state = 69;
                 this.htmlMisc(); 
             }
-            this.state = 66;
+            this.state = 74;
             this._errHandler.sync(this);
-            _alt = this._interp.adaptivePredict(this._input,7,this._ctx);
+            _alt = this._interp.adaptivePredict(this._input,8,this._ctx);
         }
 
     } catch (re) {
@@ -537,53 +612,53 @@ HTMLParser.HtmlElementContext = HtmlElementContext;
 HTMLParser.prototype.htmlElement = function() {
 
     var localctx = new HtmlElementContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 6, HTMLParser.RULE_htmlElement);
+    this.enterRule(localctx, 8, HTMLParser.RULE_htmlElement);
     var _la = 0; // Token type
     try {
-        this.state = 90;
+        this.state = 98;
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
         case HTMLParser.TAG_OPEN:
             this.enterOuterAlt(localctx, 1);
-            this.state = 67;
+            this.state = 75;
             this.match(HTMLParser.TAG_OPEN);
-            this.state = 68;
+            this.state = 76;
             this.match(HTMLParser.TAG_NAME);
-            this.state = 72;
+            this.state = 80;
             this._errHandler.sync(this);
             _la = this._input.LA(1);
             while(_la===HTMLParser.TAG_NAME) {
-                this.state = 69;
+                this.state = 77;
                 this.htmlAttribute();
-                this.state = 74;
+                this.state = 82;
                 this._errHandler.sync(this);
                 _la = this._input.LA(1);
             }
-            this.state = 85;
+            this.state = 93;
             this._errHandler.sync(this);
             switch(this._input.LA(1)) {
             case HTMLParser.TAG_CLOSE:
-                this.state = 75;
+                this.state = 83;
                 this.match(HTMLParser.TAG_CLOSE);
-                this.state = 82;
+                this.state = 90;
                 this._errHandler.sync(this);
-                var la_ = this._interp.adaptivePredict(this._input,9,this._ctx);
+                var la_ = this._interp.adaptivePredict(this._input,10,this._ctx);
                 if(la_===1) {
-                    this.state = 76;
+                    this.state = 84;
                     this.htmlContent();
-                    this.state = 77;
+                    this.state = 85;
                     this.match(HTMLParser.TAG_OPEN);
-                    this.state = 78;
+                    this.state = 86;
                     this.match(HTMLParser.TAG_SLASH);
-                    this.state = 79;
+                    this.state = 87;
                     this.match(HTMLParser.TAG_NAME);
-                    this.state = 80;
+                    this.state = 88;
                     this.match(HTMLParser.TAG_CLOSE);
 
                 }
                 break;
             case HTMLParser.TAG_SLASH_CLOSE:
-                this.state = 84;
+                this.state = 92;
                 this.match(HTMLParser.TAG_SLASH_CLOSE);
                 break;
             default:
@@ -592,17 +667,17 @@ HTMLParser.prototype.htmlElement = function() {
             break;
         case HTMLParser.SCRIPTLET:
             this.enterOuterAlt(localctx, 2);
-            this.state = 87;
+            this.state = 95;
             this.match(HTMLParser.SCRIPTLET);
             break;
         case HTMLParser.SCRIPT_OPEN:
             this.enterOuterAlt(localctx, 3);
-            this.state = 88;
+            this.state = 96;
             this.script();
             break;
         case HTMLParser.STYLE_OPEN:
             this.enterOuterAlt(localctx, 4);
-            this.state = 89;
+            this.state = 97;
             this.style();
             break;
         default:
@@ -704,61 +779,61 @@ HTMLParser.HtmlContentContext = HtmlContentContext;
 HTMLParser.prototype.htmlContent = function() {
 
     var localctx = new HtmlContentContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 8, HTMLParser.RULE_htmlContent);
+    this.enterRule(localctx, 10, HTMLParser.RULE_htmlContent);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 93;
+        this.state = 101;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
         if(_la===HTMLParser.SEA_WS || _la===HTMLParser.HTML_TEXT) {
-            this.state = 92;
+            this.state = 100;
             this.htmlChardata();
         }
 
-        this.state = 106;
+        this.state = 114;
         this._errHandler.sync(this);
-        var _alt = this._interp.adaptivePredict(this._input,15,this._ctx)
+        var _alt = this._interp.adaptivePredict(this._input,16,this._ctx)
         while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
             if(_alt===1) {
-                this.state = 99;
+                this.state = 107;
                 this._errHandler.sync(this);
                 switch(this._input.LA(1)) {
                 case HTMLParser.SCRIPTLET:
                 case HTMLParser.SCRIPT_OPEN:
                 case HTMLParser.STYLE_OPEN:
                 case HTMLParser.TAG_OPEN:
-                    this.state = 95;
+                    this.state = 103;
                     this.htmlElement();
                     break;
                 case HTMLParser.CDATA:
-                    this.state = 96;
+                    this.state = 104;
                     this.match(HTMLParser.CDATA);
                     break;
                 case HTMLParser.DTD:
-                    this.state = 97;
+                    this.state = 105;
                     this.match(HTMLParser.DTD);
                     break;
                 case HTMLParser.HTML_COMMENT:
                 case HTMLParser.HTML_CONDITIONAL_COMMENT:
-                    this.state = 98;
+                    this.state = 106;
                     this.htmlComment();
                     break;
                 default:
                     throw new antlr4.error.NoViableAltException(this);
                 }
-                this.state = 102;
+                this.state = 110;
                 this._errHandler.sync(this);
                 _la = this._input.LA(1);
                 if(_la===HTMLParser.SEA_WS || _la===HTMLParser.HTML_TEXT) {
-                    this.state = 101;
+                    this.state = 109;
                     this.htmlChardata();
                 }
          
             }
-            this.state = 108;
+            this.state = 116;
             this._errHandler.sync(this);
-            _alt = this._interp.adaptivePredict(this._input,15,this._ctx);
+            _alt = this._interp.adaptivePredict(this._input,16,this._ctx);
         }
 
     } catch (re) {
@@ -812,19 +887,19 @@ HTMLParser.HtmlAttributeContext = HtmlAttributeContext;
 HTMLParser.prototype.htmlAttribute = function() {
 
     var localctx = new HtmlAttributeContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 10, HTMLParser.RULE_htmlAttribute);
+    this.enterRule(localctx, 12, HTMLParser.RULE_htmlAttribute);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 109;
+        this.state = 117;
         this.match(HTMLParser.TAG_NAME);
-        this.state = 112;
+        this.state = 120;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
         if(_la===HTMLParser.TAG_EQUALS) {
-            this.state = 110;
+            this.state = 118;
             this.match(HTMLParser.TAG_EQUALS);
-            this.state = 111;
+            this.state = 119;
             this.match(HTMLParser.ATTVALUE_VALUE);
         }
 
@@ -875,11 +950,11 @@ HTMLParser.HtmlChardataContext = HtmlChardataContext;
 HTMLParser.prototype.htmlChardata = function() {
 
     var localctx = new HtmlChardataContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 12, HTMLParser.RULE_htmlChardata);
+    this.enterRule(localctx, 14, HTMLParser.RULE_htmlChardata);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 114;
+        this.state = 122;
         _la = this._input.LA(1);
         if(!(_la===HTMLParser.SEA_WS || _la===HTMLParser.HTML_TEXT)) {
         this._errHandler.recoverInline(this);
@@ -923,8 +998,24 @@ HtmlMiscContext.prototype.htmlComment = function() {
     return this.getTypedRuleContext(HtmlCommentContext,0);
 };
 
+HtmlMiscContext.prototype.DTD = function() {
+    return this.getToken(HTMLParser.DTD, 0);
+};
+
+HtmlMiscContext.prototype.XML = function() {
+    return this.getToken(HTMLParser.XML, 0);
+};
+
+HtmlMiscContext.prototype.CDATA = function() {
+    return this.getToken(HTMLParser.CDATA, 0);
+};
+
 HtmlMiscContext.prototype.SEA_WS = function() {
     return this.getToken(HTMLParser.SEA_WS, 0);
+};
+
+HtmlMiscContext.prototype.htmlChardata = function() {
+    return this.getTypedRuleContext(HtmlChardataContext,0);
 };
 
 
@@ -935,24 +1026,48 @@ HTMLParser.HtmlMiscContext = HtmlMiscContext;
 HTMLParser.prototype.htmlMisc = function() {
 
     var localctx = new HtmlMiscContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 14, HTMLParser.RULE_htmlMisc);
+    this.enterRule(localctx, 16, HTMLParser.RULE_htmlMisc);
     try {
-        this.state = 118;
+        this.state = 130;
         this._errHandler.sync(this);
-        switch(this._input.LA(1)) {
-        case HTMLParser.HTML_COMMENT:
-        case HTMLParser.HTML_CONDITIONAL_COMMENT:
+        var la_ = this._interp.adaptivePredict(this._input,18,this._ctx);
+        switch(la_) {
+        case 1:
             this.enterOuterAlt(localctx, 1);
-            this.state = 116;
+            this.state = 124;
             this.htmlComment();
             break;
-        case HTMLParser.SEA_WS:
+
+        case 2:
             this.enterOuterAlt(localctx, 2);
-            this.state = 117;
+            this.state = 125;
+            this.match(HTMLParser.DTD);
+            break;
+
+        case 3:
+            this.enterOuterAlt(localctx, 3);
+            this.state = 126;
+            this.match(HTMLParser.XML);
+            break;
+
+        case 4:
+            this.enterOuterAlt(localctx, 4);
+            this.state = 127;
+            this.match(HTMLParser.CDATA);
+            break;
+
+        case 5:
+            this.enterOuterAlt(localctx, 5);
+            this.state = 128;
             this.match(HTMLParser.SEA_WS);
             break;
-        default:
-            throw new antlr4.error.NoViableAltException(this);
+
+        case 6:
+            this.enterOuterAlt(localctx, 6);
+            this.state = 129;
+            this.htmlChardata();
+            break;
+
         }
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1001,11 +1116,11 @@ HTMLParser.HtmlCommentContext = HtmlCommentContext;
 HTMLParser.prototype.htmlComment = function() {
 
     var localctx = new HtmlCommentContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 16, HTMLParser.RULE_htmlComment);
+    this.enterRule(localctx, 18, HTMLParser.RULE_htmlComment);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 120;
+        this.state = 132;
         _la = this._input.LA(1);
         if(!(_la===HTMLParser.HTML_COMMENT || _la===HTMLParser.HTML_CONDITIONAL_COMMENT)) {
         this._errHandler.recoverInline(this);
@@ -1065,13 +1180,13 @@ HTMLParser.ScriptContext = ScriptContext;
 HTMLParser.prototype.script = function() {
 
     var localctx = new ScriptContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 18, HTMLParser.RULE_script);
+    this.enterRule(localctx, 20, HTMLParser.RULE_script);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 122;
+        this.state = 134;
         this.match(HTMLParser.SCRIPT_OPEN);
-        this.state = 123;
+        this.state = 135;
         _la = this._input.LA(1);
         if(!(_la===HTMLParser.SCRIPT_BODY || _la===HTMLParser.SCRIPT_SHORT_BODY)) {
         this._errHandler.recoverInline(this);
@@ -1131,13 +1246,13 @@ HTMLParser.StyleContext = StyleContext;
 HTMLParser.prototype.style = function() {
 
     var localctx = new StyleContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 20, HTMLParser.RULE_style);
+    this.enterRule(localctx, 22, HTMLParser.RULE_style);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 125;
+        this.state = 137;
         this.match(HTMLParser.STYLE_OPEN);
-        this.state = 126;
+        this.state = 138;
         _la = this._input.LA(1);
         if(!(_la===HTMLParser.STYLE_BODY || _la===HTMLParser.STYLE_SHORT_BODY)) {
         this._errHandler.recoverInline(this);
