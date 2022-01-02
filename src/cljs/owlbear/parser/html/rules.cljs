@@ -2,13 +2,14 @@
   (:require [oops.core :refer [oget]]))
 
 (def rule-index-map
-  {:html-document 0
-   :html-elements 2
-   :html-element  3
-   :html-content 4
-   :char-data 6
-   :html-misc 7
-   :html-comment 8})
+  {:html 0
+   :html-document 1
+   :html-elements 3
+   :html-element  4
+   :html-content 5
+   :char-data 7
+   :html-misc 8
+   :html-comment 9})
 
 (defn rule?
   "Given a context and a `rule-index-map` keyword, 

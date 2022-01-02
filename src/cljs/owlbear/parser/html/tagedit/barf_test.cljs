@@ -1,13 +1,13 @@
 (ns owlbear.parser.html.tagedit.barf-test
   (:require [cljs.test :refer [deftest is testing]]
-            [owlbear.parser.html.document :as obp-html-doc]
+            [owlbear.parser.html :as obp-html]
             [owlbear.parser.html.tagedit.barf :as obp-html-barf]))
 
 (deftest forward-barf-test
   (testing "HTML elements"
     ;; Given
     (let [{src :src-without-cursor-symbol
-           :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+           :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                    (str "<body>📍\n"
                                         "  <h1>Hello World</h1>\n"
                                         "</body>"))
@@ -21,7 +21,7 @@
   (testing "HTML character data"
     ;; Given
     (let [{src :src-without-cursor-symbol
-           :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+           :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                    (str "<body>📍\n"
                                         "  Hello World\n"
                                         "</body>"))
@@ -35,7 +35,7 @@
   (testing "HTML comment"
     ;; Given
     (let [{src :src-without-cursor-symbol
-           :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+           :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                    (str "<html>📍\n"
                                         "  <h1>\n"
                                         "    Hello World\n"
@@ -57,15 +57,15 @@
     (testing "From HTML comment"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
-                                     (str "<!--   This 📍is a \n"
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
+                                     (str "<!--This 📍is a \n"
                                           "multi-line comment\n"
                                           "<html>\n"
                                           "  <h1>\n"
                                           "    Hello World\n"
                                           "  </h1>\n"
                                           "</html> -->"))
-            expected-src (str "<!--   This is a \n"
+            expected-src (str "<!--This is a \n"
                               "multi-line comment\n"
                               "--><html>\n"
                               "  <h1>\n"
@@ -80,7 +80,7 @@
   (testing "HTML (element) style"
     ;; Given
     (let [{src :src-without-cursor-symbol
-           :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+           :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                    (str "<html>📍\n"
                                         "  <h1>\n"
                                         "    Hello World\n"
@@ -108,7 +108,7 @@
   (testing "HTML (element) script"
     ;; Given
     (let [{src :src-without-cursor-symbol
-           :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+           :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                    (str "<html>📍\n"
                                         "  <h1>\n"
                                         "    Hello World\n"

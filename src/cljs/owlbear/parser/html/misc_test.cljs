@@ -1,6 +1,6 @@
 (ns owlbear.parser.html.misc-test
   (:require [cljs.test :refer [deftest is testing]]
-            [owlbear.parser.html.document :as obp-html-doc]
+            [owlbear.parser.html :as obp-html]
             [owlbear.parser.html.misc :as obp-html-misc]
             [owlbear.parser.html.rules :as obp-html-rules]))
 
@@ -27,7 +27,7 @@
 
 (deftest html-comment-start-tag-ctx-map-test
   (testing "HTML comment"
-    (let [{:keys [current-ctx]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+    (let [{:keys [current-ctx]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                  (str "<!-- 📍comment -->\n"
                                       "<html>\n"
                                       "</html>"))
@@ -46,7 +46,7 @@
 (deftest html-comment-end-tag-ctx-map-test
   (testing "HTML comment with end tag"
     (let [{expected-end-tag-start-offset :cursor-offset
-           :keys [current-ctx]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+           :keys [current-ctx]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                  (str "<!-- comment -📍->\n"
                                       "<html>\n"
                                       "</html>"))
@@ -63,7 +63,7 @@
           "Correct end tag stop offset")))
   (testing "HTML comment without end tag"
     ;; Given
-    (let [{:keys [current-ctx]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+    (let [{:keys [current-ctx]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                  (str "<!-- comment📍\n"
                                       "<html>\n"
                                       "</html>"))

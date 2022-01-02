@@ -56,7 +56,8 @@
                 (let [html-comment-start-offset (oget ctx :?start.?start)]
                   {:tag-name $
                    :start-offset html-comment-start-offset
-                   :stop-offset (-> (count $) dec (+ html-comment-start-offset))}))))
+                   :stop-offset (-> (count $) dec (+ html-comment-start-offset))
+                   :context ctx}))))
 
 
 (defn html-comment-ctx-end-tag-map
@@ -73,7 +74,8 @@
                 (let [html-comment-stop-offset (oget ctx :?stop.?stop)]
                   {:tag-name $
                    :start-offset (->> (count $) dec (- html-comment-stop-offset))
-                   :stop-offset html-comment-stop-offset}))))
+                   :stop-offset html-comment-stop-offset
+                   :context ctx}))))
 
 (defn html-comment-ctx-content
   "Given an HTML comment context, 

@@ -1,6 +1,6 @@
 (ns owlbear.parser.html.tagedit.slurp-test
   (:require [cljs.test :refer [deftest is testing]]
-            [owlbear.parser.html.document :as obp-html-doc]
+            [owlbear.parser.html :as obp-html]
             [owlbear.parser.html.tagedit.slurp :as obp-html-slurp]))
 
 (deftest forward-slurp-test
@@ -8,7 +8,7 @@
     (testing "Root level sibling HTML elements"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                      (str "<body>📍</body>\n"
                                           "<h1>Hello World</h1>"))
             expected-src (str "<body>\n"
@@ -21,7 +21,7 @@
     (testing "Scope elevation when current context has no siblings"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                      (str "<body>\n"
                                           "  <h1>📍</h1>\n"
                                           "</body>\n"
@@ -38,7 +38,7 @@
     (testing "Nested sibling HTML elements"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                      (str "<html>\n"
                                           "  <form action=\"/action_page.php\">📍\n"
                                           "    <label for=\"fname\">First name:</label><br>\n"
@@ -67,7 +67,7 @@
     (testing "Root level sibling HTML element and character data"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                      (str "<html>📍</html>\n"
                                           "Hello World"))
             ;; When
@@ -78,7 +78,7 @@
     (testing "Nested sibling HTML element and character data"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                      (str "<html>\n"
                                           "  <h1>📍</h1>\n"
                                           "  Hello\n"
@@ -98,7 +98,7 @@
     (testing "Root level sibling HTML element and comment"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                      (str "<html>📍\n"
                                           "  <h1>\n"
                                           "    Hello World\n"
@@ -121,7 +121,7 @@
     (testing "Nested sibling HTML element and comment"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                      (str "<html>\n"
                                           "  <h1>📍\n"
                                           "    Hello World\n"
@@ -144,7 +144,7 @@
     (testing "HTML element into HTML comment"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                      (str "<!-- This 📍is a \n"
                                           "multi-line comment -->\n"
                                           "<html>\n"
@@ -168,7 +168,7 @@
     (testing "Root level sibling HTML element and style"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                      (str "<html>📍\n"
                                           "  <h1>\n"
                                           "    Hello World\n"
@@ -197,7 +197,7 @@
     (testing "Nested sibling HTML element and style"
       ;; Given
       (let [{src :src-without-cursor-symbol
-             :keys [cursor-offset]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+             :keys [cursor-offset]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                      (str "<html>\n"
                                           "<header>📍</header>\n"
                                           "<style>\n"
