@@ -2,7 +2,7 @@
   (:require  [oops.core :refer [oget]]
              [owlbear.parser.html.char-data :as obp-html-char]
              [owlbear.parser.html.content :as obp-html-cont]
-             [owlbear.parser.html.document :as obp-html-doc]
+             [owlbear.parser.html :as obp-html]
              [owlbear.parser.html.elements :as obp-html-ele]
              [owlbear.parser.html.misc :as obp-html-misc]
              [owlbear.parser.html.tagedit.utilities :as obp-html-tagedit-util]
@@ -18,13 +18,11 @@
   (when-let [children (oget ctx :?children)]
     (or (some-> (some obp-html-cont/html-content-ctx children)
                 (oget :?children))
+        ;; HTML comment children
         (some-> (obp-html-misc/html-comment-ctx ctx)
                 obp-html-misc/html-comment-ctx-content
-                ;; Content has to be between tags to get parsed 📌
-                (as-> $ (obp-html-doc/src->html-document-ctx (str "<📌>" $ "</📌>")))
-                (oget :?children.?0.?children.?0.?children)
-                (->> (some obp-html-cont/html-content-ctx))
-                (oget :?children)))))
+                (as-> $ (obp-html/src->html $))
+                (oget :?children.0.children)))))
 
 (defn next-forward-barfable-ctx [ctx]
   (last (filter barfable-ctx (child-ctxs ctx))))
@@ -41,6 +39,18 @@
                   :current-ctx current-ctx})))
        last))
 
+(defn add-start-tag-length
+  "Given a context, 
+   if the context contains valuable parsable text i.e. an HTML comment, 
+   returns the sum of the length of the context's start tag and the given offset, 
+   else returns the given offset"
+  [ctx offset]
+  (if (obp-html-misc/html-comment-ctx? ctx)
+    (if-let [{:keys [tag-name]} (obp-html-misc/html-comment-ctx-start-tag-map ctx)]
+      (+ offset (count tag-name))
+      offset)
+    offset))
+
 (defn forward-barf
   "Given a src string and character offset, 
    returns a new src string with the forward barf operation applied at the offset
@@ -52,7 +62,7 @@
   [src offset]
   (when-let [{:keys [fwd-barfable-ctx
                      current-ctx]} (forward-barf-ctx-map
-                                    (obp-html-doc/src->html-document-ctx src)
+                                    (obp-html/src->html src)
                                     offset)]
     ;; Current context must have an end tag
     (when-let [{current-ctx-end-tag-start-offset :start-offset
@@ -60,7 +70,7 @@
       (let [current-ctx-end-tag-text (subs src
                                            current-ctx-end-tag-start-offset
                                            (inc current-ctx-end-tag-stop-offset))
-            fwd-barfable-start-offset (oget fwd-barfable-ctx :?start.?start)]
+            fwd-barfable-start-offset (add-start-tag-length current-ctx (oget fwd-barfable-ctx :?start.?start))]
         (-> src
             (obu/str-remove current-ctx-end-tag-start-offset (inc current-ctx-end-tag-stop-offset))
             (obu/str-insert current-ctx-end-tag-text fwd-barfable-start-offset))))))

@@ -1,7 +1,7 @@
 (ns owlbear.parser.html.tagedit.slurp
   (:require  [oops.core :refer [oget]]
              [owlbear.parser.html.char-data :as obp-html-char]
-             [owlbear.parser.html.document :as obp-html-doc]
+             [owlbear.parser.html :as obp-html]
              [owlbear.parser.html.elements :as obp-html-ele]
              [owlbear.parser.html.misc :as obp-html-misc]
              [owlbear.parser.html.tagedit.utilities :as obp-html-tagedit-util]
@@ -40,7 +40,7 @@
   [src offset]
   (when-let [{:keys [fwd-slurpable-ctx
                      current-ctx]} (forward-slurp-ctx-map
-                                    (obp-html-doc/src->html-document-ctx src)
+                                    (obp-html/src->html src)
                                     offset)]
     ;; Current context must have an end tag
     (when-let [{current-ctx-end-tag-start-offset :start-offset

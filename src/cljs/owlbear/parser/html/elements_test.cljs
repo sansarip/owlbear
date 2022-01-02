@@ -1,7 +1,7 @@
 (ns owlbear.parser.html.elements-test
   (:require [cljs.test :refer [deftest is testing]]
             [oops.core :refer [ocall]]
-            [owlbear.parser.html.document :as obp-html-doc]
+            [owlbear.parser.html :as obp-html]
             [owlbear.parser.html.elements :as obp-html-ele]
             [owlbear.parser.html.rules :as obp-html-rules]))
 
@@ -28,7 +28,7 @@
 
 (deftest ctx->current-html-element-ctxs-test
   ;; Given
-  (let [{:keys [cursor-offset root-ctx]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+  (let [{:keys [cursor-offset root-ctx]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                           (str "<html>\n"
                                                "  <header>Ignored</header>"
                                                "  <body>\n"
@@ -46,7 +46,7 @@
 
 (deftest next-sibling-html-element-ctx-test
   ;; Given
-  (let [html-document-tree (obp-html-doc/src->html-document-ctx
+  (let [html-document-tree (obp-html/src->html
                             (str "<html id=\"foo\">\n"
                                  "  <div id=\"baz\">\n"
                                  "    <h1 id=\"quuz\">hello!</h1>\n"
@@ -84,7 +84,7 @@
   (testing "HTML element start tag"
     ;; Given
     (let [{expected-start-tag-start-offset :cursor-offset
-           :keys [current-ctx]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+           :keys [current-ctx]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                  (str "<html>\n"
                                       "  <📍h1>\n"
                                       "    Hello World\n"
@@ -112,7 +112,7 @@
   (testing "HTML element without end tag"
     ;; Given
     (let [{expected-start-tag-start-offset :cursor-offset
-           :keys [current-ctx]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+           :keys [current-ctx]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                  (str "<html>\n"
                                       "  <📍h1>\n"
                                       "    Hello World\n"
@@ -140,7 +140,7 @@
   (testing "HTML element with end tag"
     ;; Given
     (let [{expected-end-tag-start-offset :cursor-offset
-           :keys [current-ctx]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+           :keys [current-ctx]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                  (str "<html>\n"
                                       "  <h1>\n"
                                       "    Hello World\n"
@@ -169,7 +169,7 @@
   (testing "HTML element with non-matching end tag"
     ;; Given
     (let [{expected-end-tag-start-offset :cursor-offset
-           :keys [current-ctx]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+           :keys [current-ctx]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                  (str "<html>\n"
                                       "  <h1>\n"
                                       "    Hello World\n"
@@ -198,7 +198,7 @@
           "Correct end tag stop index")))
   (testing "HTML element without end tag"
     ;; Given
-    (let [{:keys [current-ctx]} (obp-html-doc/src-with-cursor-symbol->current-ctx-map
+    (let [{:keys [current-ctx]} (obp-html/src-with-cursor-symbol->current-ctx-map
                                  (str "<html>\n"
                                       "  <h1>📍\n"
                                       "    Hello World\n"
