@@ -23,11 +23,11 @@ lexer grammar HTMLLexer;
 
 HTML_COMMENT: '<!--' .*? '-->';
 
+CDATA: '<![CDATA[' .*? ']]>';
+
 HTML_CONDITIONAL_COMMENT: '<![' .*? ']>';
 
 XML: '<?xml' .*? '>';
-
-CDATA: '<![CDATA[' .*? ']]>';
 
 DTD: '<!' .*? '>';
 
