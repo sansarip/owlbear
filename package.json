@@ -11,7 +11,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:owlbear.htmlForwardBarf"
+    "onCommand:owlbear.htmlForwardBarf",
+    "onCommand:owlbear.htmlForwardSlurp"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -19,6 +20,10 @@
       {
         "command": "owlbear.htmlForwardBarf",
         "title": "Owlbear: HTML Forwarf Barf"
+      },
+      {
+        "command": "owlbear.htmlForwardSlurp",
+        "title": "Owlbear: HTML Forward Slurp"
       }
     ]
   },

@@ -3,7 +3,7 @@
  :source-paths ["src/cljs"]
  :builds       {:lib
                 {:target    :node-library
-                 :exports   {:html-forward-slurp owlbear.parser.html.tagedit.slurp/forward-slurp
+                 :exports   {:htmlForwardSlurp owlbear.parser.html.tagedit.slurp/forward-slurp
                              :htmlForwardBarf owlbear.parser.html.tagedit.barf/forward-barf}
                  :output-to "out/cljs/owlbear.js"}
                 :test
