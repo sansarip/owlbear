@@ -11,21 +11,21 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:owlbear.helloWorld"
+    "onCommand:owlbear.htmlForwardBarf"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "owlbear.helloWorld",
-        "title": "Hello World"
+        "command": "owlbear.htmlForwardBarf",
+        "title": "Owlbear: HTML Forwarf Barf"
       }
     ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "clean": "rimraf ./out && rimraf ./tsconfig.tsbuildinfo && rimraf ./cljs-out",
-    "compile-cljs": "npx shadow-cljs compile :lib :test",
+    "compile-cljs": "npx shadow-cljs release :lib :test",
     "cljs-repl": "node -e \"require('./out/cljs/owlbear.js')\"",
     "cljs-test": "node ./out/cljs/owlbear-tests.js",
     "compile": "webpack",

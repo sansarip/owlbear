@@ -4,7 +4,7 @@
  :builds       {:lib
                 {:target    :node-library
                  :exports   {:html-forward-slurp owlbear.parser.html.tagedit.slurp/forward-slurp
-                             :html-forward-barf owlbear.parser.html.tagedit.barf/forward-barf}
+                             :htmlForwardBarf owlbear.parser.html.tagedit.barf/forward-barf}
                  :output-to "out/cljs/owlbear.js"}
                 :test
                 {:target    :node-test
