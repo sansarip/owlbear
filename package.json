@@ -62,6 +62,9 @@
   },
   "dependencies": {
     "antlr4": "4.8.0",
-    "owlbear-grammar": "^1.0.6-SNAPSHOT"
+    "owlbear-grammar": "^1.0.6-SNAPSHOT",
+    "tree-sitter": "^0.20.0",
+    "tree-sitter-html": "^0.19.0",
+    "tree-sitter-javascript": "^0.19.0"
   }
 }
