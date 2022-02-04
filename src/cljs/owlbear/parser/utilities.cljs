@@ -1,5 +1,31 @@
 (ns owlbear.parser.utilities
+  "General utility tooling around any Tree-sitter tree"
   (:require [oops.core :refer [oget]]))
+
+;; This node multi-method is an attempt at future proofing in the event of a parsing-library change
+(defmulti node*
+  "Given a node, an an action, 
+   performs the implementation of that action with the node"
+  (fn [node action]
+    action))
+
+(defmethod node* :start-index [node _]
+  (oget node :startIndex))
+
+(defmethod node* :stop-index [node _]
+  (oget node :endIndex))
+
+(defmethod node* :children [node _]
+  (oget node :children))
+
+(defmethod node* :parent [node _]
+  (oget node :parent))
+
+(defmethod node* :next-sibling [node _]
+  (oget node :nextSibling))
+
+(defmethod node* :prev-sibling [node _]
+  (oget node :previousSibling))
 
 (defn ctx->children-seq
   "Given a context, 
@@ -69,3 +95,65 @@
   [ctx forward-ctx]
   (< (oget ctx :?stop.?stop) (oget forward-ctx :?start.?start)))
 
+(defn range-in-node?
+  "Given a node, a start offset, and a stop offset, 
+   returns true if the node is within the given range (inclusive)"
+  ([node start]
+   (range-in-node? node start start))
+  ([node start stop]
+   {:pre [(<= start stop)]}
+   (<= (oget node :startIndex)
+       start
+       stop
+       (dec (oget node :endIndex)))))
+
+(defn flatten-children
+  "Given a node, 
+   returns a flattened, depth-first traversed, lazy sequence 
+   of all of the node's children and their children"
+  [node]
+  (tree-seq #(oget % :?children) #(oget % :?children) node))
+
+(defn nodes->current-nodes
+  "Given a list of nodes and a character offset, 
+   returns a lazy sequence of only the nodes containing the given offset"
+  [offset nodes]
+  {:pre [(<= 0 offset)]}
+  (filter #(range-in-node? % offset) nodes))
+
+(defn filter-current-nodes
+  "Given a sequence of nodes and a character offset, 
+   returns the lazy sequence of nodes that contain the given offset"
+  [nodes offset]
+  {:pre [(<= 0 offset)]}
+  (filter #(range-in-node? % offset) nodes))
+
+(defn node->current-nodes
+  "Given a node and a character offset, 
+   return a lazy sequence of the child nodes containing the given offset"
+  [node offset]
+  {:pre [(<= 0 offset)]}
+  (filter-current-nodes (flatten-children node) offset))
+
+(defn node->forward-sibling-nodes
+  "Given a node, 
+   returns a lazy sequence of the node's forward sibling nodes"
+  [node]
+  (->> node
+       (iterate #(oget (or % #js {}) :?nextSibling))
+       (take-while some?)
+       rest))
+
+(defn some-forward-sibling-node
+  "Given a predicate function, `pred`, and a `node`, 
+   returns the first forward sibling node that fulfills the predicate function"
+  [pred node]
+  {:pre [(fn? pred)]}
+  (some pred (node->forward-sibling-nodes node)))
+
+(defn some-child-node
+  "Given a predicate function, `pred`, and a `node`, 
+   returns the first child that fulfills the predicate function"
+  [pred node]
+  {:pre [(fn? pred)]}
+  (some pred (flatten-children node)))
