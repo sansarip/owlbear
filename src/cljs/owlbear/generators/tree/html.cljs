@@ -6,7 +6,7 @@
              [owlbear.generators.utilities :as obgu]
              [owlbear.parser.html :as obp-html]
              [miner.strgen :as sg]
-             [owlbear.parser.utilities :as obpu]))
+             [owlbear.parser.rules :as obpr]))
 
 ;;================================================================================
 ;; HTML raw

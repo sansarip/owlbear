@@ -27,9 +27,9 @@
 ;;          html-ctx (src->html src-without-cursor-symbol)
 ;;          ctx->current-ctxs-fn (if (= ctx-type :html-element)
 ;;                                 obp-html-ele/ctx->html-elements-ctxs
-;;                                 obpu/ctx->current-ctxs)
+;;                                 obpr/ctx->current-ctxs)
 ;;          current-ctx (last (ctx->current-ctxs-fn html-ctx actual-cursor-symbol-offset))
-;;          root-ctx (last (obpu/ctx->parent-seq current-ctx))]
+;;          root-ctx (last (obpr/ctx->parent-seq current-ctx))]
 ;;      {:current-ctx current-ctx
 ;;       :root-ctx root-ctx
 ;;       :src-without-cursor-symbol src-without-cursor-symbol

@@ -9,7 +9,7 @@
             [owlbear.generators.tree.html :as obgt-html]
             [owlbear.generators.utilities :as obgu]
             [owlbear.parser.html.edit.rules :as obp-html-edit-rules]
-            [owlbear.parser.utilities :as obpu]
+            [owlbear.parser.rules :as obpr]
             [owlbear.utilities :refer [noget+]]))
 
 (defspec subject-node-spec 10
@@ -36,7 +36,7 @@
   (prop/for-all [[root-node :as children] (gen/let [tree (obgt-html/tree {:hiccup-gen-opts
                                                                           {:vector-gen-args [2 6]
                                                                            :tag-name-gen obgt-html/html-element-container-tag-name}})]
-                                            (obpu/flatten-children (noget+ tree :?rootNode)))]
+                                            (obpr/flatten-children (noget+ tree :?rootNode)))]
     (let [current-subject-nodes (some #(obp-html-edit-rules/node->current-subject-nodes % (noget+ % :?startIndex))
                                       children)]
       (testing "when forward object node is found"
@@ -73,7 +73,7 @@
 
 (defspec next-object-node-spec 10
   (prop/for-all [children (gen/let [tree (obgt-html/tree {:hiccup-gen-opts {:vector-gen-args [2 6]}})]
-                            (obpu/flatten-children (noget+ tree :?rootNode)))]
+                            (obpr/flatten-children (noget+ tree :?rootNode)))]
     (let [[slurp-anchor-node
            forward-object-node] (some #(when-let [fsn (obp-html-edit-rules/next-forward-object-node %)]
                                          [% fsn])
@@ -97,7 +97,7 @@
   (prop/for-all [[root-node :as children] (gen/let [tree (obgt-html/tree {:hiccup-gen-opts
                                                                           {:vector-gen-args [2 6]
                                                                            :tag-name-gen obgt-html/html-element-container-tag-name}})]
-                                            (obpu/flatten-children (noget+ tree :?rootNode)))]
+                                            (obpr/flatten-children (noget+ tree :?rootNode)))]
     (let [{:keys [forward-object-node
                   current-node]} (some #(obp-html-edit-rules/node->current-forward-object-ctx % (noget+ % :?startIndex))
                                        children)]
@@ -110,7 +110,7 @@
             "current node is subjectifiable")
         (is (< (noget+ current-node :?startIndex) (noget+ forward-object-node :?startIndex))
             "forward-object node is positionally ahead")
-        (is (obpu/some-forward-sibling-node #(= forward-object-node %) current-node)
+        (is (obpr/some-forward-sibling-node #(= forward-object-node %) current-node)
             "forward-object node is a forward sibling of the current node")))))
 
 (defspec node->current-last-child-object-ctx-spec 10
@@ -129,9 +129,9 @@
             "last-child-object node is actually objectifiable")
         (is (obp-html-edit-rules/subject-node current-node)
             "current node is subjectifiable")
-        (is (obpu/range-in-node? current-node
+        (is (obpr/range-in-node? current-node
                                  (noget+ last-child-object-node :?startIndex)
                                  (dec (noget+ last-child-object-node :?endIndex)))
             "last-child-object node is positionally within the current-node")
-        (is (obpu/some-child-node #(= last-child-object-node %) current-node)
+        (is (obpr/some-child-node #(= last-child-object-node %) current-node)
             "last-child-object node is a child of the current node")))))

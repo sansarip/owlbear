@@ -1,4 +1,4 @@
-(ns owlbear.parser.utilities-test
+(ns owlbear.parser.rules-test
   (:require [cljs.test :refer [deftest is testing]]
             [cljs-bean.core :refer [->clj]]
             [clojure.test.check.clojure-test :refer [defspec]]
@@ -7,7 +7,7 @@
             [oops.core :refer [oget]]
             [owlbear.generators.tree :as obgt]
             [owlbear.generators.utilities :as obgu]
-            [owlbear.parser.utilities :as obpu]))
+            [owlbear.parser.rules :as obpr]))
 
 (defspec valid-range-in-node-test 10
   (prop/for-all [{:keys [node
@@ -21,10 +21,10 @@
                                          :range-start range-start
                                          :range-stop range-stop})]
     (testing "when given start offset only"
-      (is (obpu/range-in-node? node range-start)
+      (is (obpr/range-in-node? node range-start)
           "start offset in node's bounds"))
     (testing "when given start and stop offsets"
-      (is (obpu/range-in-node? node range-start range-stop)
+      (is (obpr/range-in-node? node range-start range-stop)
           "range is in node's bounds"))))
 
 (defspec invalid-range-not-in-node-test 10
@@ -39,10 +39,10 @@
                                          :range-start range-start
                                          :range-stop range-stop})]
     (testing "when given start offset onlu"
-      (is (not (obpu/range-in-node? node range-start))
+      (is (not (obpr/range-in-node? node range-start))
           "start offset is out of node's bounds"))
     (testing "when given start and stop offsets"
-      (is (not (obpu/range-in-node? node range-start range-stop))
+      (is (not (obpr/range-in-node? node range-start range-stop))
           "range is not in node's bounds"))))
 
 (defspec node->current-nodes 10
@@ -56,11 +56,11 @@
                                                    :out-of-bounds-offset (+ endIndex (inc addend))
                                                    :in-bounds-offset cursor-offset})))]
     (testing "when offset in node"
-      (let [current-nodes (obpu/node->current-nodes node in-bounds-offset)]
+      (let [current-nodes (obpr/node->current-nodes node in-bounds-offset)]
         (is (not-empty current-nodes)
             "found current nodes")
         (is (apply <= (map #(oget % :startIndex) current-nodes))
             "current nodes are sorted from least to most specific")))
     (testing "when offset not in nodes"
-      (is (empty? (obpu/node->current-nodes node out-of-bounds-offset))
+      (is (empty? (obpr/node->current-nodes node out-of-bounds-offset))
           "no current nodes"))))

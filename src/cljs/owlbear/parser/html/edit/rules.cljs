@@ -3,7 +3,7 @@
   (:require [oops.core :refer [oget]]
             [owlbear.parser.html.rules :as obp-html-rules]
             [owlbear.parser.html.utilities :as obp-html-util]
-            [owlbear.parser.utilities :as obpu]))
+            [owlbear.parser.rules :as obpr]))
 
 (defn subject-node
   "Returns the given `node`
@@ -41,12 +41,12 @@
   [node offset]
   {:pre [(<= 0 offset)]}
   (some-> node
-          obpu/flatten-children
+          obpr/flatten-children
           (->> (filter subject-node))
-          (obpu/filter-current-nodes offset)))
+          (obpr/filter-current-nodes offset)))
 
 (defn next-forward-object-node [node]
-  (obpu/some-forward-sibling-node object-node node))
+  (obpr/some-forward-sibling-node object-node node))
 
 (defn node->current-forward-object-ctx
   "Given a `node` and character `offset`, 

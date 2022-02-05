@@ -8,7 +8,7 @@
              [owlbear.parser.html :as obp-html]
              [owlbear.parser.html.edit.slurp :as obp-html-slurp]
              [owlbear.parser.html.edit.rules :as obp-html-edit-rules]
-             [owlbear.parser.utilities :as obpu]
+             [owlbear.parser.rules :as obpr]
              [owlbear.utilities :refer [noget+]]))
 
 (defspec forward-slurp-spec 5

@@ -3,7 +3,7 @@
              [owlbear.parser.html :as obp-html]
              [owlbear.parser.html.edit.rules :as obp-html-edit-rules]
              [owlbear.parser.html.rules :as obp-html-rules]
-             [owlbear.parser.utilities :as obpu]
+             [owlbear.parser.rules :as obpr]
              [owlbear.utilities :as obu]))
 
 (defn node->forward-barf-subjects
@@ -15,7 +15,7 @@
                 #(filter obp-html-edit-rules/object-node %)
                 #(when % (oget % :?children))
                 obp-html-edit-rules/subject-node)
-          (obpu/flatten-children node)))
+          (obpr/flatten-children node)))
 
 (defn forward-barf
   "Given a `src` string and character `offset`, 
@@ -39,7 +39,7 @@
         #js {:src (-> src
                       (obu/str-remove current-node-end-tag-start-index current-node-end-tag-end-index)
                       (obu/str-insert current-node-end-tag-text end-tag-insert-offset))
-             :offset (if (obpu/range-in-node? current-node-end-tag offset)
+             :offset (if (obpr/range-in-node? current-node-end-tag offset)
                        (+ (- offset current-node-end-tag-start-index)
                           end-tag-insert-offset)
                        offset)}))))
