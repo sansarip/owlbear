@@ -5,10 +5,9 @@
              [clojure.test.check.generators :as gen]
              [clojure.test.check.properties :as prop]
              [owlbear.generators.tree.html :as obgt-html]
-             [owlbear.parse.html :as obp-html]
+             [owlbear.html.parse :as obp-html]
              [owlbear.html.edit.slurp :as obp-html-slurp]
              [owlbear.html.edit.rules :as obp-html-edit-rules]
-             [owlbear.parse.rules :as obpr]
              [owlbear.utilities :refer [noget+]]))
 
 (defspec forward-slurp-spec 5
@@ -21,6 +20,7 @@
                                                                                    :tag-name-gen obgt-html/html-element-container-tag-name}})]
                                                     (let [root-node (noget+ tree :?rootNode)
                                                           forward-slurp-subjects (obp-html-slurp/node->forward-slurp-subjects root-node)]
+                                                      forward-slurp-subjects
                                                       (gen/let [current-node (gen/elements forward-slurp-subjects)]
                                                         {:src (noget+ root-node :?text)
                                                          :out-of-bounds-offset (inc (noget+ root-node :?endIndex))

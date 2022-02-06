@@ -1,7 +1,5 @@
 (ns owlbear.html.edit.rules-test
-  (:require [cljs.pprint :refer [pprint]]
-            [cljs.test :as t :refer [deftest is testing]]
-            [cljs-bean.core :refer [bean]]
+  (:require [cljs.test :as t :refer [deftest is testing]]
             [clojure.string :as str]
             [clojure.test.check.clojure-test :as tc :refer [defspec]]
             [clojure.test.check.generators :as gen]
@@ -110,7 +108,7 @@
             "current node is subjectifiable")
         (is (< (noget+ current-node :?startIndex) (noget+ forward-object-node :?startIndex))
             "forward-object node is positionally ahead")
-        (is (obpr/some-forward-sibling-node #(= forward-object-node %) current-node)
+        (is (obpr/some-forward-sibling-node (comp #{(noget+ forward-object-node :id)} #(noget+ % :id)) current-node)
             "forward-object node is a forward sibling of the current node")))))
 
 (defspec node->current-last-child-object-ctx-spec 10

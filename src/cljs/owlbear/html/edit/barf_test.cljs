@@ -4,7 +4,7 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.html :as obgt-html]
-            [owlbear.parse.html :as obp-html]
+            [owlbear.html.parse :as obp-html]
             [owlbear.html.edit.barf :as obp-html-barf]
             [owlbear.html.edit.rules :as obp-html-edit-rules]
             [owlbear.utilities :refer [noget+]]))

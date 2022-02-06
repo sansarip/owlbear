@@ -1,6 +1,7 @@
 (ns owlbear.test-runner
+  "Responsible for running tests"
   (:require [cljs.test :refer [run-tests]]
-            [owlbear.parse.html :as obp-html]))
+            [owlbear.html.parse :as obp-html]))
 
 (defn run-tests* []
   ;; Add/remove test namespaces here 👇
@@ -10,5 +11,7 @@
              'owlbear.html.parse.rules-test
              'owlbear.parse.rules-test))
 
-(defn ^:export init []
-  (.then (obp-html/init-tree-sitter!) run-tests*))
+(defn ^:export init
+  "Initializes Tree-sitter and then runs tests"
+  []
+  (.then (obp-html/init-tree-sitter! "resources/tree-sitter-html.wasm") run-tests*))

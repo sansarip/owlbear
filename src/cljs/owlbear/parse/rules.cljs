@@ -46,10 +46,10 @@
   "Given a node, 
    returns a lazy sequence of the node's forward sibling nodes"
   [node]
-  (->> node
-       (iterate #(oget (or % #js {}) :?nextSibling))
-       (take-while some?)
-       rest))
+  (when node
+    (some->> (oget node :?nextSibling) ; Start at next sibling
+             (iterate #(oget (or % #js {}) :?nextSibling))
+             (take-while some?))))
 
 (defn some-forward-sibling-node
   "Given a predicate function, `pred`, and a `node`, 

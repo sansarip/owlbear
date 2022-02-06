@@ -11,8 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:owlbear.htmlForwardBarf",
-    "onCommand:owlbear.htmlForwardSlurp"
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -29,12 +28,12 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
-    "clean": "rimraf ./out && rimraf ./tsconfig.tsbuildinfo && rimraf ./cljs-out",
+    "clean": "rimraf ./out && rimraf ./tsconfig.tsbuildinfo && rimraf ./cljs-out && rimraf ./dist",
     "compile-cljs": "npx shadow-cljs release :lib :test",
     "cljs-repl": "node -e \"require('./out/cljs/owlbear.js')\"",
     "cljs-test": "node ./out/cljs/owlbear-tests.js",
-    "compile": "webpack",
-    "watch": "webpack --watch",
+    "compile": "cp resources/* dist/ && webpack",
+    "watch": "cp resources/* dist/ && webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
@@ -61,6 +60,7 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
+    "tree-sitter-javascript": "^0.19.0",
     "web-tree-sitter": "^0.20.3"
   }
 }

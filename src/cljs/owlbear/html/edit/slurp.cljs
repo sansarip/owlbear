@@ -1,6 +1,6 @@
 (ns owlbear.html.edit.slurp
   (:require  [oops.core :refer [oget]]
-             [owlbear.parse.html :as obp-html]
+             [owlbear.html.parse :as obp-html]
              [owlbear.html.parse.rules :as obp-html-rules]
              [owlbear.html.edit.rules :as obp-html-edit-rules]
              [owlbear.parse.rules :as obpr]

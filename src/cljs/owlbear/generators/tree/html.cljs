@@ -4,7 +4,7 @@
              [hiccups.runtime :as hiccupsrt]
              [oops.core :refer [oget]]
              [owlbear.generators.utilities :as obgu]
-             [owlbear.parse.html :as obp-html]
+             [owlbear.html.parse :as obp-html]
              [miner.strgen :as sg]
              [owlbear.parse.rules :as obpr]))
 
