@@ -1,13 +1,19 @@
 {:dependencies [[binaryage/oops "0.7.1"]
-                [cljstache "2.0.6"]]
+                [cljs-bean "1.8.0"]
+                [cljstache "2.0.6"]
+                [com.velisco/strgen "0.2.1" :exclusions [org.clojure/alpha.spec]]
+                [hiccups "0.3.0"]
+                [org.clojure/core.match "1.0.0"]
+                [org.clojure/test.check "1.1.1"]]
  :source-paths ["src/cljs"]
  :builds       {:lib
                 {:target    :node-library
-                 :exports   {:htmlForwardSlurp owlbear.parser.html.tagedit.slurp/forward-slurp
-                             :htmlForwardBarf owlbear.parser.html.tagedit.barf/forward-barf}
+                 :exports   {:htmlInit owlbear.html.parse/init-tree-sitter!
+                             :htmlForwardSlurp owlbear.edit/html-forward-slurp
+                             :htmlForwardBarf owlbear.edit/html-forward-barf}
                  :output-to "out/cljs/owlbear.js"}
                 :test
                 {:target    :node-test
+                 :main owlbear.test-runner/init
                  :output-to "out/cljs/owlbear-test.js"
-                 :ns-regexp "-test$"
                  :autorun true}}}
