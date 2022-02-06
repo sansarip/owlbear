@@ -1,4 +1,4 @@
-(ns owlbear.parser.rules-test
+(ns owlbear.parse.rules-test
   (:require [cljs.test :refer [deftest is testing]]
             [cljs-bean.core :refer [->clj]]
             [clojure.test.check.clojure-test :refer [defspec]]
@@ -7,7 +7,7 @@
             [oops.core :refer [oget]]
             [owlbear.generators.tree :as obgt]
             [owlbear.generators.utilities :as obgu]
-            [owlbear.parser.rules :as obpr]))
+            [owlbear.parse.rules :as obpr]))
 
 (defspec valid-range-in-node-test 10
   (prop/for-all [{:keys [node

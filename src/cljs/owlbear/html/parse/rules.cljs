@@ -1,4 +1,4 @@
-(ns owlbear.parser.html.rules
+(ns owlbear.html.parse.rules
   "Tree-sitter rule (type) definitions"
   (:require [oops.core :refer [oget]]))
 

@@ -1,14 +1,14 @@
-(ns owlbear.parser.html.edit.slurp-test
+(ns owlbear.html.edit.slurp-test
   (:require  [cljs.test :refer [deftest is testing]]
              [clojure.string :as str]
              [clojure.test.check.clojure-test :refer [defspec]]
              [clojure.test.check.generators :as gen]
              [clojure.test.check.properties :as prop]
              [owlbear.generators.tree.html :as obgt-html]
-             [owlbear.parser.html :as obp-html]
-             [owlbear.parser.html.edit.slurp :as obp-html-slurp]
-             [owlbear.parser.html.edit.rules :as obp-html-edit-rules]
-             [owlbear.parser.rules :as obpr]
+             [owlbear.parse.html :as obp-html]
+             [owlbear.html.edit.slurp :as obp-html-slurp]
+             [owlbear.html.edit.rules :as obp-html-edit-rules]
+             [owlbear.parse.rules :as obpr]
              [owlbear.utilities :refer [noget+]]))
 
 (defspec forward-slurp-spec 5

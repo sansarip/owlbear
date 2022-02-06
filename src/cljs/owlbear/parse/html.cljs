@@ -1,16 +1,21 @@
-(ns owlbear.parser.html
+(ns owlbear.parse.html
   "HTML parsing"
   (:require [oops.core :refer [ocall]]
-            [tree-sitter :as Parser]
-            [tree-sitter-html :as HTML]))
+            [web-tree-sitter :as Parser]))
+
+(def ^:dynamic *HTML*)
+
+(defn init-tree-sitter! []
+  (-> (ocall web-tree-sitter :init)
+      (.then #(ocall Parser :Language.load "tree-sitter-html.wasm"))
+      (.then #(set! *HTML* %))))
 
 (defn src->tree
   "Given a source string, returns an HTML parser tree"
   [src]
-  (when (string? src)
-    (let [parser (Parser.)]
-      (ocall parser :setLanguage HTML)
-      (ocall parser :parse src))))
+  (let [parser (Parser.)]
+    (ocall parser :setLanguage *HTML*)
+    (ocall parser :parse src)))
 
 ;; (defn src-with-cursor-symbol->current-ctx-map
 ;;   "Given a source string (and optionally a string), 

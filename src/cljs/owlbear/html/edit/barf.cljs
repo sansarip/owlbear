@@ -1,9 +1,9 @@
-(ns owlbear.parser.html.edit.barf
+(ns owlbear.html.edit.barf
   (:require  [oops.core :refer [oget]]
-             [owlbear.parser.html :as obp-html]
-             [owlbear.parser.html.edit.rules :as obp-html-edit-rules]
-             [owlbear.parser.html.rules :as obp-html-rules]
-             [owlbear.parser.rules :as obpr]
+             [owlbear.parse.html :as obp-html]
+             [owlbear.html.edit.rules :as obp-html-edit-rules]
+             [owlbear.html.parse.rules :as obp-html-rules]
+             [owlbear.parse.rules :as obpr]
              [owlbear.utilities :as obu]))
 
 (defn node->forward-barf-subjects

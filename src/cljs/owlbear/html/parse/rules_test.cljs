@@ -1,11 +1,11 @@
-(ns owlbear.parser.html.rules-test
+(ns owlbear.html.parse.rules-test
   (:require [cljs.test :refer [is testing]]
             [clojure.string :as str]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.html :as obgt-html]
-            [owlbear.parser.html.rules :as obp-html-rules]
+            [owlbear.html.parse.rules :as obp-html-rules]
             [owlbear.utilities :refer [noget+]]))
 
 (defspec node->end-tag-node-test 10

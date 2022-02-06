@@ -61,8 +61,6 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
-    "tree-sitter": "^0.20.0",
-    "tree-sitter-html": "^0.19.0",
-    "tree-sitter-javascript": "^0.19.0"
+    "web-tree-sitter": "^0.20.3"
   }
 }

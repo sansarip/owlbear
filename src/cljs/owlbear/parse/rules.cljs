@@ -1,4 +1,4 @@
-(ns owlbear.parser.rules
+(ns owlbear.parse.rules
   "General utility tooling around any Tree-sitter tree"
   (:require [oops.core :refer [oget]]))
 

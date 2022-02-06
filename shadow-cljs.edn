@@ -8,11 +8,11 @@
  :source-paths ["src/cljs"]
  :builds       {:lib
                 {:target    :node-library
-                 :exports   {:htmlForwardSlurp owlbear.parser.html.edit.slurp/forward-slurp
-                             :htmlForwardBarf owlbear.parser.html.edit.barf/forward-barf}
+                 :exports   {:htmlForwardSlurp owlbear.edit/html-forward-slurp
+                             :htmlForwardBarf owlbear.edit/html-forward-barf}
                  :output-to "out/cljs/owlbear.js"}
                 :test
                 {:target    :node-test
+                 :main owlbear.test-runner/init
                  :output-to "out/cljs/owlbear-test.js"
-                 :ns-regexp "-test$"
                  :autorun true}}}

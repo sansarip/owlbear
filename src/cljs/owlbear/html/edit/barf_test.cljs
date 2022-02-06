@@ -1,12 +1,12 @@
-(ns owlbear.parser.html.edit.barf-test
+(ns owlbear.html.edit.barf-test
   (:require [cljs.test :refer [deftest is testing]]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.html :as obgt-html]
-            [owlbear.parser.html :as obp-html]
-            [owlbear.parser.html.edit.barf :as obp-html-barf]
-            [owlbear.parser.html.edit.rules :as obp-html-edit-rules]
+            [owlbear.parse.html :as obp-html]
+            [owlbear.html.edit.barf :as obp-html-barf]
+            [owlbear.html.edit.rules :as obp-html-edit-rules]
             [owlbear.utilities :refer [noget+]]))
 
 (defspec forward-barf-spec 10

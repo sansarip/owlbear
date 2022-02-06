@@ -1,6 +1,6 @@
-(ns owlbear.parser.html.utilities
+(ns owlbear.html.parse.utilities
   "Utility tooling around Tree-sitter HTML trees"
-  (:require [owlbear.parser.html.rules :as obp-html-rules]
+  (:require [owlbear.html.parse.rules :as obp-html-rules]
             [oops.core :refer [ocall oget]]))
 
 (defn all-white-space-chars? [ctx]

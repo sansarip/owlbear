@@ -1,4 +1,4 @@
-(ns owlbear.parser.html.edit.rules-test
+(ns owlbear.html.edit.rules-test
   (:require [cljs.pprint :refer [pprint]]
             [cljs.test :as t :refer [deftest is testing]]
             [cljs-bean.core :refer [bean]]
@@ -8,8 +8,8 @@
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.html :as obgt-html]
             [owlbear.generators.utilities :as obgu]
-            [owlbear.parser.html.edit.rules :as obp-html-edit-rules]
-            [owlbear.parser.rules :as obpr]
+            [owlbear.html.edit.rules :as obp-html-edit-rules]
+            [owlbear.parse.rules :as obpr]
             [owlbear.utilities :refer [noget+]]))
 
 (defspec subject-node-spec 10

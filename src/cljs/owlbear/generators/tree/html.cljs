@@ -4,9 +4,9 @@
              [hiccups.runtime :as hiccupsrt]
              [oops.core :refer [oget]]
              [owlbear.generators.utilities :as obgu]
-             [owlbear.parser.html :as obp-html]
+             [owlbear.parse.html :as obp-html]
              [miner.strgen :as sg]
-             [owlbear.parser.rules :as obpr]))
+             [owlbear.parse.rules :as obpr]))
 
 ;;================================================================================
 ;; HTML raw
@@ -127,5 +127,5 @@
 
 (comment
   (let [nodes (gen/sample (tree {:hiccup-gen-opts {:vector-gen-args [2 4]}}))]
-    (map owlbear.parser.utilities/flatten-children nodes))
+    (map owlbear.parse.utilities/flatten-children nodes))
   (gen/sample (hiccup-base (hiccup-base gen/string) {:vector-gen-args [2 4]})))

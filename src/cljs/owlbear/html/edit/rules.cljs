@@ -1,9 +1,9 @@
-(ns owlbear.parser.html.edit.rules
+(ns owlbear.html.edit.rules
   "HTML-editing rules"
   (:require [oops.core :refer [oget]]
-            [owlbear.parser.html.rules :as obp-html-rules]
-            [owlbear.parser.html.utilities :as obp-html-util]
-            [owlbear.parser.rules :as obpr]))
+            [owlbear.html.parse.rules :as obp-html-rules]
+            [owlbear.html.parse.utilities :as obp-html-util]
+            [owlbear.parse.rules :as obpr]))
 
 (defn subject-node
   "Returns the given `node`
