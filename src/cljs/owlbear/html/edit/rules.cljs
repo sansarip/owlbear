@@ -36,7 +36,7 @@
         :else nil))))
 
 (defn node->current-subject-nodes
-  "Given a node and an offset, 
+  "Given a `node` and an `offset`, 
    returns a lazy seq of all the subject nodes containing that offset"
   [node offset]
   {:pre [(<= 0 offset)]}
