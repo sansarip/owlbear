@@ -8,9 +8,10 @@
  :source-paths ["src/cljs"]
  :builds       {:lib
                 {:target    :node-library
-                 :exports   {:htmlInit owlbear.html.parse/init-tree-sitter!
+                 :exports   {:htmlForwardBarf owlbear.edit/html-forward-barf
                              :htmlForwardSlurp owlbear.edit/html-forward-slurp
-                             :htmlForwardBarf owlbear.edit/html-forward-barf}
+                             :htmlInit owlbear.html.parse/init-tree-sitter!
+                             :htmlRaise owlbear.edit/html-raise}
                  :output-to "out/cljs/owlbear.js"}
                 :test
                 {:target    :node-test

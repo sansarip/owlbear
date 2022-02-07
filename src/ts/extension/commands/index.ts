@@ -1,6 +1,13 @@
-import { commands as vscodeCommands, Disposable, ExtensionContext } from "vscode";
-import { forwardBarf as htmlForwardBarf } from "./html/edit/forward-barf";
-import { forwardSlurp as htmlForwardSlurp } from "./html/edit/forward-slurp";
+import {
+  commands as vscodeCommands,
+  Disposable,
+  ExtensionContext,
+} from "vscode";
+import {
+  forwardBarf as htmlForwardBarf,
+  forwardSlurp as htmlForwardSlurp,
+  raise as htmlRaise,
+} from "./html/edit";
 
 export type Command = {
   id: string;
@@ -10,6 +17,7 @@ export type Command = {
 export const commands: Command[] = [
   { id: "owlbear.htmlForwardBarf", handler: htmlForwardBarf },
   { id: "owlbear.htmlForwardSlurp", handler: htmlForwardSlurp },
+  { id: "owlbear.htmlRaise", handler: htmlRaise },
 ];
 
 export const registerCommands = (context: ExtensionContext) => {

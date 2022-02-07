@@ -23,6 +23,10 @@
       {
         "command": "owlbear.htmlForwardSlurp",
         "title": "Owlbear: HTML Forward Slurp"
+      },
+      {
+        "command": "owlbear.htmlRaise",
+        "title": "Owlbear: HTML Raise"
       }
     ]
   },
