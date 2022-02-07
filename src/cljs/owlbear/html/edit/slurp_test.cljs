@@ -6,8 +6,8 @@
              [clojure.test.check.properties :as prop]
              [owlbear.generators.tree.html :as obgt-html]
              [owlbear.html.parse :as obp-html]
+             [owlbear.html.parse.rules :as ob-html-rules]
              [owlbear.html.edit.slurp :as obp-html-slurp]
-             [owlbear.html.edit.rules :as obp-html-edit-rules]
              [owlbear.utilities :refer [noget+]]))
 
 (defspec forward-slurp-spec 5
@@ -42,7 +42,7 @@
         (let [slurp-result-current-node-text (-> slurp-result-src
                                                  obp-html/src->tree
                                                  (noget+ :?rootNode)
-                                                 (obp-html-edit-rules/node->current-subject-nodes slurp-result-offset)
+                                                 (ob-html-rules/node->current-subject-nodes slurp-result-offset)
                                                  last
                                                  (noget+ :?text))]
           (is (str/includes? slurp-result-current-node-text current-node-next-sibling-text)
@@ -59,7 +59,7 @@
         (let [slurp-result-current-node-text (-> slurp-result-src
                                                  obp-html/src->tree
                                                  (noget+ :?rootNode)
-                                                 (obp-html-edit-rules/node->current-subject-nodes slurp-result-offset)
+                                                 (ob-html-rules/node->current-subject-nodes slurp-result-offset)
                                                  last
                                                  (noget+ :?text))]
           (is (str/includes? slurp-result-current-node-text current-node-next-sibling-text)

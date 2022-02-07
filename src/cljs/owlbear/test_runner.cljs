@@ -7,7 +7,6 @@
   ;; Add/remove test namespaces here 👇
   (run-tests 'owlbear.html.edit.barf-test
              'owlbear.html.edit.raise-test 
-             'owlbear.html.edit.rules-test
              'owlbear.html.edit.slurp-test
              'owlbear.html.parse.rules-test
              'owlbear.parse.rules-test))
