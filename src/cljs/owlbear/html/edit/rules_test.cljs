@@ -52,6 +52,28 @@
     (is (empty? (obp-html-edit-rules/node->current-subject-nodes #js {} 0))
         "no children")))
 
+(defspec node->current-object-nodes-spec 10
+  (prop/for-all [[root-node :as children] (gen/let [tree (obgt-html/tree {:hiccup-gen-opts
+                                                                          {:vector-gen-args [2 6]
+                                                                           :tag-name-gen obgt-html/html-element-container-tag-name}})]
+                                            (obpr/flatten-children (noget+ tree :?rootNode)))]
+    (let [current-object-nodes (some #(obp-html-edit-rules/node->current-object-nodes % (noget+ % :?startIndex))
+                                      children)]
+      (testing "when forward object node is found"
+        (is (not-empty current-object-nodes)
+            "found current object nodes")
+        (is (every? obp-html-edit-rules/object-node current-object-nodes)
+            "every node is an object node")
+        (is (reduce < (map #(noget+ % :?startIndex) current-object-nodes))
+            "nodes sorted from least to most specific")))))
+
+(deftest node->current-object-nodes-test
+  (testing "when node has no object-node children"
+    (is (empty? (obp-html-edit-rules/node->current-object-nodes #js {:children #js [#js {:type (str (random-uuid))}]} 0))
+        "invalid child node type")
+    (is (empty? (obp-html-edit-rules/node->current-object-nodes #js {} 0))
+        "no children")))
+
 (defspec object-node-spec 10
   (prop/for-all [node obgt-html/object-node]
     (testing "when object node"
