@@ -45,6 +45,16 @@
           (->> (filter subject-node))
           (obpr/filter-current-nodes offset)))
 
+(defn node->current-object-nodes
+  "Given a `node` and an `offset`, 
+   returns a lazy seq of all the object nodes containing that offset"
+  [node offset]
+  {:pre [(<= 0 offset)]}
+  (some-> node
+          obpr/flatten-children
+          (->> (filter object-node))
+          (obpr/filter-current-nodes offset)))
+
 (defn next-forward-object-node [node]
   (obpr/some-forward-sibling-node object-node node))
 
