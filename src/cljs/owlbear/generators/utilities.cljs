@@ -32,7 +32,8 @@
   ([g]
    (vector-distinct-sorted g {}))
   ([g opts]
-   (gen/fmap (comp vec sort) (gen/vector-distinct g opts))))
+   (let [opts* (merge {:max-tries 20} opts)] ; vector-distinct has a tendency to fail with only 10 default max tries
+     (gen/fmap (comp vec sort) (gen/vector-distinct g opts*)))))
 
 (defn vector-sorted
   "Generates a sorted vector"
