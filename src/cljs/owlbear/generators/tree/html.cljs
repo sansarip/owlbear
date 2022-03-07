@@ -50,7 +50,7 @@
   ([child-g] (hiccup-base child-g {}))
   ([child-g {:keys [vector-gen-args tag-name-gen]
              :or {tag-name-gen tag-name}}]
-   {:pre [(gen/generator? tag-name-gen) (seqable? vector-gen-args)]}
+   {:pre [(or (gen/generator? child-g) (fn? child-g)) (gen/generator? tag-name-gen) (seqable? vector-gen-args)]}
    (let [props-gen (gen/map obgu/string-alphanumeric-starts-with-alpha gen/string-alphanumeric)]
      (gen/let [tag-name-and-props (gen/tuple tag-name-gen props-gen)
                children (apply gen/vector child-g vector-gen-args)]
