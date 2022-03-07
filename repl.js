@@ -16,9 +16,9 @@ console.log(htmlTree.rootNode.children[2].text.length);
 // const JsTree = jsParser.parse(sourceJsCode);
 // console.log(JsTree.rootNode.children);
 
-const ob = require("./out/cljs/owlbear");
-ob.htmlInit("./resources/tree-sitter-html.wasm").then(
-  () => {
-    ob.htmlRaise(sourceHtmlCode, 47112);
-  }
-);
+// const ob = require("./out/cljs/owlbear");
+// ob.htmlInit("./resources/tree-sitter-html.wasm").then(
+//   () => {
+//     ob.htmlRaise(sourceHtmlCode, 47112);
+//   }
+// );
