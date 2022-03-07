@@ -11,9 +11,11 @@
 ;; HTML raw
 ;;================================================================================
 
+;; FIXME: This disj is because the Tree-sitter grammar has issues 
+;; when children have the same tag name as their parent with certain tag names
 (def ^:dynamic *container-tag-names*
   "Collection of tag names that must have an end tag"
-  hiccupsrt/container-tags)
+  (disj hiccupsrt/container-tags "p" "dd"))
 
 (def ^:dynamic *html-element-container-tag-names*
   "Collection of tag names that can have HTML element children"
