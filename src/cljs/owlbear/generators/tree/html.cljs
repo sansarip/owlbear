@@ -5,8 +5,7 @@
              [oops.core :refer [oget]]
              [owlbear.generators.utilities :as obgu]
              [owlbear.html.parse :as obp-html]
-             [miner.strgen :as sg]
-             [owlbear.parse.rules :as obpr]))
+             [miner.strgen :as sg]))
 
 ;;================================================================================
 ;; HTML raw
