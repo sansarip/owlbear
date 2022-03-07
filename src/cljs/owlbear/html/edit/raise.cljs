@@ -26,4 +26,4 @@
       #js{:src (-> src
                    (obu/str-remove current-parent-node-start current-parent-node-end)
                    (obu/str-insert current-node-text current-parent-node-start))
-          :offset (dec (- current-node-start (- offset current-node-start)))})))
+          :offset (dec (+ current-parent-node-start (- offset current-node-start)))})))
