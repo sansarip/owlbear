@@ -5,6 +5,8 @@
             [owlbear.parse.rules :as obpr]))
 
 (def html-comment "comment")
+(def html-comment-start-tag "comment_start_tag")
+(def html-comment-end-tag "comment_end_tag")
 (def html-element "element")
 (def html-end-tag "end_tag")
 (def html-erroneous-end-tag "erroneous_end_tag")
@@ -20,14 +22,16 @@
    returns the node if it is an end-tag node, 
    regardless of whether the end-tag is erroneous or not"
   [node]
-  (when (contains? #{html-end-tag html-erroneous-end-tag} (oget node :?type))
+  (when (contains? #{html-comment-end-tag html-end-tag html-erroneous-end-tag}
+                   (oget node :?type))
     node))
 
 (defn start-tag-node
   "Given a node, 
    returns the node if it is a start-tag node"
   [node]
-  (when (= html-start-tag (oget node :?type))
+  (when (contains? #{html-comment-start-tag html-start-tag}
+                   (oget node :?type))
     node))
 
 (defn comment-node
@@ -39,33 +43,15 @@
 
 (defn node->end-tag-node
   "Given a node, 
-   returns the end-tag node for that node if available
-   
-   If the node is a comment, 
-   then a pseudo node is returned 
-   representing the comment's end tag"
+   returns the end-tag node for that node if available"
   [node]
-  (if (comment-node node)
-    (let [end-index (oget node :?endIndex)]
-      #js {:startIndex (- end-index 3)
-           :endIndex end-index
-           :text "-->"})
-    (some end-tag-node (oget node :?children))))
+  (some end-tag-node (oget node :?children)))
 
 (defn node->start-tag-node
   "Given a node, 
-   returns the start-tag node for that node if available
-   
-   If the node is a comment, 
-   then a pseudo node is returned 
-   representing the comment's start tag"
+   returns the start-tag node for that node if available"
   [node]
-  (if (comment-node node)
-    (let [start-index (oget node :?startIndex)]
-      #js {:startIndex start-index
-           :endIndex (+ start-index 4)
-           :text "<!--"})
-    (some start-tag-node (oget node :?children))))
+  (some start-tag-node (oget node :?children)))
 
 (defn subject-node
   "Returns the given `node`
