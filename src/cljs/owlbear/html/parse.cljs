@@ -6,7 +6,7 @@
 (def ^:dynamic *html*)
 
 (defn init-tree-sitter! [wasm-path]
-  (-> (ocall web-tree-sitter :init)
+  (-> (ocall Parser :init)
       (.then #(ocall Parser :Language.load wasm-path))
       (.then #(set! *html* %))))
 
