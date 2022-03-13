@@ -70,8 +70,8 @@
   (condp = (oget node :?type)
     html-comment node
     html-element (when (not= (oget node :?children.?0.?type)
-                                            html-self-closing-tag)
-                                  node)
+                             html-self-closing-tag)
+                   node)
     nil))
 
 (defn object-node
@@ -88,7 +88,7 @@
                      html-style}
                    node-type) node
         (= html-text node-type) (when-not (ob-html-util/all-white-space-chars* node)
-                                                 node)
+                                  node)
         :else nil))))
 
 (defn node->current-subject-nodes
