@@ -50,6 +50,8 @@
             "resulting text length is shorter")
         (is (< result-offset in-bounds-offset)
             "resulting offset is smaller")
+        (is (>= result-offset 0)
+            "resulting offset is non-negative")
         (is (= (-> result-src
                    ob-html/src->tree
                    (noget+ :?rootNode)
@@ -62,4 +64,7 @@
 (deftest raise-test
   (testing "when src is empty"
     (is (nil? (ob-html-raise/raise "" 0))
+        "no result"))
+  (testing "when root node"
+    (is (nil? (ob-html-raise/raise "<div>hello</div>" 0))
         "no result")))

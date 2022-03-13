@@ -7,6 +7,7 @@
 (def html-comment "comment")
 (def html-element "element")
 (def html-end-tag "end_tag")
+(def html-fragment "fragment")
 (def html-erroneous-end-tag "erroneous_end_tag")
 (def html-script "script_element")
 (def html-self-closing-tag "self_closing_tag")
@@ -14,6 +15,13 @@
 (def html-start-tag "start_tag")
 (def html-text "text")
 (def rule-types #{html-comment html-element html-text html-end-tag html-erroneous-end-tag})
+
+(defn fragment-node
+  "Given a node, 
+   returns the node if it is an end-tag node"
+  [node]
+  (when (= html-fragment (oget node :?type))
+    node))
 
 (defn end-tag-node
   "Given a node, 
