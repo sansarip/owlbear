@@ -121,9 +121,7 @@
 
 (defn node->child-object-nodes [node]
   (when node
-    (if (comment-node node)
-      nil
-      (filter object-node (oget node :?children)))))
+    (filter object-node (oget node :?children))))
 
 (defn node->current-last-child-object-ctx
   "Given a `node` and character `offset`, 
