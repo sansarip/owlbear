@@ -114,3 +114,6 @@ out/
 
 # MacOS
 .DS_Store
+
+# Sandbox
+scratch.html
