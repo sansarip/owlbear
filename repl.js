@@ -1,20 +1,14 @@
-const Parser = require("tree-sitter");
-const Html = require("tree-sitter-html");
 const fs = require("fs");
-const htmlParser = new Parser();
-htmlParser.setLanguage(Html);
 
-const sourceHtmlCode = fs.readFileSync("./test-data/discord.html", "utf8");
-const htmlTree = htmlParser.parse(sourceHtmlCode);
-console.log(htmlTree.rootNode.children[2].text.length);
-
-// const JavaScript = require("tree-sitter-javascript");
-// const jsParser = new Parser();
-// jsParser.setLanguage(JavaScript);
-
-// const sourceJsCode = fs.readFileSync("./test-data/hello-world.jsx", "utf8");
-// const JsTree = jsParser.parse(sourceJsCode);
-// console.log(JsTree.rootNode.children);
+const WasmParser = require("web-tree-sitter");
+WasmParser.init()
+  .then(() => WasmParser.Language.load("./resources/tree-sitter-html.wasm"))
+  .then((Html) => {
+    const htmlParser = new WasmParser();
+    htmlParser.setLanguage(Html);
+    const htmlTree = htmlParser.parse("<table><table><table>0</table><table>0</table><table>0</table><canvas>-</canvas></table><table><table>0</table></table></table>");
+    console.log(htmlTree.rootNode.children[0].children[1].children[4].children[2].text);
+  });
 
 // const ob = require("./out/cljs/owlbear");
 // ob.htmlInit("./resources/tree-sitter-html.wasm").then(
