@@ -10,6 +10,7 @@ const editDoc = (getEditCtx: Function) => {
     const cursorOffset: number = document.offsetAt(editor.selection.active);
     const source: string = document.getText();
     const editCtx = getEditCtx(source, cursorOffset);
+    if (!editCtx) { return; }
     replace(editor, editCtx.src, cursorOffset, editCtx.offset);
   }
 };
