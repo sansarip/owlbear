@@ -133,8 +133,9 @@
 
 (defn node->current-last-child-object-ctx
   "Given a `node` and character `offset`, 
-   returns a map of the deepest context (containing the offset)
-   with the last child object node"
+   returns a map containing the deepest
+   node containing the offset with object-node children (`current-node`) 
+   and the last child-object node of that `current-node` (`last-child-object-node`)"
   [node offset]
   {:pre [(<= 0 offset)]}
   (some->> (node->current-subject-nodes node offset)
