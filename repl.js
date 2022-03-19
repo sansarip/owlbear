@@ -6,8 +6,8 @@ WasmParser.init()
   .then((Html) => {
     const htmlParser = new WasmParser();
     htmlParser.setLanguage(Html);
-    const htmlTree = htmlParser.parse("<table><table><table>0</table><table>0</table><table>0</table><canvas>-</canvas></table><table><table>0</table></table></table>");
-    console.log(htmlTree.rootNode.children[0].children[1].children[4].children[2].text);
+    const htmlTree = htmlParser.parse("<div><!DOCTYPE html></div>");
+    console.log(htmlTree.rootNode.children[0].children[1].type);
   });
 
 // const ob = require("./out/cljs/owlbear");
