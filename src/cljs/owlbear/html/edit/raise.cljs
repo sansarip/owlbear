@@ -24,7 +24,13 @@
           current-parent-node-start (oget current-parent-node :?startIndex)
           current-parent-node-end (oget current-parent-node :?endIndex)]
       (when-not (ob-html-rules/fragment-node current-parent-node)
-        #js{:src (-> src
-                     (obu/str-remove current-parent-node-start current-parent-node-end)
-                     (obu/str-insert current-node-text current-parent-node-start))
-            :offset (+ current-parent-node-start (- offset current-node-start))}))))
+        {:src (-> src
+                  (obu/str-remove current-parent-node-start current-parent-node-end)
+                  (obu/str-insert current-node-text current-parent-node-start))
+         :offset (+ current-parent-node-start (- offset current-node-start))}))))
+
+(comment
+  ;; Examples
+  (raise "<div><h1></h1></div>" 5)
+  ;; => {:src "<h1></h1>" :offset 0}
+  )

@@ -18,7 +18,10 @@
 
 (defn forward-slurp
   "Given a `src` string and character `offset`, 
-   returns a new src string with the forward slurp operation applied at the `offset`
+   returns a map containing a new `src` string 
+   with the forward slurp operation applied at the offset 
+   and a new `offset` containing where the cursor position 
+   should be after the slurp
 
    e.g.
    ```html
@@ -36,14 +39,18 @@
             current-node-end-tag-text (oget current-node-end-tag :?text)
             forward-object-node-end-index (oget forward-object-node :?endIndex)
             end-tag-insert-offset (- forward-object-node-end-index (count current-node-end-tag-text))]
-        #js {:src (-> src
-                      (obu/str-remove current-node-end-tag-start-index current-node-end-tag-end-index)
-                      (obu/str-insert current-node-end-tag-text end-tag-insert-offset))
-             :offset (if (obpr/range-in-node? current-node-end-tag offset)
-                       (+ (- offset current-node-end-tag-start-index)
-                          end-tag-insert-offset)
-                       offset)}))))
+        {:src (-> src
+                  (obu/str-remove current-node-end-tag-start-index current-node-end-tag-end-index)
+                  (obu/str-insert current-node-end-tag-text end-tag-insert-offset))
+         :offset (if (obpr/range-in-node? current-node-end-tag offset)
+                   (+ (- offset current-node-end-tag-start-index)
+                      end-tag-insert-offset)
+                   offset)}))))
 
 (comment
-  (forward-slurp "<div><h1></h1>hello</div><div></div>" 6)
-  (forward-slurp "<table><table></table><table></table></table>" 8))
+  ;; Examples
+  (forward-slurp "<div></div><h1></h1>" 0)
+  ;; => {:src "<div><h1></h1></div>" :offset 0}
+  (forward-slurp "<div><h1>Hello</h1></div><h2>World</h2>" 7)
+  ;; => {:src "<div><h1>Hello</h1><h2>World</h2></div>" :offset 7}
+  )

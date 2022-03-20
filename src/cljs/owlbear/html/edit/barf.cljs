@@ -18,7 +18,10 @@
 
 (defn forward-barf
   "Given a `src` string and character `offset`, 
-   returns a new src string with the forward barf operation applied at the offset
+   returns a map containing a new `src` string 
+   with the forward barf operation applied at the offset 
+   and a new `offset` containing where the cursor position 
+   should be after the barf
   
    e.g.
    ```html
@@ -35,10 +38,18 @@
             current-node-end-tag-text (oget current-node-end-tag :?text)
             ;; TODO: When comment node gets implemented, need to add in its tag start because we need to parse comment content separately 
             end-tag-insert-offset (oget last-child-object-node :?startIndex)]
-        #js {:src (-> src
-                      (obu/str-remove current-node-end-tag-start-index current-node-end-tag-end-index)
-                      (obu/str-insert current-node-end-tag-text end-tag-insert-offset))
-             :offset (if (obpr/range-in-node? current-node-end-tag offset)
-                       (+ (- offset current-node-end-tag-start-index)
-                          end-tag-insert-offset)
-                       offset)}))))
+        {:src (-> src
+                  (obu/str-remove current-node-end-tag-start-index current-node-end-tag-end-index)
+                  (obu/str-insert current-node-end-tag-text end-tag-insert-offset))
+         :offset (if (obpr/range-in-node? current-node-end-tag offset)
+                   (+ (- offset current-node-end-tag-start-index)
+                      end-tag-insert-offset)
+                   offset)}))))
+
+(comment
+  ;; Examples
+  (forward-barf "<div><h1></h1></div>" 16)
+  ;; => {:src "<div></div><h1></h1>" :offset 7}
+  (forward-barf "<div><h1>Hello</h1><h2>World</h2></div>" 0)
+  ;; => {:src "<div><h1>Hello</h1></div><h2>World</h2>" :offset 0}
+  )

@@ -32,34 +32,34 @@
       (is (nil? (obp-html-slurp/forward-slurp src out-of-bounds-offset))
           "no result"))
     (testing "when cursor at node start"
-      (let [slurp-result (obp-html-slurp/forward-slurp src current-node-start-index)
-            slurp-result-offset (noget+ slurp-result :?offset)
-            slurp-result-src (noget+ slurp-result :?src)]
-        (is (= (count src) (count slurp-result-src))
+      (let [{result-src :src
+             result-offset :offset
+             :as slurp-result} (obp-html-slurp/forward-slurp src current-node-start-index)]
+        (is (= (count src) (count result-src))
             "text length does not change")
-        (is (= current-node-start-index slurp-result-offset)
+        (is (= current-node-start-index result-offset)
             "cursor offset does not change")
-        (let [slurp-result-current-node-text (-> slurp-result-src
+        (let [slurp-result-current-node-text (-> result-src
                                                  obp-html/src->tree
                                                  (noget+ :?rootNode)
-                                                 (ob-html-rules/node->current-subject-nodes slurp-result-offset)
+                                                 (ob-html-rules/node->current-subject-nodes result-offset)
                                                  last
                                                  (noget+ :?text))]
           (is (str/includes? slurp-result-current-node-text current-node-next-sibling-text)
               "slurped former forward sibling"))))
     (testing "when cursor offset is at node end"
       (let [cursor-offset (dec current-node-end-index)
-            slurp-result (obp-html-slurp/forward-slurp src cursor-offset)
-            slurp-result-offset (noget+ slurp-result :?offset)
-            slurp-result-src (noget+ slurp-result :?src)]
-        (is (= (count src) (count slurp-result-src))
+            {result-src :src
+             result-offset :offset
+             :as slurp-result} (obp-html-slurp/forward-slurp src cursor-offset)]
+        (is (= (count src) (count result-src))
             "text length does not change")
-        (is (< cursor-offset slurp-result-offset)
+        (is (< cursor-offset result-offset)
             "cursor offset is moved forward")
-        (let [slurp-result-current-node-text (-> slurp-result-src
+        (let [slurp-result-current-node-text (-> result-src
                                                  obp-html/src->tree
                                                  (noget+ :?rootNode)
-                                                 (ob-html-rules/node->current-subject-nodes slurp-result-offset)
+                                                 (ob-html-rules/node->current-subject-nodes result-offset)
                                                  last
                                                  (noget+ :?text))]
           (is (str/includes? slurp-result-current-node-text current-node-next-sibling-text)

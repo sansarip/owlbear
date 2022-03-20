@@ -37,9 +37,9 @@
       (is (nil? (ob-html-raise/raise src out-of-bounds-offset))
           "no result"))
     (testing "when cursor in bounds"
-      (let [result (ob-html-raise/raise src in-bounds-offset)
-            result-offset (noget+ result :?offset)
-            result-src (noget+ result :?src)]
+      (let [{result-src :src
+             result-offset :offset
+             :as result} (ob-html-raise/raise src in-bounds-offset)]
         (is (some? result)
             "raise performed")
         (is (string? result-src)

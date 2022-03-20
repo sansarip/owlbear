@@ -29,35 +29,35 @@
     (testing "when cursor out of bounds"
       (is (nil? (obp-html-barf/forward-barf src out-of-bounds-offset))
           "no result"))
-    (let [common-assertions (fn [barf-result-src barf-result-offset]
-                              (is (= (count src) (count barf-result-src))
+    (let [common-assertions (fn [result-src result-offset]
+                              (is (= (count src) (count result-src))
                                   "src text length does not change")
-                              (is (not= src barf-result-src)
+                              (is (not= src result-src)
                                   "barfed src is different")
                               (is (> (count current-node-text)
-                                     (-> barf-result-src
+                                     (-> result-src
                                          obp-html/src->tree
                                          (noget+ :?rootNode)
-                                         (ob-html-rules/node->current-subject-nodes barf-result-offset)
+                                         (ob-html-rules/node->current-subject-nodes result-offset)
                                          last
                                          (noget+ :?text)
                                          count))
                                   "current node is smaller after barf"))]
       (testing "when cursor at node start"
-        (let [barf-result (obp-html-barf/forward-barf src current-node-start-index)
-              barf-result-offset (noget+ barf-result :?offset)
-              barf-result-src (noget+ barf-result :?src)]
-          (is (= current-node-start-index barf-result-offset)
+        (let [{result-src :src
+               result-offset :offset
+               :as barf-result} (obp-html-barf/forward-barf src current-node-start-index)]
+          (is (= current-node-start-index result-offset)
               "cursor offset does not change")
-          (common-assertions barf-result-src barf-result-offset)))
+          (common-assertions result-src result-offset)))
       (testing "when cursor offset is at node end"
         (let [cursor-offset (dec current-node-end-index)
-              barf-result (obp-html-barf/forward-barf src cursor-offset)
-              barf-result-offset (noget+ barf-result :?offset)
-              barf-result-src (noget+ barf-result :?src)]
-          (is (> cursor-offset barf-result-offset)
+              {result-src :src
+               result-offset :offset
+               :as barf-result} (obp-html-barf/forward-barf src cursor-offset)]
+          (is (> cursor-offset result-offset)
               "cursor offset is moved backward")
-          (common-assertions barf-result-src barf-result-offset))))))
+          (common-assertions result-src result-offset))))))
 
 (deftest forward-barf-test
   (testing "when src is empty"
