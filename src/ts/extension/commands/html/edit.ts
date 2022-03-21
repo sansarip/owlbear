@@ -23,6 +23,10 @@ export const forwardSlurp = () => {
   editDoc(ob.htmlForwardSlurp);
 };
 
+export const kill = () => {
+  editDoc(ob.htmlKill);
+};
+
 export const raise = () => {
   editDoc(ob.htmlRaise);
 };

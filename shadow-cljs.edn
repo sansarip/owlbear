@@ -11,6 +11,7 @@
                  :exports   {:htmlForwardBarf owlbear.edit/html-forward-barf
                              :htmlForwardSlurp owlbear.edit/html-forward-slurp
                              :htmlInit owlbear.html.parse/init-tree-sitter!
+                             :htmlKill owlbear.edit/html-kill
                              :htmlRaise owlbear.edit/html-raise}
                  :output-to "out/cljs/owlbear.js"}
                 :test
