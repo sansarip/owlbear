@@ -7,6 +7,7 @@
 (def html-comment "comment")
 (def html-comment-start-tag "comment_start_tag")
 (def html-comment-end-tag "comment_end_tag")
+(def html-doctype "doctype")
 (def html-element "element")
 (def html-end-tag "end_tag")
 (def html-fragment "fragment")
@@ -49,6 +50,13 @@
   (when (= html-comment (oget node :?type))
     node))
 
+(defn doctype
+  "Given a node, 
+   return the node if it is a doctype node"
+  [node]
+  (when (= html-doctype (oget node :?type))
+    node))
+
 (defn node->end-tag-node
   "Given a node, 
    returns the end-tag node for that node if available"
@@ -83,6 +91,7 @@
     (when-let [node-type (oget node :?type)]
       (cond
         (contains? #{html-comment
+                     html-doctype
                      html-element
                      html-script
                      html-style}

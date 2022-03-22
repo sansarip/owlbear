@@ -6,6 +6,7 @@
 (defn run-tests* []
   ;; Add/remove test namespaces here 👇
   (run-tests 'owlbear.html.edit.barf-test
+             'owlbear.html.edit.kill-test
              'owlbear.html.edit.raise-test 
              'owlbear.html.edit.slurp-test
              'owlbear.html.parse.rules-test

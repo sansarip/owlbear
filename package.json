@@ -25,6 +25,10 @@
         "title": "Owlbear: HTML Forward Slurp"
       },
       {
+        "command": "owlbear.htmlKill",
+        "title": "Owlbear: HTML Kill"
+      },
+      {
         "command": "owlbear.htmlRaise",
         "title": "Owlbear: HTML Raise"
       }
