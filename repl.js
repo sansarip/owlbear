@@ -22,4 +22,4 @@ const Tsx = require("tree-sitter-typescript").tsx;
 
 const parser = new Parser();
 parser.setLanguage(Tsx);
-parser.parse(fs.readFileSync("./test-data/hello-world.jsx"));
+parser.parse(fs.readFileSync("./test-data/hello-world.jsx", "utf-8"));
