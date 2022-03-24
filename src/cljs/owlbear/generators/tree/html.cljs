@@ -4,7 +4,7 @@
              [hiccups.runtime :as hiccupsrt]
              [oops.core :refer [oget]]
              [owlbear.generators.utilities :as obgu]
-             [owlbear.html.parse :as obp-html]
+             [owlbear.parse :as obp]
              [miner.strgen :as sg]))
 
 ;;================================================================================
@@ -79,7 +79,7 @@
   "Converts a hiccup vector to an HTML tree"
   [h]
   (when (not-empty h)
-    (obp-html/src->tree (html h))))
+    (obp/src->tree (html h) :html)))
 
 (defn tree
   "Generates an HTML tree 
@@ -94,7 +94,7 @@
   ([] (element-node* {}))
   ([{:keys [hiccup-gen-opts]}]
    (gen/fmap (comp #(oget % :?rootNode.?children.?0)
-                   obp-html/src->tree
+                   #(obp/src->tree % :html)
                    #(html %))
              (hiccup-base html-text hiccup-gen-opts))))
 
@@ -102,7 +102,7 @@
 
 (def comment-node
   (gen/fmap (comp #(oget % :?rootNode.?children.?0)
-                  obp-html/src->tree)
+                  #(obp/src->tree % :html))
             ;; Advanced compilation seems to have a problem with regex literals
             (sg/string-generator (re-pattern "<!--([\\w\\d]+\\s*)+-->"))))
 
@@ -111,7 +111,7 @@
   ([text-elements]
    {:pre [(seqable? text-elements)]}
    (gen/fmap (comp #(oget % :?rootNode.?children.?0)
-                   obp-html/src->tree)
+                   #(obp/src->tree % :html))
              (if text-elements
                (obgu/string-from-elements text-elements)
                html-text))))

@@ -1,6 +1,6 @@
 (ns owlbear.html.edit.barf
   (:require  [oops.core :refer [oget]]
-             [owlbear.html.parse :as obp-html]
+             [owlbear.parse :as obp]
              [owlbear.html.parse.rules :as ob-html-rules]
              [owlbear.parse.rules :as obpr]
              [owlbear.utilities :as obu]))
@@ -30,7 +30,7 @@
   [src offset]
   (when-let [{:keys [last-child-object-node
                      current-node]} (ob-html-rules/node->current-last-child-object-ctx
-                                     (oget (obp-html/src->tree src) :?rootNode)
+                                     (oget (obp/src->tree src :html) :?rootNode)
                                      offset)]
     (when-let [current-node-end-tag (ob-html-rules/node->end-tag-node current-node)]
       (let [current-node-end-tag-start-index (oget current-node-end-tag :?startIndex)
