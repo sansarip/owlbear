@@ -4,9 +4,9 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.html :as obgt-html]
-            [owlbear.html.parse :as obp-html]
+            [owlbear.parse :as obp]
             [owlbear.html.parse.rules :as ob-html-rules]
-            [owlbear.html.edit.barf :as obp-html-barf]
+            [owlbear.html.edit.barf :as obp-barf]
             [owlbear.utilities :refer [noget+]]))
 
 (defspec forward-barf-spec 10
@@ -18,7 +18,7 @@
                                                                                   {:vector-gen-args [1 6]
                                                                                    :tag-name-gen obgt-html/html-element-container-tag-name}})]
                                                     (let [root-node (noget+ tree :?rootNode)
-                                                          forward-barf-subjects (obp-html-barf/node->forward-barf-subjects root-node)]
+                                                          forward-barf-subjects (obp-barf/node->forward-barf-subjects root-node)]
                                                       (gen/let [current-node (gen/elements forward-barf-subjects)]
                                                         {:src (noget+ root-node :?text)
                                                          :out-of-bounds-offset (inc (noget+ root-node :?endIndex))
@@ -27,7 +27,7 @@
                                                          :current-node-end-index (noget+ current-node :?endIndex)})))]
 
     (testing "when cursor out of bounds"
-      (is (nil? (obp-html-barf/forward-barf src out-of-bounds-offset))
+      (is (nil? (obp-barf/forward-barf src out-of-bounds-offset))
           "no result"))
     (let [common-assertions (fn [result-src result-offset]
                               (is (= (count src) (count result-src))
@@ -36,7 +36,7 @@
                                   "barfed src is different")
                               (is (> (count current-node-text)
                                      (-> result-src
-                                         obp-html/src->tree
+                                         (obp/src->tree :html)
                                          (noget+ :?rootNode)
                                          (ob-html-rules/node->current-subject-nodes result-offset)
                                          last
@@ -46,7 +46,7 @@
       (testing "when cursor at node start"
         (let [{result-src :src
                result-offset :offset
-               :as barf-result} (obp-html-barf/forward-barf src current-node-start-index)]
+               :as barf-result} (obp-barf/forward-barf src current-node-start-index)]
           (is (= current-node-start-index result-offset)
               "cursor offset does not change")
           (common-assertions result-src result-offset)))
@@ -54,12 +54,12 @@
         (let [cursor-offset (dec current-node-end-index)
               {result-src :src
                result-offset :offset
-               :as barf-result} (obp-html-barf/forward-barf src cursor-offset)]
+               :as barf-result} (obp-barf/forward-barf src cursor-offset)]
           (is (> cursor-offset result-offset)
               "cursor offset is moved backward")
           (common-assertions result-src result-offset))))))
 
 (deftest forward-barf-test
   (testing "when src is empty"
-    (is (nil? (obp-html-barf/forward-barf "" 0))
+    (is (nil? (obp-barf/forward-barf "" 0))
         "no result")))
