@@ -1,0 +1,9 @@
+[submodule "languages/tree-sitter-html"]
+	path = languages/tree-sitter-html
+	url = git@github.com:sansarip/tree-sitter-html.git
+[submodule "languages/tree-sitter-typescript"]
+	path = languages/tree-sitter-typescript
+	url = git@github.com:sansarip/tree-sitter-typescript.git
+[submodule "languages/tree-sitter-javascript"]
+	path = languages/tree-sitter-javascript
+	url = git@github.com:sansarip/tree-sitter-javascript.git
