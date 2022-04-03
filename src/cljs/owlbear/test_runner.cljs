@@ -1,6 +1,7 @@
 (ns owlbear.test-runner
   "Responsible for running tests"
   (:require [cljs.test :refer [run-tests]]
+            [cljs.user :refer [load-wasms!]]
             [owlbear.parse :as obp]))
 
 (defn run-tests* []
@@ -15,8 +16,4 @@
 (defn ^:export init
   "Initializes Tree-sitter and then runs tests"
   []
-  (let [wasms [[:html "resources/tree-sitter-html.wasm"]
-               [:typescript "resources/tree-sitter-typescript.wasm"]
-               [:tsx "resources/tree-sitter-tsx.wasm"]]]
-    (.then (js/Promise.all (map #(apply obp/load-language-wasm! %) wasms))
-           run-tests*)))
+  (.then (load-wasms!) run-tests*))

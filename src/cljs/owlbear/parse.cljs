@@ -3,7 +3,7 @@
   (:require [oops.core :refer [ocall]]
             [web-tree-sitter :as Parser]))
 
-(def languages (atom {}))
+(defonce languages (atom {}))
 
 (def init-tree-sitter!
   (memoize #(ocall Parser :init)))
@@ -29,3 +29,9 @@
     (when-let [language (get @languages language-name)]
       (ocall parser :setLanguage language)
       (ocall parser :parse src))))
+
+(comment
+  ;; Examples
+  (src->tree "<div></div>" :html)
+  (src->tree "const a = 1;" :typescript)
+  (src->tree "<></>" :tsx))
