@@ -10,9 +10,9 @@
                 {:target    :node-library
                  :exports   {:htmlForwardBarf owlbear.edit/html-forward-barf
                              :htmlForwardSlurp owlbear.edit/html-forward-slurp
-                             :htmlInit owlbear.parse/init-tree-sitter!
                              :htmlKill owlbear.edit/html-kill
-                             :htmlRaise owlbear.edit/html-raise}
+                             :htmlRaise owlbear.edit/html-raise
+                             :loadLanguageWasm owlbear.parse/load-language-wasm!}
                  :output-to "out/cljs/owlbear.js"}
                 :test
                 {:target    :node-test
