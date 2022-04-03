@@ -69,3 +69,39 @@
        gen/vector
        gen/not-empty
        (gen/fmap str/join)))
+
+(def hex-string
+  (gen/fmap #(str "0x" (.toString % 16)) small-pos-integer))
+
+(def primative
+  (gen/one-of [hex-string
+               gen/small-integer
+               string-alphanumeric-starts-with-alpha]))
+
+(defn s-expression
+  ([root-gen child-gen]
+   (s-expression root-gen child-gen {}))
+  ([root-gen child-gen {:keys [vector-gen-args]
+                        :or {vector-gen-args [2 4]}}]
+   (gen/fmap (fn [[root children]]
+               (concat (list root) children))
+             (gen/tuple
+              root-gen
+              (apply gen/vector child-gen vector-gen-args)))))
+
+(defn ast
+  [& [root-gen child-gen {:keys [s-expression-opts]}]]
+  {:pre [(gen/generator? root-gen) (gen/generator? child-gen)]}
+  (gen/recursive-gen
+   #(apply s-expression root-gen % s-expression-opts)
+   (s-expression root-gen child-gen s-expression-opts)))
+
+(def noop (gen/Generator. (fn [& _])))
+
+(defn with-function-gen
+  ([fn-g] 
+   (with-function-gen fn-g nil))
+  ([fn-g default-value]
+   (gen/recursive-gen
+    (fn [_] (fn-g))
+    (gen/return default-value))))
