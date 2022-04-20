@@ -11,6 +11,7 @@
    [[:html \"path/to/html.wasm\"]]
    ```"
   ([] (load-wasms! [[:html "resources/tree-sitter-html.wasm"]
+                    [:markdown "resources/tree-sitter-markdown.wasm"]
                     [:typescript "resources/tree-sitter-typescript.wasm"]
                     [:tsx "resources/tree-sitter-tsx.wasm"]]))
   ([wasms]

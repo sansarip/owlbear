@@ -70,6 +70,8 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
+    "colors": "^1.4.0",
+    "diff": "^5.0.0",
     "tree-sitter-javascript": "^0.19.0",
     "tree-sitter-typescript": "^0.19.0",
     "web-tree-sitter": "^0.20.3"

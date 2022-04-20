@@ -8,6 +8,13 @@ build-html-wasm:
 	&& tree-sitter generate \
 	&& tree-sitter build-wasm \
 	&& cp tree-sitter-html.wasm ../../resources
+
+build-markdown-wasm:
+	cd languages/tree-sitter-markdown \
+	&& yarn install \
+	&& tree-sitter generate \
+	&& tree-sitter build-wasm \
+	&& cp tree-sitter-markdown.wasm ../../resources
 	
 build-tsx-wasm: install-ts-npm-modules
 	cd languages/tree-sitter-typescript/tsx \
@@ -24,4 +31,4 @@ build-typescript-wasm: install-ts-npm-modules
 update-submodules:
 	git submodule update --init --recursive
 
-build-wasms: update-submodules build-html-wasm build-tsx-wasm build-typescript-wasm
+build-wasms: update-submodules build-html-wasm build-markdown-wasm build-tsx-wasm build-typescript-wasm

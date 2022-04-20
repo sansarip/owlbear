@@ -5,7 +5,8 @@
                 [hiccups "0.3.0"]
                 [org.clojure/core.match "1.0.0"]
                 [org.clojure/test.check "1.1.1"]]
- :source-paths ["src/cljs" "dev"]
+ :source-paths ["dev" "src/cljc" "src/cljs"]
+ :jvm-opts ["-Xmx1G"]
  :builds       {:lib
                 {:target    :node-library
                  :exports   {:htmlForwardBarf owlbear.edit/html-forward-barf

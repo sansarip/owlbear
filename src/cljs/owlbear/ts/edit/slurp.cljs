@@ -29,7 +29,7 @@
                       current-node]} (ob-ts-rules/node->current-forward-object-ctx
                                       (oget (obp/src->tree src (if tsx? :tsx :typescript)) :?rootNode)
                                       offset)]
-     (when-let [current-end-node (ob-ts-rules/node->end-node current-node)]
+     (when-let [current-end-node (ob-ts-rules/node->first-child current-node)]
        (let [current-end-node-start-index (oget current-end-node :?startIndex)
              current-end-node-end-index (oget current-end-node :?endIndex)
              current-end-node-text (oget current-end-node :?text)

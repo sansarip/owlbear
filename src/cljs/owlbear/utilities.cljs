@@ -24,3 +24,10 @@
    defaults the obj if the obj is falsey"
   [obj args]
   (oget+ (or obj #js {}) args))
+
+(defn call-fn
+  "Given that the argument, `f`, is a function, 
+   returns `(f)`, else returns `f`"
+  [f]
+  (cond-> f
+    (fn? f) (#(%))))
