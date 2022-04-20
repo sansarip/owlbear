@@ -1,3 +1,5 @@
+<img src="https://user-images.githubusercontent.com/12676521/164160624-a6dc70ed-e35f-4570-890e-391248f922c4.svg" alt="Owlbear Logo" title="Owlbear" align="right" width="250px" />
+
 # Owlbear (👷 WIP)
 
 A Visual Studio Code extension to support paredit-like features for HTML and TS!
