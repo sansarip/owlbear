@@ -7,16 +7,20 @@
                 [org.clojure/test.check "1.1.1"]]
  :source-paths ["dev" "src/cljc" "src/cljs"]
  :jvm-opts ["-Xmx1G"]
- :builds       {:lib
-                {:target    :node-library
-                 :exports   {:htmlForwardBarf owlbear.edit/html-forward-barf
-                             :htmlForwardSlurp owlbear.edit/html-forward-slurp
-                             :htmlKill owlbear.edit/html-kill
-                             :htmlRaise owlbear.edit/html-raise
-                             :loadLanguageWasm owlbear.parse/load-language-wasm!}
-                 :output-to "out/cljs/owlbear.js"}
-                :test
-                {:target    :node-test
-                 :main owlbear.test-runner/init
-                 :output-to "out/cljs/owlbear-test.js"
-                 :autorun true}}}
+ :builds {:lib
+          {:target :node-library
+           :exports {:htmlForwardBarf owlbear.edit/html-forward-barf
+                     :htmlForwardSlurp owlbear.edit/html-forward-slurp
+                     :htmlKill owlbear.edit/html-kill
+                     :htmlRaise owlbear.edit/html-raise
+                     :loadLanguageWasm owlbear.parse/load-language-wasm!}
+           :output-to "out/cljs/owlbear.js"}
+          :test
+          {:target    :node-test
+           :main owlbear.test-runner/init
+           :output-to "out/cljs/owlbear-test.js"
+           :autorun true}
+          :corpus-parser
+          {:target :node-script
+           :main owlbear.corpus/parse-corpus-files-cli
+           :output-to "scripts/parse-corpus-files.js"}}}

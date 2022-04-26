@@ -37,7 +37,8 @@
   "scripts": {
     "vscode:prepublish": "npm run package",
     "clean": "rimraf ./out && rimraf ./tsconfig.tsbuildinfo && rimraf ./cljs-out && rimraf ./dist",
-    "compile-cljs": "npx shadow-cljs release :lib :test",
+    "compile-cljs": "npx shadow-cljs release :lib :test :corpus-parser",
+    "compile-corpus-parser": "npx shadow-cljs release :corpus-parser",
     "cljs-repl": "node -e \"require('./out/cljs/owlbear.js')\"",
     "cljs-test": "node ./out/cljs/owlbear-tests.js",
     "compile": "cp resources/* dist/ && webpack",
@@ -70,8 +71,8 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
-    "colors": "^1.4.0",
     "diff": "^5.0.0",
+    "directory-tree": "^3.2.2",
     "tree-sitter-javascript": "^0.19.0",
     "tree-sitter-typescript": "^0.19.0",
     "web-tree-sitter": "^0.20.3"
