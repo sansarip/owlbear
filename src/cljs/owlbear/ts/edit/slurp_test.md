@@ -1,36 +1,36 @@
-# Forward Slurp
+# TypeScript Forward Slurp
 ## Simple JSX
 ```tsx
 <>
-  <h1>Hello, 📍</h1>
+  <h1>Hello▌, </h1>
   World!
 </>
 ```
 ```tsx
 <>
-  <h1>Hello, 📍
-  World!</h1>
-</>
+  <h1>Hello▌, 
+  World!
+</h1></>
 ```
 ---
 ```tsx
 <>
-  <h1>Hello, </h1>📍
+  <h1>Hello, </h1▌>
   World!
 </>
 ```
 ```tsx
 <>
   <h1>Hello, 
-  World!</h1>📍
-</>
+  World!
+</h1▌></>
 ```
 ## JSX component function
 ```tsx
 const foo = () => {
     return (
         <>
-          <h1>Hello, 📍</h1>
+          <h1>Hello,▌ </h1>
           World!  
         </>
     )
@@ -40,9 +40,9 @@ const foo = () => {
 const foo = () => {
     return (
         <>
-          <h1>Hello, 📍
-          World!</h1>  
-        </>
+          <h1>Hello,▌ 
+          World!  
+        </h1></>
     )
 }
 ```
