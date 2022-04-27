@@ -5,6 +5,7 @@
 
 (defonce languages (atom {}))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (def init-tree-sitter!
   (memoize #(ocall Parser :init)))
 
@@ -15,6 +16,7 @@
    the given language name"
   [language-name wasm-path]
   {:pre [(some? language-name) (string? wasm-path)]}
+  #_{:clj-kondo/ignore [:unresolved-symbol]}
   (-> (init-tree-sitter!)
       (.then #(ocall Parser :Language.load wasm-path))
       (.then #(swap! languages assoc language-name %))))
