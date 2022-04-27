@@ -36,4 +36,7 @@
   ;; Examples
   (src->tree "<div></div>" :html)
   (src->tree "const a = 1;" :typescript)
-  (src->tree "<></>" :tsx))
+  (src->tree "<></>" :tsx)
+
+  ;; Map of registed languages
+  @languages)
