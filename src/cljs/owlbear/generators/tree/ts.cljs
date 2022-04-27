@@ -11,11 +11,11 @@
             [owlbear.utilities :as obu]))
 
 (def vector-gen-upper-limit 6)
-(def ^:dynamic *expression* 
+(def ^:dynamic *expression*
   "Returns a generates that generates TS expressions; 
    initialized later"
   (fn [] obgu/noop))
-(def ^:dynamic *statement* 
+(def ^:dynamic *statement*
   "Returns a generator that generates TS statements; 
    initialized later"
   (fn [] obgu/noop))
@@ -44,7 +44,7 @@
    :type-alias/only-pair-blocks? false
    :typescript/vector-gen-args [1 vector-gen-upper-limit]})
 
-(defn with-children 
+(defn with-children
   "Given a function, `f`,  
    calls the function with the `*generator-context*` bindings set in a way 
    where all eligible parent nodes will have at least one child"
@@ -73,7 +73,7 @@
    e.g. in `const a = 1`, `a` is the identifier"
   obgu/string-alphanumeric-starts-with-alpha)
 
-(def operator 
+(def operator
   "Generates arithmetic operator strings/chars"
   (gen/elements [\+ \- \* \/ \< \> "==" "===" "<=" ">="]))
 
@@ -167,17 +167,20 @@
                                (obgu/with-function-gen (fn [] (*expression*)) "\"\"")
                                (:array/vector-gen-args *generator-context*))]
     (gen/let [expressions expressions-gen]
-      ;; FIXME: This str/replace is necessary due to a bug in the TS parser where arrays can't have expressions that end with a negative number e.g. [1 < -2]
+      ;; FIXME: This str/replace is necessary due to a bug in the TS grammar where arrays can't have expressions that end with a negative number e.g. [1 < -2]
       (let [expression-str (str/join ", " (map #(str/replace % #"-(\d)$" "$1") expressions))]
         (str "[" expression-str "]")))))
 (def array-literal (array-literal*))
 
-(defn object-literal* 
+(defn object-literal*
   "Returns a generator that generates an object literal string 
    e.g. `{a: 1, b: 2}`"
   []
-  (pair-block obgu/string-alphanumeric-starts-with-alpha
-              (obgu/with-function-gen (fn [] (*expression*)) "\"\"")))
+  (let [pair-block-gen (pair-block obgu/string-alphanumeric-starts-with-alpha
+                                   (obgu/with-function-gen (fn [] (*expression*)) "\"\""))]
+    (gen/let [pb pair-block-gen]
+      ;; FIXME: This str/replace is necessary due to a bug in the TS grammar where object-literal pairs can't have expressions that end with a negative number e.g. {a: 0 > -1, b: 2}
+      (str/replace pb #"-(\d,)" "$1"))))
 (def object-literal (object-literal*))
 
 (set! *expression*
@@ -189,7 +192,7 @@
                           primative
                           template-string])))
 
-(defn jsx-expression* 
+(defn jsx-expression*
   "Returns a generator that generates a JSX expression 
    e.g. in `<div>1 + 1 = {1 + 1}</div>` the `{1 + 1}` is a JSX expression"
   []
@@ -212,7 +215,7 @@
 
 (defn array-literal-statement*
   "Returns a generator that generates an array-literal statement string
-   i.e an array-literal expression with a semicolon at the end" 
+   i.e an array-literal expression with a semicolon at the end"
   []
   (concat-semicolon (array-literal*)))
 (def array-literal-statement (array-literal-statement*))
@@ -235,7 +238,7 @@
 
 (defn type-alias*
   "Returns a generator that generates a TS type-alias string 
-   e.g. `type Foo = {a: string};`" 
+   e.g. `type Foo = {a: string};`"
   []
   (let [type-value-gen (gen/one-of
                         (cond-> [(pair-block obgu/string-alphanumeric-starts-with-alpha
@@ -247,7 +250,7 @@
       (str "type " type-name " = " type-value ";"))))
 (def type-alias (type-alias*))
 
-(defn statement-block* 
+(defn statement-block*
   "Returns a generator that generates a statement-block string 
    e.g. `{const a = 1; 2 + 3 === 5;}`"
   []
@@ -257,7 +260,7 @@
             (:statement-block/statements-gen *generator-context*)))
 (def statement-block (statement-block*))
 
-(defn function-body* 
+(defn function-body*
   "Returns a generator that generates a function-body string 
    e.g. `{const a = 1; return 1 + 1;}`"
   []
@@ -291,7 +294,7 @@
       (str fn-params " => " fn-body))))
 (def arrow-function (arrow-function*))
 
-(defn named-function-statement* 
+(defn named-function-statement*
   "Returns a generator that generates a named-function-statement string 
    e.g. `function foo () {return 1 + 1;}`"
   []
@@ -306,7 +309,7 @@
                    :body fn-body}))))
 (def named-function-statement (named-function-statement*))
 
-(defn jsx* 
+(defn jsx*
   "Returns a generator that generates a JSX-expression-statement string 
    e.g. `<div>{1 + 1}</div>`"
   []
@@ -331,7 +334,7 @@
     (named-function-statement*)))
 (def jsx-component-function (jsx-component-function*))
 
-(defn declaration-statement* 
+(defn declaration-statement*
   "Returns a generator that generates a declaration-statement string 
    e.g. `const foo = 1;`"
   []
@@ -348,21 +351,21 @@
                    :value value}))))
 (def declaration-statement (declaration-statement*))
 
-(defn expression-statement* 
+(defn expression-statement*
   "Returns a generator that generates an expression-statement string 
    e.g. `1 + 1 === 2;`"
   []
   (concat-semicolon (*expression*)))
 (def expression-statement (expression-statement*))
 
-(defn arrow-function-statement* 
+(defn arrow-function-statement*
   "Returns a generator that generates an arrow-function-expression string 
    with a semicolon at the end of it"
   []
   (concat-semicolon (arrow-function*)))
 (def arrow-function-statement (arrow-function-statement*))
 
-(defn for-loop* 
+(defn for-loop*
   "Returns a generator that generates a for-loop string 
    e.g. `for (e of a) {1 + 1}`"
   []
@@ -376,7 +379,7 @@
                    :body loop-body}))))
 (def for-loop (for-loop*))
 
-(defn while-loop* 
+(defn while-loop*
   "Returns a generator that generates a while-loop string 
    e.g. `while (true) {1 + 1}`"
   []
@@ -397,7 +400,7 @@
                 {:name vname
                  :module (str/join "/" (conj module-dir vname))})))
 
-(defn export-statement* 
+(defn export-statement*
   "Returns a generator that generates an export statement 
    e.g. `export const a = 1 + 1;`"
   []
@@ -459,7 +462,7 @@
                type-alias]))
 (def subject (subject*))
 
-(defn object* 
+(defn object*
   "Returns a generator of TSX objects, 
    generated as source code"
   []
@@ -475,7 +478,7 @@
               (gen/tuple (object*) subject-gen (object*)))))
 (def t-subject (t-subject*))
 
-(defn with-t-subject 
+(defn with-t-subject
   "Given a source generator, `src-gen`, 
    returns a generator that generates a source string with at least 
    one T-subject"
@@ -498,7 +501,7 @@
                  (obgt/src-gen->node-gen (type-alias*) {:tree->node #(oops/ocall+ % :?rootNode.?children.?0.?childForFieldName "value")}))]))
 (def subject-node (subject-node*))
 
-(defn object-node* 
+(defn object-node*
   "Returns a generator that generates an object node"
   []
   (obgt/src-gen->node-gen (*expression*)))

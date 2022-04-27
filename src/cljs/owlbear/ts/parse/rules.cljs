@@ -1,5 +1,6 @@
 (ns owlbear.ts.parse.rules
-  (:require [oops.core :refer [oget ocall]]
+  (:require [clojure.string :as str]
+            [oops.core :refer [oget ocall]]
             [owlbear.parse.rules :as obpr]
             [owlbear.utilities :as obu]))
 
@@ -14,6 +15,7 @@
 (def ts-abstract-class-declaration "abstract_class_declaration")
 (def ts-arguments "arguments")
 (def ts-array "array")
+(def ts-arrow-function "arrow_function")
 (def ts-assignment-expression "assignment_expression")
 (def ts-binary-expression "binary_expression")
 (def ts-call-expression "call_expression")
@@ -69,7 +71,6 @@
                        ts-array
                        ts-class-body
                        ts-comment-block
-                       ts-object
                        ts-object-type
                        ts-statement-block
                        ts-structural-body
@@ -78,27 +79,10 @@
                        ts-template-substitution}
                      node-type) node
           (= node-type ts-interface-declaration) (ocall node :?childForFieldName "body")
+          ;; FIXME: predefined-object TS types have the same grammar type as object literals 👎
+          (= node-type ts-object) (when (str/starts-with? (obu/noget+ node :?text) "{") 
+                                    node)
           :else nil)))
-
-(defn subject-container
-  "Given a [subject] `node`, 
-   returns a container node for the given `node` if applicable 
-   else returns the given `node` 
-   e.g. for `const a = () => {return \" \";};` the statement block 
-   is the subject node and the lexical declaration, while not 
-   a subject node itself, is the subject-container node"
-  [node]
-  (when (subject-node node)
-    (or (->> node
-             obpr/node->ancestors
-             reverse
-             (some (fn [parent]
-                     ;; When not a subject node and not the root node
-                     (when (and (not (subject-node parent))
-                                (not= (obu/noget+ parent :?id)
-                                      (obu/noget+ parent :?tree.?rootNode.?id)))
-                       parent))))
-        node)))
 
 (defn object-node
   "Returns the given `node` 
@@ -107,7 +91,6 @@
   [node]
   (or (let [node-type (obu/noget+ node :?type)]
         (cond (contains? #{jsx-self-closing-element
-                           jsx-text
                            ts-abstract-class-declaration
                            ts-assignment-expression
                            ts-binary-expression
@@ -143,10 +126,30 @@
                            ts-update-expression
                            ts-while-statement}
                          node-type) node
+              (= node-type jsx-text) (when-not (obpr/all-white-space-chars node)
+                                       node)
               (= node-type ts-pair) (ocall node :?childForFieldName "value")
               (= node-type ts-property-signature) (ocall node :?childForFieldName "type")
               :else nil))
       (subject-node node)))
+
+(defn subject-container
+  "Given a [subject] `node`, 
+   returns a container node for the given `node` if applicable 
+   else returns the given `node` 
+   e.g. for `const a = () => {return \" \";};` the statement block 
+   is the subject node and the lexical declaration, while not 
+   a subject node itself, is the subject-container node"
+  [node]
+  (some->> node
+           subject-node
+           obpr/node->ancestors
+           (take-while (fn [parent]
+                         (and (not (subject-node parent))
+                              (not= (obu/noget+ parent :?id)
+                                    (obu/noget+ parent :?tree.?rootNode.?id)))))
+           (filter object-node)
+           last))
 
 (defn node->current-subject-nodes
   "Given a `node` and an `offset`, 
@@ -169,7 +172,10 @@
           (obpr/filter-current-nodes offset)))
 
 (defn next-forward-object-node [node]
-  (obpr/some-forward-sibling-node object-node (subject-container node)))
+  (obpr/some-forward-sibling-node
+   object-node
+   (or (subject-container node)
+       (subject-node node))))
 
 (defn node->current-forward-object-ctx
   "Given a `node` and character `offset`, 
