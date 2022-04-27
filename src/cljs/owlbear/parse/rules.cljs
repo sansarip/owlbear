@@ -82,4 +82,11 @@
   {:pre [(fn? pred)]}
   (some pred (node->ancestors node)))
 
-
+(defn all-white-space-chars
+  "Given a `node`, 
+   returns the `node` if the node contains only whitespace chars"
+  [node]
+  (when (some-> node
+                (obu/noget+ :?text)
+                (->> (re-matches #"\s+")))
+    node))

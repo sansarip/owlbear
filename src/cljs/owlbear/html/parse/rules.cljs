@@ -1,7 +1,6 @@
 (ns owlbear.html.parse.rules
   "Tree-sitter rule (type) definitions"
   (:require [oops.core :refer [oget]]
-            [owlbear.html.utilities :as ob-html-util]
             [owlbear.parse.rules :as obpr]))
 
 (def html-comment "comment")
@@ -96,7 +95,7 @@
                      html-script
                      html-style}
                    node-type) node
-        (= html-text node-type) (when-not (ob-html-util/all-white-space-chars* node)
+        (= html-text node-type) (when-not (obpr/all-white-space-chars node)
                                   node)
         :else nil))))
 
