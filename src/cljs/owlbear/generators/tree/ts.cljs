@@ -104,9 +104,11 @@
 (def function-arguments
   "Generates parenthisized function arguments as a string 
    e.g. `(a, b, 1 + 1, [1, 2])`"
-  (gen/fmap #(str "("
-                  (str/join ", " %)
-                  ")")
+  (gen/fmap (comp #(str "("
+                        (str/join ", " %)
+                        ")")
+                  ;; FIXME: This str/replace is necessary due to a bug in the TS grammar where function args can't have expressions that end with a negative number e.g. (1 < -2, 2)
+                  (fn [exp] (map #(str/replace % #"-(\d)$" "$1") exp)))
             (gen/vector (obgu/with-function-gen (fn [] (*expression*)) "\"\""))))
 
 (def call-expression
