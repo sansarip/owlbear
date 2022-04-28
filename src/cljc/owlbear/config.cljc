@@ -8,6 +8,6 @@
                :cljs (fs/readFileSync "shadow-cljs.edn" "utf8"))]
     (edn/read-string raw)))
 
-(def corpus-parser-script-path (-> shadow-cljs-config :builds :corpus :output-to))
+(def corpus-parser-script-path (-> shadow-cljs-config :builds :corpus-parser :output-to))
 
 (def source-paths (:source-paths shadow-cljs-config))
