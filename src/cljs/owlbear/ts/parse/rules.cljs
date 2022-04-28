@@ -63,7 +63,8 @@
    if edit operations can be run from within the node 
    i.e. the node doing the slurping or barfing"
   [node]
-  (let [node-type (obu/noget+ node :?type)]
+  (let [node-type (obu/noget+ node :?type)
+        node-text (str (obu/noget+ node :?text))]
     (cond (contains? #{jsx-element
                        jsx-expression
                        jsx-fragment
@@ -74,13 +75,14 @@
                        ts-object-type
                        ts-statement-block
                        ts-structural-body
-                       ts-string
                        ts-template-string
                        ts-template-substitution}
                      node-type) node
           (= node-type ts-interface-declaration) (ocall node :?childForFieldName "body")
-          ;; FIXME: predefined-object TS types have the same grammar type as object literals 👎
-          (= node-type ts-object) (when (str/starts-with? (obu/noget+ node :?text) "{") 
+          ;; FIXME: predefined TS types have the same grammar type as other nodes 👎
+          (= node-type ts-object) (when (str/starts-with? node-text "{")
+                                    node)
+          (= node-type ts-string) (when (str/starts-with? node-text "\"")
                                     node)
           :else nil)))
 
