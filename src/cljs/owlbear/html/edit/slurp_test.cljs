@@ -20,7 +20,6 @@
                                                                                    :tag-name-gen obgt-html/html-element-container-tag-name}})]
                                                     (let [root-node (noget+ tree :?rootNode)
                                                           forward-slurp-subjects (obp-slurp/node->forward-slurp-subjects root-node)]
-                                                      forward-slurp-subjects
                                                       (gen/let [current-node (gen/elements forward-slurp-subjects)]
                                                         {:src (noget+ root-node :?text)
                                                          :out-of-bounds-offset (inc (noget+ root-node :?endIndex))
