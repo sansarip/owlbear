@@ -56,6 +56,7 @@
 (def ts-type-alias-declaration "type_alias_declaration")
 (def ts-type-annotation "type_annotation")
 (def ts-update-expression "update_expression")
+(def ts-variable-declaration "variable_declaration")
 (def ts-while-statement "while_statement")
 
 (defn subject-node
@@ -94,6 +95,7 @@
   (or (let [node-type (obu/noget+ node :?type)]
         (cond (contains? #{jsx-self-closing-element
                            ts-abstract-class-declaration
+                           ts-arrow-function
                            ts-assignment-expression
                            ts-binary-expression
                            ts-call-expression
@@ -135,23 +137,58 @@
               :else nil))
       (subject-node node)))
 
-(defn subject-container
+(defn expression-statement-of 
+  "Given a set of node types, `node-types`, 
+   and an expression-node, `node`, 
+   returns the given `node` if it is an 
+   expression node of the given node types"
+  [node-types node]
+  (when (and (= ts-expression-statement (obu/noget+ node :?type))
+             (contains? node-types (obu/noget+ node :?children.?0.?type)))
+    node))
+
+(defn top-level-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a top-level node i.e.
+   statement or declaration"
+  [node]
+  (let [node-type (obu/noget+ node :?type)]
+    (when (or (contains? #{ts-class-declaration
+                           ts-function-declaration
+                           ts-interface-declaration
+                           ts-lexical-declaration
+                           ts-spread-element
+                           ts-type-alias-declaration
+                           ts-variable-declaration}
+                         node-type)
+              ;; FIXME: Have to avoid call-expressions until argument-type nodes are added as subjects
+              (and (= node-type ts-expression-statement)
+                   (not (expression-statement-of #{ts-call-expression} node))))
+      node)))
+
+(defn subject-container-node
   "Given a [subject] `node`, 
    returns a container node for the given `node` if applicable 
-   else returns the given `node` 
+   else returns the node if it's a subject node  
    e.g. for `const a = () => {return \" \";};` the statement block 
    is the subject node and the lexical declaration, while not 
    a subject node itself, is the subject-container node"
   [node]
-  (some->> node
-           subject-node
-           obpr/node->ancestors
-           (take-while (fn [parent]
-                         (and (not (subject-node parent))
-                              (not= (obu/noget+ parent :?id)
-                                    (obu/noget+ parent :?tree.?rootNode.?id)))))
-           (filter object-node)
-           last))
+  (when (subject-node node)
+    (or (-> node
+            obpr/node->ancestors
+            (->> (take-while (fn [ancestor]
+                               (let [root-node? (= (obu/noget+ ancestor :?id)
+                                                   (obu/noget+ ancestor :?tree.?rootNode.?id))]
+                                 (and (not (subject-node ancestor))
+                                      (not (top-level-node ancestor))
+                                      (not root-node?)))))
+                 (filter object-node))
+            last
+            (obu/noget+ :?parent)
+            top-level-node)
+        node)))
 
 (defn node->current-subject-nodes
   "Given a `node` and an `offset`, 
@@ -174,10 +211,7 @@
           (obpr/filter-current-nodes offset)))
 
 (defn next-forward-object-node [node]
-  (obpr/some-forward-sibling-node
-   object-node
-   (or (subject-container node)
-       (subject-node node))))
+  (obpr/some-forward-sibling-node object-node (subject-container-node node)))
 
 (defn node->current-forward-object-ctx
   "Given a `node` and character `offset`, 
