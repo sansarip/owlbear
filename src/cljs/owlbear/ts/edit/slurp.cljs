@@ -5,6 +5,16 @@
             [owlbear.ts.parse.rules :as ob-ts-rules]
             [owlbear.utilities :as obu]))
 
+(defn node->forward-slurp-subjects
+  "Given a `node`, 
+   returns all nodes within the node, including the given node itself, 
+   that are forward-slurp subjects"
+  [node]
+  (filter (comp #(some ob-ts-rules/object-node %)
+                obpr/node->forward-sibling-nodes
+                ob-ts-rules/subject-container-node)
+          (obpr/flatten-children node)))
+
 (defn forward-slurp
   "Given a `src` string and character `offset`, 
    returns a map containing a new `src` string 
