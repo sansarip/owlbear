@@ -36,6 +36,7 @@
 (def ts-labeled-statement "labeled_statement")
 (def ts-lexical-declaration "lexical_declaration")
 (def ts-new-expression "new_expression")
+(def ts-null "null")
 (def ts-number "number")
 (def ts-object "object")
 (def ts-object-type "object_type")
@@ -115,6 +116,7 @@
                            ts-labeled-statement
                            ts-lexical-declaration
                            ts-new-expression
+                           ts-null
                            ts-number
                            ts-object
                            ts-parenthesized-expression
@@ -183,9 +185,8 @@
                                                    (obu/noget+ ancestor :?tree.?rootNode.?id))]
                                  (and (not (subject-node ancestor))
                                       (not (top-level-node ancestor))
-                                      (not root-node?)))))
-                 (filter object-node))
-            last
+                                      (not root-node?))))))
+            (#(or (last %) node))
             (obu/noget+ :?parent)
             top-level-node)
         node)))
