@@ -7,7 +7,7 @@
                 :clj [[clojure.edn :as edn]
                       [clojure.java.shell :refer [sh]]])
             [clojure.string :as str]
-            [clojure.test :as tt :refer [deftest do-report testing]]
+            [clojure.test :refer [deftest do-report testing]]
             [owlbear.config :as cfg]
             [owlbear.utilities :as obu]))
 
