@@ -1,3 +1,6 @@
+<a href="https://gitmoji.dev">
+  <img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square" alt="Gitmoji">
+</a>
 <img src="https://user-images.githubusercontent.com/12676521/164160624-a6dc70ed-e35f-4570-890e-391248f922c4.svg" alt="Owlbear Logo" title="Owlbear" align="right" width="250px" />
 
 # Owlbear (👷 WIP)
