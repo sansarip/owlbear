@@ -29,6 +29,17 @@
   [s]
   (str/replace (str/lower-case s) " " "-"))
 
+(defmacro &testing
+  "Same as a normal testing block, 
+   but it fails if one assertion fails, 
+   essentially wrapping the given assertions 
+   in an and form
+   
+   Meant for usage from cljs"
+  [s & assertions]
+  ;; Using clojure.test results in warning 👉 clojure.test/*testing-contexts* not declared ^:dynamic
+  `(~'cljs.test/testing ~s (boolean (and ~@assertions))))
+
 #?(:cljs
    (defn abs
      "js/Math.abs"

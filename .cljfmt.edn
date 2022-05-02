@@ -5,4 +5,5 @@
  :align-associative?              false
  :indents                         {clojure.test.check.properties/for-all [[:inner 0]]
                                    gen/let [[:inner 0]]
-                                   prop/for-all [[:inner 0]]}}
+                                   prop/for-all [[:inner 0]]
+                                   &testing [[:inner 0]]}}
