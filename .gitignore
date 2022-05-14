@@ -117,3 +117,6 @@ out/
 
 # Sandbox
 scratch.html
+
+# Obsidian
+.obsidian/
