@@ -23,6 +23,7 @@
 (def ts-class-declaration "class_declaration")
 (def ts-comment "comment")
 (def ts-comment-block "comment_block")
+(def ts-comment-block-end "comment_block_end")
 (def ts-error "ERROR")
 (def ts-expression-statement "expression_statement")
 (def ts-for-statement "for_statement")
@@ -48,10 +49,12 @@
 (def ts-regex "regex")
 (def ts-return-statement "return_statement")
 (def ts-spread-element "spread_element")
-(def ts-string "string")
 (def ts-statement-block "statement_block")
+(def ts-string "string")
+(def ts-string-fragment "string_fragment")
 (def ts-structural-body "structural_body")
 (def ts-syntax "syntax")
+(def ts-template-fragment "template_fragment")
 (def ts-template-string "template_string")
 (def ts-template-substitution "template_substitution")
 (def ts-type-alias-declaration "type_alias_declaration")
@@ -59,6 +62,89 @@
 (def ts-update-expression "update_expression")
 (def ts-variable-declaration "variable_declaration")
 (def ts-while-statement "while_statement")
+
+(defn ts-array-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is an array"
+  [node]
+  (when (= ts-array (obu/noget+ node :?type))
+    node))
+
+(defn ts-object-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a TS object"
+  [node]
+  (when (= ts-object (obu/noget+ node :?type))
+    node))
+
+(defn ts-object-type-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a TS object type"
+  [node]
+  (when (= ts-object-type (obu/noget+ node :?type))
+    node))
+
+(defn ts-collection-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a collection 
+   i.e. array or TS object"
+  [node]
+  (when (#{ts-array ts-object} (obu/noget+ node :?type))
+    node))
+
+(defn ts-statement-block-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a statement block"
+  [node]
+  (when (= ts-statement-block (obu/noget+ node :?type))
+    node))
+
+(defn ts-syntax-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a syntax node"
+  [node]
+  (when (->> (obu/noget+ node :?type)
+             str
+             (re-matches #"[:;,/`'\"\{\}\[\]\<\>\=]"))
+    node))
+
+(defn jsx-closing-element-node
+  "given a `node`, 
+   returns the `node` 
+   if it is an end tag node"
+  [node]
+  (when (= jsx-closing-element (obu/noget+ node :?type))
+    node))
+
+(defn ts-comment-block-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a comment-block node"
+  [node]
+  (when (= ts-comment-block (obu/noget+ node :?type))
+    node))
+
+(defn ts-comment-block-end-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a comment-block end node"
+  [node]
+  (when (= ts-comment-block-end (obu/noget+ node :?type))
+    node))
+
+(defn ts-string-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a string node"
+  [node]
+  (when (= ts-string (obu/noget+ node :?type))
+    node))
 
 (defn subject-node
   "Returns the given `node`
@@ -84,7 +170,7 @@
           ;; FIXME: predefined TS types have the same grammar type as other nodes 👎
           (= node-type ts-object) (when (str/starts-with? node-text "{")
                                     node)
-          (= node-type ts-string) (when (str/starts-with? node-text "\"")
+          (= node-type ts-string) (when (re-find #"^\"|'" node-text)
                                     node)
           :else nil)))
 
@@ -126,6 +212,8 @@
                            ts-return-statement
                            ts-spread-element
                            ts-string
+                           ts-string-fragment
+                           ts-template-fragment
                            ts-template-string
                            ts-type-alias-declaration
                            ts-type-annotation
@@ -139,7 +227,52 @@
               :else nil))
       (subject-node node)))
 
-(defn expression-statement-of 
+(defn empty-ts-collection-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is an empty collection node"
+  [node]
+  (when (and (ts-collection-node node)
+             (obpr/every-child-node? (complement object-node) node))
+    node))
+
+(defn not-empty-ts-collection-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a not-empty collection node"
+  [node]
+  (when (and (ts-collection-node node)
+             (not (empty-ts-collection-node node)))
+    node))
+
+(defn empty-ts-object-node
+  "Given a `node`, 
+   retuns the `node` 
+   if it is an empty TS object node"
+  [node]
+  (when (and (ts-object-node node)
+             (empty-ts-collection-node node))
+    node))
+
+(defn empty-ts-object-type-node
+  "Given a `node`, 
+   retuns the `node` 
+   if it is an empty TS object node"
+  [node]
+  (when (and (ts-object-type-node node)
+             (obpr/every-child-node? (complement object-node) node))
+    node))
+
+(defn not-empty-ts-array-node
+  "Given a `node`, 
+   retuns the `node` 
+   if it is an empty array node"
+  [node]
+  (when (and (ts-array-node node)
+             (not-empty-ts-collection-node node))
+    node))
+
+(defn expression-statement-of
   "Given a set of node types, `node-types`, 
    and an expression-node, `node`, 
    returns the given `node` if it is an 
@@ -157,12 +290,15 @@
   [node]
   (let [node-type (obu/noget+ node :?type)]
     (when (or (contains? #{ts-class-declaration
+                           ts-for-statement
+                           ts-for-in-statement
                            ts-function-declaration
                            ts-interface-declaration
                            ts-lexical-declaration
                            ts-spread-element
                            ts-type-alias-declaration
-                           ts-variable-declaration}
+                           ts-variable-declaration
+                           ts-while-statement}
                          node-type)
               ;; FIXME: Have to avoid call-expressions until argument-type nodes are added as subjects
               (and (= node-type ts-expression-statement)
@@ -175,21 +311,82 @@
    else returns the node if it's a subject node  
    e.g. for `const a = () => {return \" \";};` the statement block 
    is the subject node and the lexical declaration, while not 
-   a subject node itself, is the subject-container node"
+   a subject node itself, is the subject-container node
+   
+   Accepts an optional argument, `default`, 
+   that is returned if a container is not found - 
+   defaults to the given `node`"
+  ([node] (subject-container-node node node))
+  ([node default]
+   (when (subject-node node)
+     (or (-> node
+             obpr/node->ancestors
+             (->> (take-while (fn [ancestor]
+                                (let [root-node? (= (obu/noget+ ancestor :?id)
+                                                    (obu/noget+ ancestor :?tree.?rootNode.?id))]
+                                  (and (not (subject-node ancestor))
+                                       (not (top-level-node ancestor))
+                                       (not root-node?))))))
+             (#(or (last %) node))
+             (obu/noget+ :?parent)
+             top-level-node)
+         default))))
+
+(defn end-nodes
+  "Given a `node`, 
+   returns the last syntax nodes in that node"
   [node]
-  (when (subject-node node)
-    (or (-> node
-            obpr/node->ancestors
-            (->> (take-while (fn [ancestor]
-                               (let [root-node? (= (obu/noget+ ancestor :?id)
-                                                   (obu/noget+ ancestor :?tree.?rootNode.?id))]
-                                 (and (not (subject-node ancestor))
-                                      (not (top-level-node ancestor))
-                                      (not root-node?))))))
-            (#(or (last %) node))
-            (obu/noget+ :?parent)
-            top-level-node)
-        node)))
+  (when-let [last-child (obu/noget+ node :?lastChild)]
+    (when-let [first-child-id (obu/noget+ node :?firstChild.?id)]
+      (if-let [end-node (or (ts-comment-block-end-node last-child)
+                            (jsx-closing-element-node last-child))]
+        [end-node]
+        (some-> last-child
+                ts-syntax-node
+                (->> (obpr/node->backward-sibling-nodes)
+                     (take-while #(and (ts-syntax-node %)
+                                       (not (= first-child-id (obu/noget+ % :?id))))))
+                (conj last-child)
+                (as-> $
+                      (if-let [container-node (subject-container-node node nil)]
+                        (into $ (end-nodes container-node))
+                        $)))))))
+
+(defn ts-object-ends-with-pair
+  "Given a `node`, 
+   returns the `node` 
+   if it is a TS object that ends with a pair"
+  [node]
+  (when (and (ts-object-node node)
+             (-> (end-nodes node)
+                 last
+                 (obu/noget+ :?previousSibling.?type)
+                 (= ts-pair)))
+    node))
+
+(defn ts-object-type-ends-with-pair
+  "Given a `node`, 
+   returns the `node` 
+   if it is a TS object type that ends with a pair"
+  [node]
+  (when (and (ts-object-type-node node)
+             (-> (end-nodes node)
+                 last
+                 (obu/noget+ :?previousSibling.?type)
+                 (= ts-property-signature)))
+    node))
+
+(defn incomplete-ts-object-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a TS object that ends with an incomplete pair"
+  [node]
+  (when (and (= ts-object (obu/noget+ node :?type))
+             (-> (end-nodes node)
+                 last
+                 (obu/noget+ :?previousSibling.?type)
+                 (= ts-incomplete-pair)))
+    node))
 
 (defn node->current-subject-nodes
   "Given a `node` and an `offset`, 
@@ -245,13 +442,13 @@
                       :current-node current-node})))
            last))
 
-(defn node->first-child
+(defn node->last-child
   "Given a node, 
    returns the end node for that node if available"
   [node]
   (last (obu/noget+ node :?children)))
 
-(defn node->last-child
+(defn node->first-child
   "Given a node, 
    returns the start node for that node if available"
   [node]

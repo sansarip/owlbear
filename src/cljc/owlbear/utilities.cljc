@@ -78,3 +78,20 @@
                                 (as-> $ (str color-code $ reset-color-code))))))
                  (ocall :join ""))
          ""))))
+
+
+#?(:cljs
+   (defn re-pos 
+     "Given a regex, `re`, and a string, `s`, 
+      returns a vector of maps as matches 
+      
+      e.g.
+      ```clojure
+      [{:offset 0 :text \"abc\"}]
+      ```"
+     [re s]
+     (let [re (js/RegExp. (.-source re) "g")]
+       (loop [res []]
+         (if-let [m (.exec re s)]
+           (recur (conj res {:offset (.-index m) :text (first m)}))
+           res)))))

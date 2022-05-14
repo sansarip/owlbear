@@ -1,5 +1,5 @@
 # TypeScript Forward Slurp
-## Simple JSX
+## Basic JSX
 ```tsx
 <>
   <h1>Hello▌, </h1>
@@ -12,7 +12,7 @@
   World!
 </h1></>
 ```
----
+
 ```tsx
 <>
   <h1>Hello, </h1▌>
@@ -25,6 +25,15 @@
   World!
 </h1▌></>
 ```
+
+## JSX Expressions
+```tsx
+<><div>▌</div>{foo}</>
+```
+```tsx
+<><div>{foo}▌</div></>
+```
+
 ## JSX component function
 ```tsx
 const foo = () => {

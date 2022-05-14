@@ -4,7 +4,6 @@
              [clojure.test.check.generators :as gen]
              [clojure.test.check.properties :as prop]
              [owlbear.generators.tree.ts :as obgt-ts]
-             [owlbear.parse :as obp]
              [owlbear.ts.edit.slurp :as ob-ts-slurp]
              [owlbear.utilities :as obu :refer-macros [&testing]]))
 
@@ -31,8 +30,12 @@
                :as slurp-result} (ob-ts-slurp/forward-slurp src current-node-start-index :tsx)]
           (is (map? slurp-result)
               "result-map returned")
-          (is (<= (count src) (count result-src))
-              "original source length is <= result's")
+          (is (string? result-src)
+              "result src is a string")
+          (is (not-empty result-src)
+              "result src is not empty")
+          (is (number? result-offset)
+              "result offset is a number")
           (is (= current-node-start-index result-offset)
               "cursor offset does not change")
           (is (= (subs src 0 current-node-start-index)
@@ -45,12 +48,18 @@
                :as slurp-result} (ob-ts-slurp/forward-slurp src cursor-offset :tsx)]
           (is (map? slurp-result)
               "result-map returned")
-          (is (<= (count src) (count result-src))
-              "original source length is <= result's")
+          (is (string? result-src)
+              "result src is a string")
+          (is (not-empty result-src)
+              "result src is not empty")
+          (is (number? result-offset)
+              "result offset is a number")
           #_(is (< cursor-offset result-offset)
                 "cursor offset is moved forward"))))))
 
 (deftest forward-slurp-test
   (&testing "when src is empty"
     (is (nil? (ob-ts-slurp/forward-slurp "" 0))
+        "no result")
+    (is (nil? (ob-ts-slurp/forward-slurp "" 0 :tsx))
         "no result")))

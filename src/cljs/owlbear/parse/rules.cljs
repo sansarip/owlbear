@@ -52,6 +52,15 @@
   {:pre [(<= 0 offset)]}
   (filter-current-nodes (flatten-children node) offset))
 
+(defn node->backward-sibling-nodes
+  "Given a node, 
+   returns a lazy sequence of the node's backward sibling nodes"
+  [node]
+  (when node
+    (some->> (obu/noget+ node :?previousSibling) ; Start at previous sibling
+             (iterate #(obu/noget+ (or % #js {}) :?previousSibling))
+             (take-while some?))))
+
 (defn node->forward-sibling-nodes
   "Given a node, 
    returns a lazy sequence of the node's forward sibling nodes"
@@ -73,7 +82,14 @@
    returns the first child that fulfills the predicate function"
   [pred node]
   {:pre [(fn? pred)]}
-  (some pred (flatten-children node)))
+  (some pred (rest (flatten-children node))))
+
+(defn every-child-node?
+  "Given a predicate function, `pred`, and a `node`, 
+   returns true if every child that fulfills the predicate function"
+  [pred node]
+  {:pre [(fn? pred)]}
+  (every? pred (rest (flatten-children node))))
 
 (defn some-parent-node
   "Given a predicate function, `pred`, and a `node`, 
