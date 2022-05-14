@@ -10,10 +10,10 @@
    ```clojure
    [[:html \"path/to/html.wasm\"]]
    ```"
-  ([] (load-wasms! [[:html "resources/tree-sitter-html.wasm"]
-                    [:markdown "resources/tree-sitter-markdown.wasm"]
-                    [:typescript "resources/tree-sitter-typescript.wasm"]
-                    [:tsx "resources/tree-sitter-tsx.wasm"]]))
+  ([] (load-wasms! [[obp/html-lang-id "resources/tree-sitter-html.wasm"]
+                    [obp/md-lang-id "resources/tree-sitter-markdown.wasm"]
+                    [obp/ts-lang-id "resources/tree-sitter-typescript.wasm"]
+                    [obp/tsx-lang-id "resources/tree-sitter-tsx.wasm"]]))
   ([wasms]
    (js/Promise.all (map #(apply obp/load-language-wasm! %) wasms))))
 

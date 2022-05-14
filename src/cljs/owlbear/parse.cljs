@@ -5,6 +5,11 @@
 
 (defonce languages (atom {}))
 
+(def html-lang-id :html)
+(def md-lang-id :markdown)
+(def ts-lang-id :typescript)
+(def tsx-lang-id :tsx)
+
 #_{:clj-kondo/ignore [:unresolved-symbol]}
 (def init-tree-sitter!
   (memoize #(ocall Parser :init)))
@@ -34,9 +39,9 @@
 
 (comment
   ;; Examples
-  (src->tree "<div></div>" :html)
-  (src->tree "const a = 1;" :typescript)
-  (src->tree "<></>" :tsx)
+  (src->tree "<div></div>" html-lang-id)
+  (src->tree "const a = 1;" tsx-lang-id)
+  (src->tree "<></>" tsx-lang-id)
 
   ;; Map of registed languages
   @languages)

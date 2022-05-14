@@ -6,8 +6,17 @@ import { registerCommands } from "./commands";
 const ob = require("../../../out/cljs/owlbear");
 
 export function activate(context: vscode.ExtensionContext) {
-  ob.htmlInit(
+  ob.loadLanguageWasm(
+    ob.htmlLangId,
     `${context.extensionPath}/resources/tree-sitter-html.wasm`
+  );
+  ob.loadLanguageWasm(
+    ob.tsLangKeyId,
+    `${context.extensionPath}/resources/tree-sitter-tsx.wasm`
+  );
+  ob.loadLanguageWasm(
+    ob.tsxLangKeyId,
+    `${context.extensionPath}/resources/tree-sitter-typescript.wasm`
   );
   registerCommands(context);
 }

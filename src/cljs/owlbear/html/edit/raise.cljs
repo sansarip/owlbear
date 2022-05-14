@@ -1,6 +1,6 @@
 (ns owlbear.html.edit.raise
   (:require [oops.core :refer [oget]]
-            [owlbear.parse :as ob-html]
+            [owlbear.parse :as obp]
             [owlbear.html.parse.rules :as ob-html-rules]
             [owlbear.utilities :as obu]))
 
@@ -14,7 +14,7 @@
    ```"
   [src offset]
   (when-let [current-node (-> src
-                              (ob-html/src->tree :html)
+                              (obp/src->tree obp/html-lang-id)
                               (oget :?rootNode)
                               (ob-html-rules/node->current-object-nodes offset)
                               last)]

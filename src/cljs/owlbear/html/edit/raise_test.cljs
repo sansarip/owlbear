@@ -5,7 +5,7 @@
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.html :as obgt-html]
             [owlbear.html.edit.raise :as ob-html-raise]
-            [owlbear.parse :as ob-html]
+            [owlbear.parse :as obp]
             [owlbear.html.parse.rules :as ob-html-rules]
             [owlbear.parse.rules :as obpr]
             [owlbear.utilities :refer [noget+]]))
@@ -53,7 +53,7 @@
         (is (>= result-offset 0)
             "resulting offset is non-negative")
         (is (= (-> result-src
-                   (ob-html/src->tree :html)
+                   (obp/src->tree obp/html-lang-id)
                    (noget+ :?rootNode)
                    (ob-html-rules/node->current-object-nodes parent-node-start-offset)
                    last

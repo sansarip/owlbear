@@ -12,8 +12,11 @@
            :exports {:htmlForwardBarf owlbear.edit/html-forward-barf
                      :htmlForwardSlurp owlbear.edit/html-forward-slurp
                      :htmlKill owlbear.edit/html-kill
+                     :htmlLangId owlbear.parse/html-lang-id
                      :htmlRaise owlbear.edit/html-raise
-                     :loadLanguageWasm owlbear.parse/load-language-wasm!}
+                     :loadLanguageWasm owlbear.parse/load-language-wasm!
+                     :tsLangId owlbear.parse/ts-lang-id
+                     :tsxLangId owlbear.parse/tsx-lang-id}
            :output-to "out/cljs/owlbear.js"}
           :test
           {:target    :node-test

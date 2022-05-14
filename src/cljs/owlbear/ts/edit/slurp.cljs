@@ -307,7 +307,7 @@
    {:pre [(string? src) (<= 0 offset)]}
    (when-let [{:keys [forward-object-node
                       current-node]} (ob-ts-rules/node->current-forward-object-ctx
-                                      (obu/noget+ (obp/src->tree src (if tsx? :tsx :typescript)) :?rootNode)
+                                      (obu/noget+ (obp/src->tree src (if tsx? obp/tsx-lang-id obp/ts-lang-id)) :?rootNode)
                                       offset)]
      (-> {:src src
           :offset offset}
@@ -321,15 +321,15 @@
 
 (comment
   ;; Examples
-  (forward-slurp "const a = 1 + 1; <><div>hello</div><h1>world</h1></>" 26 :tsx)
+  (forward-slurp "const a = 1 + 1; <><div>hello</div><h1>world</h1></>" 26 obp/tsx-lang-id)
   (let [src "[]\n1"
-        root-node (obu/noget+ (obp/src->tree src :tsx) :?rootNode)
+        root-node (obu/noget+ (obp/src->tree src obp/tsx-lang-id) :?rootNode)
         current-node (obu/noget+ root-node :?children.?0.?children.?0)
         forward-node (obu/noget+ root-node :?children.?1)
         ctx {:src src :offset 1}]
     (move-end-nodes ctx current-node forward-node))
   (let [src "[1]\n2"
-        root-node (obu/noget+ (obp/src->tree src :tsx) :?rootNode)
+        root-node (obu/noget+ (obp/src->tree src obp/tsx-lang-id) :?rootNode)
         current-node (obu/noget+ root-node :?children.?0.?children.?0)
         forward-node (obu/noget+ root-node :?children.?1)
         ctx {:src src :offset 1}]
@@ -337,7 +337,7 @@
         (move-end-nodes current-node forward-node)
         (insert-item-separator current-node)))
   (let [src "const foo = {};\na"
-        root-node (obu/noget+ (obp/src->tree src :tsx) :?rootNode)
+        root-node (obu/noget+ (obp/src->tree src obp/tsx-lang-id) :?rootNode)
         current-node (obu/noget+ root-node :?children.?0.?children.?1.?children.?2)
         forward-node (obu/noget+ root-node :?children.?1)
         ctx {:src src :offset 14}]
@@ -345,7 +345,7 @@
         (move-end-nodes current-node forward-node)
         (insert-computed-property-brackets current-node forward-node)))
   (let [src "\"\"\n\"\""
-        root-node (obu/noget+ (obp/src->tree src :tsx) :?rootNode)
+        root-node (obu/noget+ (obp/src->tree src obp/tsx-lang-id) :?rootNode)
         current-node (obu/noget+ root-node :?children.?0.?children.?0)
         forward-node (obu/noget+ root-node :?children.?1)
         ctx {:src src :offset 1}]
@@ -353,7 +353,7 @@
         (move-end-nodes current-node forward-node)
         (escape-string current-node forward-node)))
   (let [src "/**/\n/**/"
-        root-node (obu/noget+ (obp/src->tree src :tsx) :?rootNode)
+        root-node (obu/noget+ (obp/src->tree src obp/tsx-lang-id) :?rootNode)
         current-node (obu/noget+ root-node :?children.?0)
         forward-node (obu/noget+ root-node :?children.?1)
         ctx {:src src :offset 1}]
@@ -361,7 +361,7 @@
         (move-end-nodes current-node forward-node)
         (escape-comment-block current-node forward-node)))
   (let [src "[]\na;"
-        root-node (obu/noget+ (obp/src->tree src :tsx) :?rootNode)
+        root-node (obu/noget+ (obp/src->tree src obp/tsx-lang-id) :?rootNode)
         current-node (obu/noget+ root-node :?children.?0.?children.?0)
         forward-node (obu/noget+ root-node :?children.?1)
         ctx {:src src :offset 1}]

@@ -76,7 +76,7 @@
   ([g]
    (src-gen->node-gen g {}))
   ([g {:keys [tree->node language]
-       :or {language :tsx
+       :or {language obp/tsx-lang-id
             tree->node #(obu/noget+ % :?rootNode.?children.?0)}}]
    (gen/fmap (comp tree->node
                    #(obp/src->tree % language))
