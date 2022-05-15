@@ -275,7 +275,7 @@
 (defn not-empty-ts-array-node
   "Given a `node`, 
    retuns the `node` 
-   if it is an empty array node"
+   if it is _not_ an empty array node"
   [node]
   (when (and (ts-array-node node)
              (not-empty-ts-collection-node node))
