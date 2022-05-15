@@ -5,11 +5,11 @@
             [owlbear.utilities :as obu]))
 
 (defn kill [src offset]
-  (when-let [current-node (-> src
-                              (obp/src->tree obp/html-lang-id)
-                              (oget :?rootNode)
-                              (ob-html-rules/node->current-object-nodes offset)
-                              last)]
+  (when-let [current-node (some-> src
+                                  (obp/src->tree obp/html-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ob-html-rules/node->current-object-nodes offset)
+                                  last)]
     (let [current-node-start (oget current-node :?startIndex)
           current-node-end (oget current-node :?endIndex)]
       {:src (obu/str-remove src current-node-start current-node-end)
