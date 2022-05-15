@@ -16,7 +16,7 @@
 	"exclude": [
 		"languages",
 		"node_modules",
-		"test-data",
+		"samples",
 		".vscode-test"
 	]
 }
