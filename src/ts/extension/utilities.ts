@@ -24,8 +24,12 @@ export const replace = (
     if (newSrc) {
       editBuilder.replace(textRange(editor.document), newSrc);
       if (newCursorOffset && newCursorOffset !== cursorOffset) {
-        const newCursorPosition: Position = editor.document.positionAt(newCursorOffset);
-        const newCursorRange: Range = new Range(newCursorPosition, newCursorPosition);
+        const newCursorPosition: Position =
+          editor.document.positionAt(newCursorOffset);
+        const newCursorRange: Range = new Range(
+          newCursorPosition,
+          newCursorPosition
+        );
         const newCursorSelection: Selection = new Selection(
           newCursorPosition,
           newCursorPosition
@@ -37,3 +41,6 @@ export const replace = (
     }
   });
 };
+
+export const getFileExtension = (document: TextDocument | undefined) =>
+  document?.uri.toString().split(".")?.pop()?.toLowerCase();

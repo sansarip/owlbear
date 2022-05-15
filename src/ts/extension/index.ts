@@ -11,12 +11,12 @@ export function activate(context: vscode.ExtensionContext) {
     `${context.extensionPath}/resources/tree-sitter-html.wasm`
   );
   ob.loadLanguageWasm(
-    ob.tsLangKeyId,
-    `${context.extensionPath}/resources/tree-sitter-tsx.wasm`
+    ob.tsLangId,
+    `${context.extensionPath}/resources/tree-sitter-typescript.wasm`
   );
   ob.loadLanguageWasm(
-    ob.tsxLangKeyId,
-    `${context.extensionPath}/resources/tree-sitter-typescript.wasm`
+    ob.tsxLangId,
+    `${context.extensionPath}/resources/tree-sitter-tsx.wasm`
   );
   registerCommands(context);
 }
