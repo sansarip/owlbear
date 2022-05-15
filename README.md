@@ -13,7 +13,7 @@ For info related to developing on Owlbear code, see below! 👇🧐
 
 **Don't forget to `npm install` 💡**
 
-### Clojure
+### ClojureScript
 
 Much of this extension is written in ClojureScript code. This section will detail how to get a running ClojureScript REPL in which said Cljs code can be loaded and played with.
 
