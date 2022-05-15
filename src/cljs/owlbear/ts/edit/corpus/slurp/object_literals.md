@@ -105,3 +105,25 @@ b
 {a: 1,
 [b▌]:}
 ```
+
+## In Arrays
+```typescript
+[{▌}, a, b, c]
+```
+```typescript
+[{ [a▌]:}, b, c]
+```
+
+```typescript
+[{[a]:▌}, b, c]
+```
+```typescript
+[{[a]: b▌}, c]
+```
+
+```typescript
+[{[a]: b▌}, c]
+```
+```typescript
+[{[a]: b, [c▌]:}]
+```

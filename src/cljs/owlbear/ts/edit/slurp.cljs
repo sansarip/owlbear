@@ -218,6 +218,13 @@
                              ;; e.g. [[], 1]
                              (not= "," (obu/noget+ current-node :?nextSibling.?type)))
                         ","
+                        (and (ob-ts-rules/not-empty-ts-arguments-node current-node)
+                             ;; e.g. [foo(a), 1]
+                             (-> current-node
+                                 ob-ts-rules/subject-container-node
+                                 (obu/noget+ :?nextSibling.?type)
+                                 (not= ",")))
+                        ","
                         (ob-ts-rules/ts-object-type-ends-with-pair current-node)
                         ";"
                         :else nil)
@@ -232,6 +239,42 @@
                                                          :text separator
                                                          :src src}))
       (and separator (>= offset insert-offset)) (update :offset inc))))
+
+(defn remove-item-separators
+  "Given a context, `ctx`, a current node, `current-node`, 
+   and a forward node, `forward-node`, 
+   returns an updated context with [item] separators i.e. 
+   commas or semicolons removed from the src -if applicable, 
+   else returns the given `ctx`
+   
+   Also updates the offset and edit-history of the given context 
+   if updates were made"
+  [{:keys [offset edit-history] :or {edit-history []} :as ctx} current-node forward-node]
+  (let [rm-separators? (and (or (ob-ts-rules/empty-ts-arguments-node current-node)
+                                (ob-ts-rules/empty-ts-collection-node current-node)
+                                ;; e.g. [{a: }, 1]
+                                (and (ob-ts-rules/ts-object-node current-node)
+                                     (not (ob-ts-rules/ts-object-ends-with-pair current-node))))
+                            (ob-ts-rules/ts-syntax-node (obu/noget+ forward-node :?previousSibling)))
+        separators (when rm-separators?
+                     (take-while ob-ts-rules/ts-syntax-node
+                                 (obpr/node->backward-sibling-nodes forward-node)))]
+    (if rm-separators?
+      (reduce
+       (fn [c separator]
+         (let [rm-offset (update-offset (obu/noget+ separator :?startIndex)
+                                        edit-history)
+               sep-text (obu/noget+ separator :?text)
+               sep-text-len (count sep-text)]
+           (-> c
+               (update :src obu/str-remove rm-offset (+ rm-offset sep-text-len))
+               (update :edit-history conj {:type :delete
+                                           :text sep-text
+                                           :offset rm-offset})
+               (cond-> (>= offset rm-offset) (update :offset - sep-text-len)))))
+       ctx
+       separators)
+      ctx)))
 
 (defn move-end-nodes
   "Given a context, `ctx`, a current node, `current-node`, 
@@ -309,15 +352,16 @@
                       current-node]} (ob-ts-rules/node->current-forward-object-ctx
                                       (obu/noget+ (obp/src->tree src (if tsx? obp/tsx-lang-id obp/ts-lang-id)) :?rootNode)
                                       offset)]
-     (-> {:src src
-          :offset offset}
-         (move-end-nodes current-node forward-object-node)
-         (insert-item-separator current-node)
-         (escape-string current-node forward-object-node)
-         (escape-comment-block current-node forward-object-node)
-         (insert-computed-property-brackets current-node forward-object-node)
-         (remove-statement-semicolon current-node forward-object-node)
-         (select-keys [:src :offset])))))
+     (some-> {:src src
+              :offset offset}
+             (move-end-nodes current-node forward-object-node)
+             (remove-item-separators current-node forward-object-node)
+             (insert-item-separator current-node)
+             (escape-string current-node forward-object-node)
+             (escape-comment-block current-node forward-object-node)
+             (insert-computed-property-brackets current-node forward-object-node)
+             (remove-statement-semicolon current-node forward-object-node)
+             (select-keys [:src :offset])))))
 
 (comment
   ;; Examples
@@ -328,6 +372,14 @@
         forward-node (obu/noget+ root-node :?children.?1)
         ctx {:src src :offset 1}]
     (move-end-nodes ctx current-node forward-node))
+  (let [src "[[], 1]"
+        root-node (obu/noget+ (obp/src->tree src obp/tsx-lang-id) :?rootNode)
+        current-node (obu/noget+ root-node :?children.?0.?children.?0.?children.1)
+        forward-node (obu/noget+ current-node :?nextSibling.?nextSibling)
+        ctx {:src src :offset 1}]
+    (-> ctx
+        (move-end-nodes current-node forward-node)
+        (remove-item-separators current-node forward-node)))
   (let [src "[1]\n2"
         root-node (obu/noget+ (obp/src->tree src obp/tsx-lang-id) :?rootNode)
         current-node (obu/noget+ root-node :?children.?0.?children.?0)

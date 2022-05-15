@@ -39,6 +39,13 @@ const foo = [1, 2,
 
 ## Nested Arrays
 ```typescript
+[[▌], 1]
+```
+```typescript
+[[ 1▌]]
+```
+
+```typescript
 [[1, 2, 3▌], 4]
 ```
 ```typescript

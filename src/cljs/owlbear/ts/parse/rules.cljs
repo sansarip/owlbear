@@ -63,6 +63,14 @@
 (def ts-variable-declaration "variable_declaration")
 (def ts-while-statement "while_statement")
 
+(defn ts-arguments-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a arguments node"
+  [node]
+  (when (= ts-arguments (obu/noget+ node :?type))
+    node))
+
 (defn ts-array-node
   "Given a `node`, 
    returns the `node` 
@@ -111,7 +119,7 @@
   [node]
   (when (->> (obu/noget+ node :?type)
              str
-             (re-matches #"[:;,/`'\"\{\}\[\]\<\>\=]"))
+             (re-matches #"[:;,/`'\"\(\)\{\}\[\]\<\>\=]"))
     node))
 
 (defn jsx-closing-element-node
@@ -273,6 +281,24 @@
              (not-empty-ts-collection-node node))
     node))
 
+(defn empty-ts-arguments-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is an empty arguments node"
+  [node]
+  (when (and (ts-arguments-node node)
+             (obpr/every-child-node? (complement object-node) node))
+    node))
+
+(defn not-empty-ts-arguments-node
+  "Given a `node`, 
+   retuns the `node` 
+   if it is _not_ an empty arguments node"
+  [node]
+  (when (and (ts-arguments-node node)
+             (not (empty-ts-arguments-node node)))
+    node))
+
 (defn expression-statement-of
   "Given a set of node types, `node-types`, 
    and an expression-node, `node`, 
@@ -291,6 +317,7 @@
   [node]
   (let [node-type (obu/noget+ node :?type)]
     (when (or (contains? #{ts-class-declaration
+                           ts-expression-statement
                            ts-for-statement
                            ts-for-in-statement
                            ts-function-declaration
@@ -301,9 +328,8 @@
                            ts-variable-declaration
                            ts-while-statement}
                          node-type)
-              ;; FIXME: Have to avoid call-expressions until argument-type nodes are added as subjects
-              (and (= node-type ts-expression-statement)
-                   (not (expression-statement-of #{ts-call-expression} node))))
+              (and (= ts-call-expression node-type)
+                   (not= ts-expression-statement (obu/noget+ node :?parent.?type))))
       node)))
 
 (defn subject-container-node
