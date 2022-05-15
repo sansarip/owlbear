@@ -16,7 +16,7 @@
 	"exclude": [
 		"languages",
 		"node_modules",
-		"samples",
+		"playground",
 		".vscode-test"
 	]
 }
