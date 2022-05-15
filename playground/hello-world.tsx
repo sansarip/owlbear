@@ -14,13 +14,11 @@ const App = () => {
           </h2>,
         ]}
       </h1>
-      <p>
-        This is the first JSX Element!
-        <p>This is a another JSX Element</p>
-      </p>
+      <p>This is the first JSX Element!
+      <p>This is a another JSX Element</p></p>
     </>
   );
-};
 
-const rootElement = document.getElementById("root");
+
+const rootElement = document.getElementById("root");};
 ReactDOM.render(<App />, rootElement);
