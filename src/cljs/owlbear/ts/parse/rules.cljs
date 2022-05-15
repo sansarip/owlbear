@@ -218,6 +218,7 @@
                            ts-type-alias-declaration
                            ts-type-annotation
                            ts-update-expression
+                           ts-variable-declaration
                            ts-while-statement}
                          node-type) node
               (= node-type jsx-text) (when-not (obpr/all-white-space-chars node)

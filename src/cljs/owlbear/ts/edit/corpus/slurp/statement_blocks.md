@@ -44,3 +44,13 @@ a
 for (i of l) {
 a▌}
 ```
+
+## Variable Declaration
+```typescript
+{▌}
+var foo = 2;
+```
+```typescript
+{
+var foo = 2;▌}
+```
