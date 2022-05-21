@@ -14,7 +14,9 @@
 		// "noUnusedParameters": true,  /* Report errors on unused parameters. */
 	},
 	"exclude": [
+		"languages",
 		"node_modules",
+		"playground",
 		".vscode-test"
 	]
 }

@@ -1,10 +1,11 @@
 (ns owlbear.parse.rules
   "General utility tooling around any Tree-sitter tree"
-  (:require [oops.core :refer [oget]]))
+  (:require [oops.core :refer [oget]]
+            [owlbear.utilities :as obu]))
 
 (defn range-in-node?
   "Given a node, a start offset, and a stop offset, 
-   returns true if the node is within the given range (inclusive)"
+   returns true if the range is within the given node (inclusive)"
   ([node start]
    (range-in-node? node start start))
   ([node start stop]
@@ -20,6 +21,15 @@
    of all of the node's children and their children"
   [node]
   (tree-seq #(oget % :?children) #(oget % :?children) node))
+
+(defn node->ancestors
+  "Given a node, 
+   returns a list of the node's ancestors 
+   i.e. parents and parents of parents etc."
+  [node]
+  (some->> (obu/noget+ node :?parent) ; Start at parent
+           (iterate #(obu/noget+ (or % #js {}) :?parent))
+           (take-while some?)))
 
 (defn nodes->current-nodes
   "Given a list of nodes and a character offset, 
@@ -42,13 +52,22 @@
   {:pre [(<= 0 offset)]}
   (filter-current-nodes (flatten-children node) offset))
 
+(defn node->backward-sibling-nodes
+  "Given a node, 
+   returns a lazy sequence of the node's backward sibling nodes"
+  [node]
+  (when node
+    (some->> (obu/noget+ node :?previousSibling) ; Start at previous sibling
+             (iterate #(obu/noget+ (or % #js {}) :?previousSibling))
+             (take-while some?))))
+
 (defn node->forward-sibling-nodes
   "Given a node, 
    returns a lazy sequence of the node's forward sibling nodes"
   [node]
   (when node
-    (some->> (oget node :?nextSibling) ; Start at next sibling
-             (iterate #(oget (or % #js {}) :?nextSibling))
+    (some->> (obu/noget+ node :?nextSibling) ; Start at next sibling
+             (iterate #(obu/noget+ (or % #js {}) :?nextSibling))
              (take-while some?))))
 
 (defn some-forward-sibling-node
@@ -63,4 +82,27 @@
    returns the first child that fulfills the predicate function"
   [pred node]
   {:pre [(fn? pred)]}
-  (some pred (flatten-children node)))
+  (some pred (rest (flatten-children node))))
+
+(defn every-child-node?
+  "Given a predicate function, `pred`, and a `node`, 
+   returns true if every child that fulfills the predicate function"
+  [pred node]
+  {:pre [(fn? pred)]}
+  (every? pred (rest (flatten-children node))))
+
+(defn some-parent-node
+  "Given a predicate function, `pred`, and a `node`, 
+   returns the first parent that fulfills the predicate function"
+  [pred node]
+  {:pre [(fn? pred)]}
+  (some pred (node->ancestors node)))
+
+(defn all-white-space-chars
+  "Given a `node`, 
+   returns the `node` if the node contains only whitespace chars"
+  [node]
+  (when (some-> node
+                (obu/noget+ :?text)
+                (->> (re-matches #"\s+")))
+    node))

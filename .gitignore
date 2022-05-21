@@ -117,3 +117,9 @@ out/
 
 # Sandbox
 scratch.html
+
+# Obsidian
+.obsidian/
+
+# VS Code
+workspace.code-workspace

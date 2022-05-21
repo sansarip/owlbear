@@ -69,3 +69,73 @@
        gen/vector
        gen/not-empty
        (gen/fmap str/join)))
+
+(def hex-string
+  "Generates a string representation of a hexadecimal number"
+  (gen/fmap #(str "0x" (.toString % 16)) small-pos-integer))
+
+(defn escape-string [g]
+  (gen/fmap #(str "\"" % "\"") g))
+
+(def escaped-string
+  "Generates an escaped string of words"
+  (->> string-alphanumeric-starts-with-alpha
+       gen/vector
+       (gen/fmap #(str/join " " %))
+       escape-string))
+
+(defn s-expression
+  "Given a generator for generating the root node, 
+   `root-gen`, and a generator for generating child 
+   nodes, `child-gen`, returns a generator that 
+   generates an s-expression-style list
+   
+   Optionally accepts a map with arguments to the 
+   underlying child-vector generator, 
+   `vector-gen-args`"
+  ([root-gen child-gen]
+   (s-expression root-gen child-gen {}))
+  ([root-gen child-gen {:keys [vector-gen-args]
+                        :or {vector-gen-args [2 4]}}]
+   (gen/fmap (fn [[root children]]
+               (concat (list root) children))
+             (gen/tuple
+              root-gen
+              (apply gen/vector child-gen vector-gen-args)))))
+
+(defn ast
+  "Given a generator for root nodes, `root-gen`, and 
+   a generator for child nodes, `child-gen`, returns 
+   a generator that will generate an AST represented 
+   as s-expressions
+   
+   Optionally accepts a map with arguments to the
+   s-expression generator, `s-expression-opts`"
+  [& [root-gen child-gen {:keys [s-expression-opts]}]]
+  {:pre [(gen/generator? root-gen) (gen/generator? child-gen)]}
+  (gen/recursive-gen
+   #(apply s-expression root-gen % s-expression-opts)
+   (s-expression root-gen child-gen s-expression-opts)))
+
+(def noop 
+  "Returns a generator that does nothing
+   
+   Useful as a placeholder generator"
+  (gen/Generator. (fn [& _])))
+
+(defn with-function-gen
+  "Given a function, `fn-g` that returns a generator, 
+   returns a wrapper generator used to reference a generator
+   at the time of generation
+
+   Optionally accepts a `default-value` to return, 
+   `nil` will be used if none is supplied
+   
+   This is useful when a generator's is expected to 
+   change/initialize at a later point in code"
+  ([fn-g] 
+   (with-function-gen fn-g nil))
+  ([fn-g default-value]
+   (gen/recursive-gen
+    (fn [_] (fn-g))
+    (gen/return default-value))))

@@ -1,15 +1,15 @@
 (ns owlbear.html.edit.kill
   (:require [oops.core :refer [oget]]
-            [owlbear.parse :as ob-html]
+            [owlbear.parse :as obp]
             [owlbear.html.parse.rules :as ob-html-rules]
             [owlbear.utilities :as obu]))
 
 (defn kill [src offset]
-  (when-let [current-node (-> src
-                              (ob-html/src->tree :html)
-                              (oget :?rootNode)
-                              (ob-html-rules/node->current-object-nodes offset)
-                              last)]
+  (when-let [current-node (some-> src
+                                  (obp/src->tree obp/html-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ob-html-rules/node->current-object-nodes offset)
+                                  last)]
     (let [current-node-start (oget current-node :?startIndex)
           current-node-end (oget current-node :?endIndex)]
       {:src (obu/str-remove src current-node-start current-node-end)
@@ -17,7 +17,7 @@
 
 (comment
   ;; Kill example
-  (ob-html/init-tree-sitter! "./resources/tree-sitter-html.wasm")
+  (obp/init-tree-sitter! "./resources/tree-sitter-html.wasm")
   (let [src "<div><h1></h1></div>"
         offset 7
         result (kill src offset)]

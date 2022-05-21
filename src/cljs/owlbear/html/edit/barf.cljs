@@ -30,7 +30,7 @@
   [src offset]
   (when-let [{:keys [last-child-object-node
                      current-node]} (ob-html-rules/node->current-last-child-object-ctx
-                                     (oget (obp/src->tree src :html) :?rootNode)
+                                     (obu/noget+ (obp/src->tree src :html) :?rootNode)
                                      offset)]
     (when-let [current-node-end-tag (ob-html-rules/node->end-tag-node current-node)]
       (let [current-node-end-tag-start-index (oget current-node-end-tag :?startIndex)

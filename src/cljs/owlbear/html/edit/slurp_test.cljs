@@ -20,7 +20,6 @@
                                                                                    :tag-name-gen obgt-html/html-element-container-tag-name}})]
                                                     (let [root-node (noget+ tree :?rootNode)
                                                           forward-slurp-subjects (obp-slurp/node->forward-slurp-subjects root-node)]
-                                                      forward-slurp-subjects
                                                       (gen/let [current-node (gen/elements forward-slurp-subjects)]
                                                         {:src (noget+ root-node :?text)
                                                          :out-of-bounds-offset (inc (noget+ root-node :?endIndex))
@@ -40,7 +39,7 @@
         (is (= current-node-start-index result-offset)
             "cursor offset does not change")
         (let [slurp-result-current-node-text (-> result-src
-                                                 (obp/src->tree :html)
+                                                 (obp/src->tree obp/html-lang-id)
                                                  (noget+ :?rootNode)
                                                  (ob-html-rules/node->current-subject-nodes result-offset)
                                                  last
@@ -57,7 +56,7 @@
         (is (< cursor-offset result-offset)
             "cursor offset is moved forward")
         (let [slurp-result-current-node-text (-> result-src
-                                                 (obp/src->tree :html)
+                                                 (obp/src->tree obp/html-lang-id)
                                                  (noget+ :?rootNode)
                                                  (ob-html-rules/node->current-subject-nodes result-offset)
                                                  last

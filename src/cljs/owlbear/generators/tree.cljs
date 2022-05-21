@@ -3,7 +3,9 @@
             [clojure.test.check.generators :as gen]
             [clojure.walk :as w]
             [oops.core :refer [oget oset!]]
-            [owlbear.generators.utilities :as obgu]))
+            [owlbear.generators.utilities :as obgu]
+            [owlbear.parse :as obp]
+            [owlbear.utilities :as obu]))
 
 (defn partition*
   "Generates a partitioned value from the given generator"
@@ -64,3 +66,18 @@
       t))
    pos-int-tuple-tree))
 
+(defn src-gen->node-gen
+  "Given a source-code generator, `g`, 
+   returns a generator that will generate Tree-sitter nodes
+   
+   Optionally accepts a map of `language` (defaults to tsx) 
+   and `tree->node` which is function that given a tree 
+   should return a node"
+  ([g]
+   (src-gen->node-gen g {}))
+  ([g {:keys [tree->node language]
+       :or {language obp/tsx-lang-id
+            tree->node #(obu/noget+ % :?rootNode.?children.?0)}}]
+   (gen/fmap (comp tree->node
+                   #(obp/src->tree % language))
+             g)))

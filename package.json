@@ -3,7 +3,9 @@
   "lint": "eslint src --ext ts",
   "displayName": "Owlbear",
   "description": "Support paredit-like features for HTML/JSX",
-  "version": "0.0.1",
+  "publisher": "sansarip",
+  "icon": "assets/images/owlbear-logo-warm.png",
+  "version": "0.0.1-SNAPSHOT",
   "engines": {
     "vscode": "^1.62.0"
   },
@@ -17,27 +19,32 @@
   "contributes": {
     "commands": [
       {
-        "command": "owlbear.htmlForwardBarf",
-        "title": "Owlbear: HTML Forwarf Barf"
+        "command": "owlbear.forwardBarf",
+        "title": "Owlbear: Forward Barf"
       },
       {
-        "command": "owlbear.htmlForwardSlurp",
-        "title": "Owlbear: HTML Forward Slurp"
+        "command": "owlbear.forwardSlurp",
+        "title": "Owlbear: Forward Slurp"
       },
       {
-        "command": "owlbear.htmlKill",
-        "title": "Owlbear: HTML Kill"
+        "command": "owlbear.kill",
+        "title": "Owlbear: Kill"
       },
       {
-        "command": "owlbear.htmlRaise",
-        "title": "Owlbear: HTML Raise"
+        "command": "owlbear.raise",
+        "title": "Owlbear: Raise"
       }
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sansarip/owlbear.git"
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "clean": "rimraf ./out && rimraf ./tsconfig.tsbuildinfo && rimraf ./cljs-out && rimraf ./dist",
-    "compile-cljs": "npx shadow-cljs release :lib :test",
+    "compile-cljs": "npx shadow-cljs release :lib :test :corpus-parser",
+    "compile-corpus-parser": "npx shadow-cljs release :corpus-parser",
     "cljs-repl": "node -e \"require('./out/cljs/owlbear.js')\"",
     "cljs-test": "node ./out/cljs/owlbear-tests.js",
     "compile": "cp resources/* dist/ && webpack",
@@ -70,6 +77,8 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
+    "diff": "^5.0.0",
+    "directory-tree": "^3.2.2",
     "tree-sitter-javascript": "^0.19.0",
     "tree-sitter-typescript": "^0.19.0",
     "web-tree-sitter": "^0.20.3"

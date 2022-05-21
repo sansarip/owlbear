@@ -1,6 +1,6 @@
 (ns owlbear.html.edit.raise
   (:require [oops.core :refer [oget]]
-            [owlbear.parse :as ob-html]
+            [owlbear.parse :as obp]
             [owlbear.html.parse.rules :as ob-html-rules]
             [owlbear.utilities :as obu]))
 
@@ -13,11 +13,11 @@
      <div><📍h1></h1></div> => <📍h1></h1>
    ```"
   [src offset]
-  (when-let [current-node (-> src
-                              (ob-html/src->tree :html)
-                              (oget :?rootNode)
-                              (ob-html-rules/node->current-object-nodes offset)
-                              last)]
+  (when-let [current-node (some-> src
+                                  (obp/src->tree obp/html-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ob-html-rules/node->current-object-nodes offset)
+                                  last)]
     (let [current-node-text (oget current-node :?text)
           current-node-start (oget current-node :?startIndex)
           current-parent-node (oget current-node :?parent)

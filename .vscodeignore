@@ -11,3 +11,10 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
+playground/**
+shadow-cljs.edn
+scripts/**
+repl.js
+dev/**
+Makefile
+languages/**

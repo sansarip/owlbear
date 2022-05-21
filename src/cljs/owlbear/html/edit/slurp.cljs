@@ -31,7 +31,7 @@
   {:pre [(string? src) (<= 0 offset)]}
   (when-let [{:keys [forward-object-node
                      current-node]} (ob-html-rules/node->current-forward-object-ctx
-                                     (oget (obp/src->tree src :html) :?rootNode)
+                                     (obu/noget+ (obp/src->tree src obp/html-lang-id) :?rootNode)
                                      offset)]
     (when-let [current-node-end-tag (ob-html-rules/node->end-tag-node current-node)]
       (let [current-node-end-tag-start-index (oget current-node-end-tag :?startIndex)

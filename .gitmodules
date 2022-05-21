@@ -7,3 +7,6 @@
 [submodule "languages/tree-sitter-javascript"]
 	path = languages/tree-sitter-javascript
 	url = git@github.com:sansarip/tree-sitter-javascript.git
+[submodule "languages/tree-sitter-markdown"]
+	path = languages/tree-sitter-markdown
+	url = git@github.com:ikatyang/tree-sitter-markdown.git
