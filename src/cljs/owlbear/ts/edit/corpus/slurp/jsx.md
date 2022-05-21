@@ -26,6 +26,19 @@
 </h1▌></>
 ```
 
+## Fragments
+```tsx
+<div>
+  <>▌</>
+  <h1></h1>
+</div>
+```
+```tsx
+<div>
+  <>
+  <h1></h1>▌</>
+</div>
+```
 ## JSX Expressions
 ```tsx
 <><div>▌</div>{foo}</>

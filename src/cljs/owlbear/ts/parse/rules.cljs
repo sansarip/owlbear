@@ -9,6 +9,8 @@
 (def ts-export-statement "export_statement")
 (def jsx-expression "jsx_expression")
 (def jsx-fragment "jsx_fragment")
+(def jsx-fragment-end-tag "jsx_fragment_end_tag")
+(def jsx-fragment-start-tag "jsx_fragment_start_tag")
 (def jsx-opening-element "jsx_opening_element")
 (def jsx-self-closing-element "jsx_self_closing_element")
 (def jsx-text "jsx_text")
@@ -128,6 +130,14 @@
    if it is an end tag node"
   [node]
   (when (= jsx-closing-element (obu/noget+ node :?type))
+    node))
+
+(defn jsx-fragment-end-tag-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a fragment end tag node"
+  [node]
+  (when (= jsx-fragment-end-tag (obu/noget+ node :?type))
     node))
 
 (defn ts-comment-block-node
@@ -366,7 +376,8 @@
   (when-let [last-child (obu/noget+ node :?lastChild)]
     (when-let [first-child-id (obu/noget+ node :?firstChild.?id)]
       (if-let [end-node (or (ts-comment-block-end-node last-child)
-                            (jsx-closing-element-node last-child))]
+                            (jsx-closing-element-node last-child)
+                            (jsx-fragment-end-tag-node last-child))]
         [end-node]
         (some-> last-child
                 ts-syntax-node
