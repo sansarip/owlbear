@@ -7,6 +7,23 @@
 
 A Visual Studio Code extension to support paredit-like features for HTML and TS!
 
+## Installing the extension
+
+Until official releases are created for this project, there should be a `.vsix` file in the root project folder that you can use to install Owlbear manually.
+
+*OR*
+
+You can build the `.vsix` file yourself! 👇
+
+```sh
+npm i
+npm i -g vsce
+npm run compile-cljs
+vsce package
+```
+
+To install the `.vsix` file, simply open your VS Code's extensions view `(cmd + shift + x)` and then click the ellipsis menu at the top right of the view.
+
 ## Contributing
 
 For info related to developing on Owlbear code, see below! 👇🧐
