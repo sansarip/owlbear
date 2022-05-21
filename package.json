@@ -3,7 +3,7 @@
   "lint": "eslint src --ext ts",
   "displayName": "Owlbear",
   "description": "Support paredit-like features for HTML/JSX",
-  "version": "0.0.1",
+  "version": "0.0.1-SNAPSHOT",
   "engines": {
     "vscode": "^1.62.0"
   },
@@ -33,6 +33,10 @@
         "title": "Owlbear: Raise"
       }
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sansarip/owlbear.git"
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
