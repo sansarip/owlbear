@@ -24,38 +24,31 @@
       (&testing "and cursor out of bounds"
         (is (nil? (ob-ts-slurp/forward-slurp src out-of-bounds-offset :tsx))
             "no result"))
-      (&testing "and cursor at node start"
-        (let [{result-src :src
-               result-offset :offset
-               :as slurp-result} (ob-ts-slurp/forward-slurp src current-node-start-index :tsx)]
-          (is (map? slurp-result)
-              "result-map returned")
-          (is (string? result-src)
-              "result src is a string")
-          (is (not-empty result-src)
-              "result src is not empty")
-          (is (number? result-offset)
-              "result offset is a number")
-          (is (= current-node-start-index result-offset)
-              "cursor offset does not change")
-          (is (= (subs src 0 current-node-start-index)
-                 (subs result-src 0 result-offset))
-              "text up to cursor offset matches in original/result source")))
-      (&testing "and cursor offset is at node end"
-        (let [cursor-offset (dec current-node-end-index)
-              {result-src :src
-               result-offset :offset
-               :as slurp-result} (ob-ts-slurp/forward-slurp src cursor-offset :tsx)]
-          (is (map? slurp-result)
-              "result-map returned")
-          (is (string? result-src)
-              "result src is a string")
-          (is (not-empty result-src)
-              "result src is not empty")
-          (is (number? result-offset)
-              "result offset is a number")
-          #_(is (< cursor-offset result-offset)
-                "cursor offset is moved forward"))))))
+      (letfn [(common-assertions [result result-src result-offset]
+                (and (is (map? result)
+                         "result-map returned")
+                     (is (string? result-src)
+                         "result src is a string")
+                     (is (not-empty result-src)
+                         "result src is not empty")
+                     (is (number? result-offset)
+                         "result offset is a number")))]
+        (&testing "and cursor at node start"
+          (let [{result-src :src
+                 result-offset :offset
+                 :as result} (ob-ts-slurp/forward-slurp src current-node-start-index :tsx)]
+            (common-assertions result result-src result-offset)
+            (is (= current-node-start-index result-offset)
+                "cursor offset does not change")
+            (is (= (subs src 0 current-node-start-index)
+                   (subs result-src 0 result-offset))
+                "text up to cursor offset matches in original/result source")))
+        (&testing "and cursor offset is at node end"
+          (let [cursor-offset (dec current-node-end-index)
+                {result-src :src
+                 result-offset :offset
+                 :as result} (ob-ts-slurp/forward-slurp src cursor-offset :tsx)]
+            (common-assertions result result-src result-offset)))))))
 
 (deftest forward-slurp-test
   (&testing "when src is empty"
