@@ -3,7 +3,8 @@
   "lint": "eslint src --ext ts",
   "displayName": "Owlbear",
   "description": "Support paredit-like features for HTML/JSX",
-  "icon": "images/owlbear-logo-warm.png",
+  "publisher": "sansarip",
+  "icon": "assets/images/owlbear-logo-warm.png",
   "version": "0.0.1-SNAPSHOT",
   "engines": {
     "vscode": "^1.62.0"
