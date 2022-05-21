@@ -7,7 +7,11 @@
                 [org.clojure/test.check "1.1.1"]]
  :source-paths ["dev" "src/cljc" "src/cljs"]
  :jvm-opts ["-Xmx1G"]
- :builds {:lib
+ :builds {:lib/dev
+          {:target :node-library
+           :exports {}
+           :output-to "out/cljs/owlbear-dev.js"}
+          :lib/prod
           {:target :node-library
            :exports {:htmlForwardBarf owlbear.edit/html-forward-barf
                      :htmlForwardSlurp owlbear.edit/html-forward-slurp

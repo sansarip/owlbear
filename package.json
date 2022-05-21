@@ -41,20 +41,22 @@
     "url": "https://github.com/sansarip/owlbear.git"
   },
   "scripts": {
-    "vscode:prepublish": "npm run package",
     "clean": "rimraf ./out && rimraf ./tsconfig.tsbuildinfo && rimraf ./cljs-out && rimraf ./dist",
-    "compile-cljs": "npx shadow-cljs release :lib :test :corpus-parser",
-    "compile-corpus-parser": "npx shadow-cljs release :corpus-parser",
-    "cljs-repl": "node -e \"require('./out/cljs/owlbear.js')\"",
     "cljs-test": "node ./out/cljs/owlbear-tests.js",
-    "compile": "cp resources/* dist/ && webpack",
-    "watch": "cp resources/* dist/ && webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile": "echo 'Compiling Owlbear extension 🦉🐻' && npm run compile-cljs && npm run compile-ts",
+    "compile-cljs": "npx shadow-cljs release :lib/prod :test :corpus-parser",
+    "compile-corpus-parser": "npx shadow-cljs release :corpus-parser",
+    "compile-ts": "cp resources/* dist/ && webpack",
     "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "connect-repl": "node -e \"require('./out/cljs/owlbear-dev.js')\"",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "test": "node ./out/test/runTest.js",
+    "vscode:prepublish": "npm run package",
+    "watch": "cp resources/* dist/ && webpack --watch",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "compile-vsix": "npm run compile && vsce package" 
   },
   "devDependencies": {
     "@types/glob": "^7.1.4",
@@ -73,6 +75,7 @@
     "tree-sitter-html": "^0.19.0",
     "ts-loader": "^9.2.5",
     "typescript": "^4.4.4",
+    "vsce": "^2.8.0",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0"
   },
