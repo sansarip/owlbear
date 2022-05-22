@@ -14,7 +14,8 @@
 (def corpus-title-to-function-map
   "Map of corpus h1-header to Owlbear functions to be tested; 
    update this whenever a new test-suite (h1-header) is added"
-  {"TypeScript Forward Slurp" 'owlbear.ts.edit.slurp/forward-slurp})
+  {"TypeScript Forward Slurp" 'owlbear.ts.edit.slurp/forward-slurp
+   "TypeScript Forward Barf" 'owlbear.ts.edit.barf/forward-barf})
 
 (defn src->cursor-ctx
   "Given a source string, `src`, 
