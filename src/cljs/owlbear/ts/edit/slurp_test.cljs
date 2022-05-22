@@ -20,19 +20,20 @@
                                                          :current-node-text (obu/noget+ current-node :?text)
                                                          :current-node-start-index (obu/noget+ current-node :?startIndex)
                                                          :current-node-end-index (obu/noget+ current-node :?endIndex)})))]
-    (&testing "when TSX forward slurp"
-      (&testing "and cursor out of bounds"
-        (is (nil? (ob-ts-slurp/forward-slurp src out-of-bounds-offset :tsx))
-            "no result"))
-      (letfn [(common-assertions [result result-src result-offset]
-                (and (is (map? result)
-                         "result-map returned")
-                     (is (string? result-src)
-                         "result src is a string")
-                     (is (not-empty result-src)
-                         "result src is not empty")
-                     (is (number? result-offset)
-                         "result offset is a number")))]
+    (letfn [(common-assertions [result result-src result-offset]
+              (&testing ""
+                (is (map? result)
+                    "result-map returned")
+                (is (string? result-src)
+                    "result src is a string")
+                (is (not-empty result-src)
+                    "result src is not empty")
+                (is (number? result-offset)
+                    "result offset is a number")))]
+      (&testing "when TSX forward slurp"
+        (&testing "and cursor out of bounds"
+          (is (nil? (ob-ts-slurp/forward-slurp src out-of-bounds-offset :tsx))
+              "no result"))
         (&testing "and cursor at node start"
           (let [{result-src :src
                  result-offset :offset
