@@ -81,7 +81,7 @@
 
 
 #?(:cljs
-   (defn re-pos 
+   (defn re-pos
      "Given a regex, `re`, and a string, `s`, 
       returns a vector of maps as matches 
       
