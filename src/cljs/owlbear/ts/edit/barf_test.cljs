@@ -57,4 +57,6 @@
 (deftest forward-barf-test
   (&testing "when src is empty"
     (is (nil? (ob-ts-barf/forward-barf "" 0))
+        "no result")
+    (is (nil? (ob-ts-barf/forward-barf "" 0 :tsx))
         "no result")))
