@@ -21,37 +21,37 @@
                                                          :current-node-text (obu/noget+ current-node :?text)
                                                          :current-node-start-index (obu/noget+ current-node :?startIndex)
                                                          :current-node-end-index (obu/noget+ current-node :?endIndex)})))]
-
-    (&testing "when TSX forward slurp"
-      (&testing "and cursor out of bounds"
-        (is (nil? (ob-ts-barf/forward-barf src out-of-bounds-offset))
-            "no result"))
-      (letfn [(common-assertions [result result-src result-offset]
-                (and (is (map? result)
-                         "result-map returned")
-                     (is (string? result-src)
-                         "result src is a string")
-                     (is (not-empty result-src)
-                         "result src is not empty")
-                     (is (number? result-offset)
-                         "result offset is a number")
-                     (is (not= src result-src)
-                         "barfed src is different")))]
-        (&testing "and cursor at node start"
-          (let [{result-src :src
-                 result-offset :offset
-                 :as result} (ob-ts-barf/forward-barf src current-node-start-index)]
+    (letfn [(common-assertions [result result-src result-offset]
+              (&testing ""
+                (is (map? result)
+                    "result-map returned")
+                (is (string? result-src)
+                    "result src is a string")
+                (is (not-empty result-src)
+                    "result src is not empty")
+                (is (number? result-offset)
+                    "result offset is a number")
+                (is (not= src result-src)
+                    "barfed src is different")))]
+      (&testing "when TSX forward slurp"
+        (&testing "and cursor out of bounds"
+          (is (nil? (ob-ts-barf/forward-barf src out-of-bounds-offset :tsx))
+              "no result"))
+        (let [{result-src :src
+               result-offset :offset
+               :as result} (ob-ts-barf/forward-barf src current-node-start-index :tsx)]
+          (&testing "and cursor at node start"
             (common-assertions result result-src result-offset)
             (is (= current-node-start-index result-offset)
                 "cursor offset does not change")
             (is (= (subs src 0 current-node-start-index)
-                   (subs result-src 0 result-offset))
+                   (subs (str result-src) 0 result-offset))
                 "text up to cursor offset matches in original/result source")))
-        (&testing "and cursor offset is at node end"
-          (let [cursor-offset (dec current-node-end-index)
-                {result-src :src
-                 result-offset :offset
-                 :as result} (ob-ts-barf/forward-barf src cursor-offset)]
+        (let [cursor-offset (dec current-node-end-index)
+              {result-src :src
+               result-offset :offset
+               :as result} (ob-ts-barf/forward-barf src cursor-offset :tsx)]
+          (&testing "and cursor offset is at node end"
             (common-assertions result result-src result-offset)))))))
 
 (deftest forward-barf-test
