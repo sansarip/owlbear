@@ -1,8 +1,7 @@
 (ns owlbear.test-runner
   "Responsible for running tests"
   (:require [cljs.user :refer [load-wasms!]]
-            [clojure.test :refer [run-tests]]
-            [owlbear.ts.edit.slurp]))
+            [clojure.test :refer [run-tests]]))
 
 (defn run-tests* []
   ;; Add/remove test namespaces here 👇
@@ -13,6 +12,7 @@
              'owlbear.html.edit.slurp-test
              'owlbear.html.parse.rules-test
              'owlbear.parse.rules-test
+             'owlbear.ts.edit.barf-test
              'owlbear.ts.edit.slurp-test
              'owlbear.ts.parse.rules-test))
 
