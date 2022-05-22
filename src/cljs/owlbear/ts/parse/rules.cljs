@@ -185,7 +185,6 @@
                        ts-template-string
                        ts-template-substitution}
                      node-type) node
-          (= node-type ts-interface-declaration) (ocall node :?childForFieldName "body")
           ;; FIXME: predefined TS types have the same grammar type as other nodes 👎
           (= node-type ts-object) (when (str/starts-with? node-text "{")
                                     node)
