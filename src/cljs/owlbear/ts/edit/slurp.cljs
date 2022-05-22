@@ -54,23 +54,6 @@
       (object-type-needs-semicolon?)
       ";")))
 
-(defn update-offset
-  "Given an initial offset, `initial-offset`, and a `history`, 
-   returns the given offset with the arithmetic operations from 
-   the given history applied to it"
-  [initial-offset history]
-  (if (empty? history)
-    initial-offset
-    (reduce
-     (fn [offset {event-type :type event-offset :offset :keys [text]}]
-       (if (>= offset event-offset)
-         (cond (= :insert event-type) (+ offset (count text))
-               (= :delete event-type) (max (- offset (count text)) event-offset)
-               :else offset)
-         offset))
-     initial-offset
-     history)))
-
 (defn inc-offsets
   "Given an `addend` and a sequence of `offsets`, 
    returns lazy seq of updated offsets, 
@@ -119,7 +102,7 @@
                                         (map :offset)
                                         (inc-offsets (-> forward-node
                                                          (obu/noget+ :?startIndex)
-                                                         (update-offset edit-history)))))]
+                                                         (obu/update-offset edit-history)))))]
     (escape-offsets ctx insert-offsets)
     ctx))
 
@@ -139,7 +122,7 @@
                                         (map :offset)
                                         (inc-offsets (-> forward-node
                                                          (obu/noget+ :?startIndex)
-                                                         (update-offset edit-history)))))]
+                                                         (obu/update-offset edit-history)))))]
     (escape-offsets ctx insert-offsets)
     ctx))
 
@@ -159,7 +142,7 @@
                                    (not (ob-ts-rules/ts-string-node forward-node))))
         [opening-insert-offset
          closing-insert-offset] (when insert-brackets?
-                                  (let [opening-insert-offset (update-offset
+                                  (let [opening-insert-offset (obu/update-offset
                                                                (obu/noget+ forward-node :?startIndex)
                                                                edit-history)
                                         forward-node-text-len (count (obu/noget+ forward-node :?text))
@@ -193,7 +176,7 @@
                            (not (ob-ts-rules/ts-comment-block-node current-node))
                            (= ";" (obu/noget+ forward-node :?lastChild.?type)))
         insert-offset (when rm-semicolon?
-                        (update-offset
+                        (obu/update-offset
                          (obu/noget+ forward-node :?lastChild.?startIndex)
                          edit-history))]
     (cond-> ctx
@@ -229,7 +212,7 @@
                         ";"
                         :else nil)
         insert-offset (when separator
-                        (update-offset
+                        (obu/update-offset
                          (obu/noget+ current-node :?lastChild.?startIndex)
                          edit-history))]
     (cond-> ctx
@@ -262,7 +245,7 @@
     (if rm-separators?
       (reduce
        (fn [c separator]
-         (let [rm-offset (update-offset (obu/noget+ separator :?startIndex)
+         (let [rm-offset (obu/update-offset (obu/noget+ separator :?startIndex)
                                         edit-history)
                sep-text (obu/noget+ separator :?text)
                sep-text-len (count sep-text)]
@@ -293,7 +276,7 @@
                                    (map #(obu/noget+ % :?text))
                                    str/join
                                    (str end-node-prefix))
-        forward-object-node-end-index (update-offset
+        forward-object-node-end-index (obu/update-offset
                                        (obu/noget+ forward-node :?endIndex)
                                        edit-history)
         current-end-node-text-len (count current-end-node-text)
@@ -301,11 +284,11 @@
         current-end-node-start-index (-> current-end-nodes
                                          first
                                          (obu/noget+ :?startIndex)
-                                         (update-offset edit-history))
+                                         (obu/update-offset edit-history))
         current-end-node-end-index (-> current-end-nodes
                                        last
                                        (obu/noget+ :?endIndex)
-                                       (update-offset edit-history))
+                                       (obu/update-offset edit-history))
         end-node-insert-offset (- forward-object-node-end-index
                                   (- current-end-node-text-len
                                      end-node-prefix-len))]

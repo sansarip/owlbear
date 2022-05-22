@@ -40,6 +40,28 @@
   ;; Using clojure.test results in warning 👉 clojure.test/*testing-contexts* not declared ^:dynamic
   `(~'cljs.test/testing ~s (~'every? ~'identity ~(vec assertions))))
 
+(defn update-offset
+  "Given an initial offset, `initial-offset`, and a `history`, 
+   returns the given offset with the arithmetic operations from 
+   the given history applied to it
+   
+   History must be a vector of maps where 
+   `:type` is one of `#{:insert :delete}`, 
+   `:offset` is an integer, 
+   and `:text` is a string"
+  [initial-offset history]
+  (if (empty? history)
+    initial-offset
+    (reduce
+     (fn [offset {event-type :type event-offset :offset :keys [text]}]
+       (if (>= offset event-offset)
+         (cond (= :insert event-type) (+ offset (count text))
+               (= :delete event-type) (max (- offset (count text)) event-offset)
+               :else offset)
+         offset))
+     initial-offset
+     history)))
+
 #?(:cljs
    (defn abs
      "js/Math.abs"
