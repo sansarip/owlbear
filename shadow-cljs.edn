@@ -19,8 +19,10 @@
                      :htmlLangId owlbear.parse/html-lang-id
                      :htmlRaise owlbear.edit/html-raise
                      :loadLanguageWasm owlbear.parse/load-language-wasm!
+                     :tsForwardBarf owlbear.edit/ts-forward-barf
                      :tsForwardSlurp owlbear.edit/ts-forward-slurp
                      :tsLangId owlbear.parse/ts-lang-id
+                     :tsxForwardBarf owlbear.edit/tsx-forward-barf
                      :tsxForwardSlurp owlbear.edit/tsx-forward-slurp
                      :tsxLangId owlbear.parse/tsx-lang-id}
            :output-to "out/cljs/owlbear.js"}
