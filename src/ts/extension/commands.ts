@@ -55,6 +55,14 @@ const forwardBarf: Handler = () => {
     case "html":
       editDoc(editor, ob.htmlForwardBarf);
       return;
+    case "ts":
+    case "js":
+      editDoc(editor, ob.tsForwardBarf);
+      return;
+    case "tsx":
+    case "jsx":
+      editDoc(editor, ob.tsxForwardBarf);
+      return;
   }
 };
 
