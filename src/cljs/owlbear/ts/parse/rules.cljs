@@ -402,7 +402,7 @@
                  (= ts-pair)))
     node))
 
-(defn ts-object-type-ends-with-pair
+(defn complete-ts-object-node
   "Given a `node`, 
    returns the `node` 
    if it is a TS object type that ends with a pair"

@@ -39,13 +39,13 @@
                                    (obu/noget+ :?type)))))]
     (cond
       ;; type foo = {a: string}
-      (and (ob-ts-rules/ts-object-type-ends-with-pair node)
+      (and (ob-ts-rules/complete-ts-object-node node)
            (object-type-needs-semicolon?))
       ":;"
       ;; const foo = {} | const foo = {a: 1} | type foo = {a: string;}
       (or (ob-ts-rules/empty-ts-object-node node)
           (ob-ts-rules/ts-object-ends-with-pair node)
-          (ob-ts-rules/ts-object-type-ends-with-pair node))
+          (ob-ts-rules/complete-ts-object-node node))
       ":"
       ;; type = {}
       (ob-ts-rules/empty-ts-object-type-node node)
@@ -225,7 +225,7 @@
                                  (obu/noget+ :?nextSibling.?type)
                                  (not= ",")))
                         ","
-                        (ob-ts-rules/ts-object-type-ends-with-pair current-node)
+                        (ob-ts-rules/complete-ts-object-node current-node)
                         ";"
                         :else nil)
         insert-offset (when separator
