@@ -5,7 +5,6 @@ tasks:
     npm i
     && npm run compile-vsce
     && code --install-extension owlbear.vsix
-  # - command: 
 vscode:
   extensions:
     - betterthantomorrow.calva
