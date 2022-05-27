@@ -1,10 +1,7 @@
 image:
   file: .gitpod.dockerfile
 tasks:
-  - init: |
-    npm i
-    && npm run compile-vsce
-    && code --install-extension owlbear.vsix
+  - init: npm i && npm run compile-vsce && code --install-extension owlbear.vsix
 vscode:
   extensions:
     - betterthantomorrow.calva
