@@ -1,6 +1,6 @@
 (ns owlbear.utilities
   "Universal utilities"
-  (:require #?@(:cljs [[Diff]
+  (:require #?@(:cljs [[diff :as Diff]
                        [oops.core :refer [ocall oget+]]])
             [clojure.string :as str]))
 
