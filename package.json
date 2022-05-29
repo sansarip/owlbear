@@ -58,7 +58,7 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "compile-vsix": "npm run compile && vsce package",
     "install-vsix": "code --install-extension ${npm_package_name}-${npm_package_version}.vsix",
-    "compile-and-install-vsix": "compile-vsix && install-vsix"
+    "compile-and-install-vsix": "npm run compile-vsix && npm run install-vsix"
   },
   "devDependencies": {
     "@types/glob": "^7.1.4",
