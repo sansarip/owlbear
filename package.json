@@ -46,7 +46,7 @@
     "compile": "echo 'Compiling Owlbear extension 🦉🐻' && npm run compile-cljs && npm run compile-ts",
     "compile-cljs": "npx shadow-cljs release :lib/prod :test :corpus-parser",
     "compile-corpus-parser": "npx shadow-cljs release :corpus-parser",
-    "compile-ts": "cp resources/* dist/ && webpack",
+    "compile-ts": "mkdir dist || true && cp resources/* dist/ && webpack",
     "compile-tests": "tsc -p . --outDir out",
     "connect-repl": "node -e \"require('./out/cljs/owlbear-dev.js')\"",
     "lint": "eslint src --ext ts",
