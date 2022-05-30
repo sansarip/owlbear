@@ -9,7 +9,6 @@
   <img src="https://raw.githubusercontent.com/sansarip/owlbear/main/assets/images/owlbear-logo-cool.png" alt="Owlbear Logo" title="Owlbear" width="250px" align="right">
 </picture>
 
-
 # Owlbear (👷 WIP)
 
 A Visual Studio Code extension to support paredit-like features for HTML and TS!
@@ -24,10 +23,10 @@ You can build the `.vsix` file yourself! 👇
 
 ```sh
 npm i
-npm run compile-vsce
+npm run compile-vsix
 ```
 
-To install the `.vsix` file, simply open your VS Code's extensions view `(cmd + shift + x)` and then click the ellipsis menu at the top right of the view.
+To install the `.vsix` file, simply open your VS Code's extensions view `(cmd + shift + x)` and then click the ellipsis menu at the top right of the view. Or, you can run `npm run install-vsix`!
 
 ## Contributing
 
