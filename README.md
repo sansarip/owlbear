@@ -1,10 +1,14 @@
+<a href="https://gitpod.io/#https://github.com/sansarip/owlbear"><img src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
+
 <a href="https://gitmoji.dev">
   <img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square" alt="Gitmoji">
 </a>
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sansarip/owlbear/main/assets/images/owlbear-logo-warm.png">
   <img src="https://raw.githubusercontent.com/sansarip/owlbear/main/assets/images/owlbear-logo-cool.png" alt="Owlbear Logo" title="Owlbear" width="250px" align="right">
 </picture>
+
 
 # Owlbear (👷 WIP)
 
