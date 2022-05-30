@@ -1,0 +1,15 @@
+image:
+  file: .gitpod.dockerfile
+tasks:
+  - init: npm i && npm run compile-vsix
+  - command: npm run install-vsix
+vscode:
+  extensions:
+    - betterthantomorrow.calva
+github:
+  prebuilds:
+    main: true
+    branches: false
+    pullRequests: true
+    addCheck: true
+    addComment: true

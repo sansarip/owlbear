@@ -46,7 +46,7 @@
     "compile": "echo 'Compiling Owlbear extension 🦉🐻' && npm run compile-cljs && npm run compile-ts",
     "compile-cljs": "npx shadow-cljs release :lib/prod :test :corpus-parser",
     "compile-corpus-parser": "npx shadow-cljs release :corpus-parser",
-    "compile-ts": "mkdir dist || true && cp resources/* dist/ && webpack",
+    "compile-ts": "[ -d dist ] || mkdir dist && cp resources/* dist/ && webpack",
     "compile-tests": "tsc -p . --outDir out",
     "connect-repl": "node -e \"require('./out/cljs/owlbear-dev.js')\"",
     "lint": "eslint src --ext ts",
@@ -56,7 +56,9 @@
     "vscode:prepublish": "npm run package",
     "watch": "cp resources/* dist/ && webpack --watch",
     "watch-tests": "tsc -p . -w --outDir out",
-    "compile-vsix": "npm run compile && vsce package" 
+    "compile-vsix": "npm run compile && vsce package",
+    "install-vsix": "code --install-extension ${npm_package_name}-${npm_package_version}.vsix",
+    "compile-and-install-vsix": "npm run compile-vsix && npm run install-vsix"
   },
   "devDependencies": {
     "@types/glob": "^7.1.4",
