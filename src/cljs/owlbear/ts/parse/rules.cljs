@@ -25,8 +25,11 @@
 (def ts-class-declaration "class_declaration")
 (def ts-comment "comment")
 (def ts-comment-block "comment_block")
+(def ts-comment-block-content "comment_block_content")
 (def ts-comment-block-end "comment_block_end")
+(def ts-computed-property-name "computed_property_name")
 (def ts-error "ERROR")
+(def ts-escape-sequence "escape_sequence")
 (def ts-expression-statement "expression_statement")
 (def ts-for-statement "for_statement")
 (def ts-for-in-statement "for_in_statement")
@@ -46,6 +49,7 @@
 (def ts-object-type "object_type")
 (def ts-pair "pair")
 (def ts-parenthesized-expression "parenthesized_expression")
+(def ts-predefined-type "predefined_type")
 (def ts-property-identifier "property_identifier")
 (def ts-property-signature "property_signature")
 (def ts-public-field-definition "public_field_definition")
@@ -96,6 +100,14 @@
    if it is a TS object type"
   [node]
   (when (= ts-object-type (obu/noget+ node :?type))
+    node))
+
+(defn ts-computed-property-name-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a computed property name"
+  [node]
+  (when (= ts-computed-property-name (obu/noget+ node :?type))
     node))
 
 (defn ts-collection-node
@@ -165,6 +177,14 @@
   (when (= ts-string (obu/noget+ node :?type))
     node))
 
+(defn ts-template-string-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a template string node"
+  [node]
+  (when (= ts-template-string (obu/noget+ node :?type))
+    node))
+
 (defn subject-node
   "Returns the given `node`
    if edit operations can be run from within the node 
@@ -206,7 +226,9 @@
                            ts-call-expression
                            ts-class-declaration
                            ts-comment
+                           ts-comment-block-content
                            ts-error
+                           ts-escape-sequence
                            ts-export-statement
                            ts-expression-statement
                            ts-for-statement
@@ -225,6 +247,7 @@
                            ts-number
                            ts-object
                            ts-parenthesized-expression
+                           ts-predefined-type
                            ts-property-identifier
                            ts-public-field-definition
                            ts-regex
@@ -243,7 +266,7 @@
               (= node-type jsx-text) (when-not (obpr/all-white-space-chars node)
                                        node)
               (= node-type ts-pair) (ocall node :?childForFieldName "value")
-              (= node-type ts-property-signature) (ocall node :?childForFieldName "type")
+              (= node-type ts-property-signature) (obu/noget+ (ocall node :?childForFieldName "type") :?children.?1)
               :else nil))
       (subject-node node)))
 
@@ -428,6 +451,19 @@
                  (= ts-incomplete-pair)))
     node))
 
+(defn incomplete-ts-object-type-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is an object-type that ends with an 
+   incomplete property signature"
+  [node]
+  (when (and (= ts-object-type (obu/noget+ node :?type))
+             (-> (end-nodes node)
+                 last
+                 (obu/noget+ :?previousSibling.?type)
+                 (= ts-incomplete-property-signature)))
+    node))
+
 (defn node->current-subject-nodes
   "Given a `node` and an `offset`, 
    returns a lazy seq of all the subject nodes containing that offset"
@@ -493,3 +529,60 @@
    returns the start node for that node if available"
   [node]
   (first (obu/noget+ node :?children)))
+
+(defn node->template-string-nodes-in-substitutions
+  "Given a `node`, 
+   returns all the child nodes (recursive) that are 
+   template strings being evaluated in substitutions
+   
+   e.g.
+   ```typescript
+   // There is a template string being evaluated in a template substitution
+   `${``}`
+
+   // This, however, does not count
+   `${() => ``}`
+   ```"
+  [node]
+  (obpr/filter-children (comp #{ts-template-substitution}
+                              #(obu/noget+ % :?parent.?type)
+                              ts-template-string-node)
+                        node))
+
+(defn escape-offsets
+  "Given a context map, `ctx`, and a seq of `offsets`, 
+   returns the the context map with its src updated 
+   with backslashes inserted at the given offsets
+   
+   Also updates the offset and edit-history of the 
+   given context"
+  [{og-offset :offset :as ctx} offsets]
+  (reduce
+   (fn [c insert-offset]
+     (-> c
+         (update :src obu/str-insert \\ insert-offset)
+         (update :edit-history conj {:type :insert
+                                     :text "\\"
+                                     :offset insert-offset})
+         (cond-> (>= og-offset insert-offset) (update :offset inc))))
+   ctx
+   offsets))
+
+(defn unescape-offsets
+  "Given a context map, `ctx`, and a seq of `offsets`, 
+   returns the the context map with its src updated 
+   with backslashes removed at the given offsets
+   
+   Also updates the offset and edit-history of the 
+   given context"
+  [{og-offset :offset :as ctx} offsets]
+  (reduce
+   (fn [c rm-offset]
+     (-> c
+         (update :src obu/str-remove rm-offset)
+         (update :edit-history conj {:type :delete
+                                     :text "\\"
+                                     :offset rm-offset})
+         (cond-> (>= og-offset rm-offset) (update :offset dec))))
+   ctx
+   offsets))

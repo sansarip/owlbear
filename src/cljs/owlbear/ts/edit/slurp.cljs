@@ -54,35 +54,6 @@
       (object-type-needs-semicolon?)
       ";")))
 
-(defn inc-offsets
-  "Given an `addend` and a sequence of `offsets`, 
-   returns lazy seq of updated offsets, 
-   each updated offset being a sum of itself, 
-   the given addend, and its index position"
-  [addend offsets]
-  (map-indexed
-   (partial + addend)
-   (sort offsets)))
-
-(defn escape-offsets
-  "Given a context map, `ctx`, and a seq of `offsets`, 
-   returns the the context map with its src updated 
-   with backslashes inserted at the given offsets
-   
-   Also updates the offset and edit-history of the 
-   given context"
-  [{og-offset :offset :as ctx} offsets]
-  (reduce
-   (fn [c insert-offset]
-     (-> c
-         (update :src obu/str-insert \\ insert-offset)
-         (update :edit-history conj {:type :insert
-                                     :text "\\"
-                                     :offset insert-offset})
-         (cond-> (>= og-offset insert-offset) (update :offset inc))))
-   ctx
-   offsets))
-
 (defn escape-string
   "Given a context, `ctx`, a current node, `current-node`, 
    and a forward node, `forward-node`, 
@@ -100,10 +71,10 @@
                                                          re-pattern))
                                         not-empty
                                         (map :offset)
-                                        (inc-offsets (-> forward-node
-                                                         (obu/noget+ :?startIndex)
-                                                         (obu/update-offset edit-history)))))]
-    (escape-offsets ctx insert-offsets)
+                                        (obu/inc-offsets (-> forward-node
+                                                             (obu/noget+ :?startIndex)
+                                                             (obu/update-offset edit-history)))))]
+    (ob-ts-rules/escape-offsets ctx insert-offsets)
     ctx))
 
 (defn escape-comment-block
@@ -120,10 +91,10 @@
                                         (obu/re-pos #"(?<!\\)(/)(?=\*)|(?<=\*)(?<!\\)(/)")
                                         not-empty
                                         (map :offset)
-                                        (inc-offsets (-> forward-node
-                                                         (obu/noget+ :?startIndex)
-                                                         (obu/update-offset edit-history)))))]
-    (escape-offsets ctx insert-offsets)
+                                        (obu/inc-offsets (-> forward-node
+                                                             (obu/noget+ :?startIndex)
+                                                             (obu/update-offset edit-history)))))]
+    (ob-ts-rules/escape-offsets ctx insert-offsets)
     ctx))
 
 (defn insert-computed-property-brackets
@@ -246,7 +217,7 @@
       (reduce
        (fn [c separator]
          (let [rm-offset (obu/update-offset (obu/noget+ separator :?startIndex)
-                                        edit-history)
+                                            edit-history)
                sep-text (obu/noget+ separator :?text)
                sep-text-len (count sep-text)]
            (-> c

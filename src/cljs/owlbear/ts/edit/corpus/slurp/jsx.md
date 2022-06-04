@@ -39,6 +39,7 @@
   <h1></h1>▌</>
 </div>
 ```
+
 ## JSX Expressions
 ```tsx
 <><div>▌</div>{foo}</>
@@ -47,7 +48,7 @@
 <><div>{foo}▌</div></>
 ```
 
-## JSX component function
+## JSX Component Function
 ```tsx
 const foo = () => {
     return (

@@ -62,6 +62,38 @@
      initial-offset
      history)))
 
+(defn dec-offsets
+  "Given an optional `addend` 
+   and a sequence of `offsets`, 
+   returns lazy seq of updated offsets, 
+   each updated offset being 
+   offset + addend - index"
+  ([offsets] 
+   (dec-offsets 0 offsets))
+  ([addend offsets]
+   (map-indexed
+    (fn [i offset] (- (+ offset addend) i))
+    (sort offsets))))
+
+(defn inc-offsets
+  "Given an optional `addend` 
+   and a sequence of `offsets`, 
+   returns lazy seq of updated offsets, 
+   each updated offset being a sum of itself, 
+   the given addend, and its index position"
+  ([offsets] 
+   (inc-offsets 0 offsets))
+  ([addend offsets]
+   (map-indexed
+    (partial + addend)
+    (sort offsets))))
+
+(defn spy
+  "Prints the given `arg` before returning it"
+  [arg]
+  (println arg)
+  arg)
+
 #?(:cljs
    (defn abs
      "js/Math.abs"
