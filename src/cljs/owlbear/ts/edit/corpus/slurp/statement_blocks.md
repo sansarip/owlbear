@@ -45,6 +45,15 @@ for (i of l) {
 a▌}
 ```
 
+```typescript
+if (true) {▌}
+a
+```
+```typescript
+if (true) {
+a▌}
+```
+
 ## Variable Declaration
 ```typescript
 {▌}
