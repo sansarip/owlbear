@@ -32,6 +32,7 @@
 (def ts-for-in-statement "for_in_statement")
 (def ts-function-declaration "function_declaration")
 (def ts-identifier "identifier")
+(def ts-if-statement "if_statement")
 (def ts-import-statement "import_statement")
 (def ts-incomplete-pair "incomplete_pair")
 (def ts-incomplete-property-signature "incomplete_property_signature")
@@ -213,6 +214,7 @@
                            ts-for-in-statement
                            ts-function-declaration
                            ts-identifier
+                           ts-if-statement
                            ts-import-statement
                            ts-incomplete-pair
                            ts-incomplete-property-signature
@@ -331,6 +333,7 @@
                            ts-for-statement
                            ts-for-in-statement
                            ts-function-declaration
+                           ts-if-statement
                            ts-interface-declaration
                            ts-lexical-declaration
                            ts-spread-element
