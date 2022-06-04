@@ -84,6 +84,14 @@
   {:pre [(fn? pred)]}
   (some pred (rest (flatten-children node))))
 
+(defn filter-children
+  "Given a predicate function, `pred`, and a `node`, 
+   returns a lazy seq of all the children that fulfill 
+   the predicate function"
+  [pred node]
+  {:pre [(fn? pred)]}
+  (filter pred (rest (flatten-children node))))
+
 (defn every-child-node?
   "Given a predicate function, `pred`, and a `node`, 
    returns true if every child that fulfills the predicate function"
