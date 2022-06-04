@@ -11,7 +11,7 @@
 
 # Owlbear (👷 WIP)
 
-A Visual Studio Code extension to support paredit-like features for HTML and TS!
+A Visual Studio Code extension to support [paredit](https://github.com/sansarip/owlbear/wiki/Glossary#par-edit)-like features for HTML and TS!
 
 ## Installing the extension
 
