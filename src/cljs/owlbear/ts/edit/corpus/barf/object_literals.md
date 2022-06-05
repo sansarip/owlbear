@@ -31,6 +31,13 @@
 {a: ,▌}1
 ```
 
+```typescript
+{a: ,,,▌}
+```
+```typescript
+{▌}a 
+```
+
 ## Computed Property Names
 ```typescript
 {[a]:▌}
