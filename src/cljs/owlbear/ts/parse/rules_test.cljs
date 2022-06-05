@@ -104,7 +104,6 @@
     (is (nil? (ob-ts-rules/next-forward-object-node #js {}))
         "no siblings")))
 
-;; FIXME: 1652323889863
 (defspec node->current-forward-object-ctx-spec 10
   (prop/for-all [{:keys [nodes]} (gen/let [tree obgt-ts/tree-with-t-subject]
                                    (let [[root-node :as nodes] (obpr/flatten-children (noget+ tree :?rootNode))]
