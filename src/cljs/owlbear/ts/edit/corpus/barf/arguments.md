@@ -37,6 +37,13 @@ foo(a, b,,,▌)
 foo(a ,,,▌)b
 ```
 
+```typescript
+foo(a,,,▌)
+```
+```typescript
+foo(▌)a
+```
+
 ## In Array
 ```typescript
 [foo(a▌)]

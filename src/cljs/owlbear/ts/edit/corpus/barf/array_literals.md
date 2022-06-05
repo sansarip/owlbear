@@ -14,6 +14,14 @@
 [1, 2 ▌]3
 ```
 
+## Superfluous Commas
+```typescript
+[1,,,▌]
+```
+```typescript
+[▌]1
+```
+
 ## Nested Arrays
 ```typescript
 [[1▌], 2]
