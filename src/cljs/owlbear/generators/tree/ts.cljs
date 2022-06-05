@@ -53,7 +53,8 @@
   (binding [*generator-context* (assoc *generator-context*
                                        :statement-block/statements-gen (gen/vector (*statement*) 1 vector-gen-upper-limit)
                                        :array/vector-gen-args [1 vector-gen-upper-limit]
-                                       :hiccup/options {:vector-gen-args [1 vector-gen-upper-limit]})]
+                                       :hiccup/options {:vector-gen-args [1 vector-gen-upper-limit]}
+                                       :type-alias/only-pair-blocks? true)]
     (f)))
 
 ;;================================================================================
@@ -229,14 +230,16 @@
   (concat-semicolon (object-literal*)))
 (def object-literal-statement (object-literal-statement*))
 
-(def interface
+(defn interface*
   "Returns a generator that generates a TS interface declaration string 
    e.g. `interface Foo {a: string}`"
+  []
   (gen/let [i-name obgu/string-alphanumeric-starts-with-alpha
             pb (pair-block obgu/string-alphanumeric-starts-with-alpha
                            basic-types
                            \;)]
     (str "interface " i-name " " pb)))
+(def interface (interface*))
 
 (defn type-alias*
   "Returns a generator that generates a TS type-alias string 
@@ -415,13 +418,13 @@
               statement-generators (->> [arrow-function-statement*
                                          declaration-statement*
                                          import-statement
-                                         interface
+                                         interface*
                                          export-statement*
                                          expression-statement*
                                          for-loop*
                                          jsx-component-function*
                                          named-function-statement*
-                                         type-alias
+                                         type-alias*
                                          while-loop*]
                                         (filter (or (not-empty greenlist) identity))
                                         (remove redlist)
@@ -460,8 +463,8 @@
                (object-literal-statement*)
                (statement-block*)
                (while-loop*)
-               interface
-               type-alias]))
+               (interface*)
+               (type-alias*)]))
 (def subject (subject*))
 
 (defn object*
@@ -498,7 +501,7 @@
                (obgt/src-gen->node-gen (array-literal*) {:tree->node #(obu/noget+ % :?rootNode.?children.?0.?children.?0)})
                (obgt/src-gen->node-gen (object-literal*) {:tree->node #(obu/noget+ % :?rootNode.?children.?0.?children.?0)})
                (obgt/src-gen->node-gen (statement-block*))
-               (obgt/src-gen->node-gen interface {:tree->node #(oops/ocall+ % :?rootNode.?children.?0.?childForFieldName "body")})
+               (obgt/src-gen->node-gen (interface*) {:tree->node #(oops/ocall+ % :?rootNode.?children.?0.?childForFieldName "body")})
                (binding [*generator-context* (assoc *generator-context* :type-alias/only-pair-blocks? true)]
                  (obgt/src-gen->node-gen (type-alias*) {:tree->node #(oops/ocall+ % :?rootNode.?children.?0.?childForFieldName "value")}))]))
 (def subject-node (subject-node*))
@@ -571,8 +574,10 @@
     (gen/sample jsx))
 
   ;; with t-subject
+  (gen/sample t-subject)
   (gen/sample (with-t-subject (typescript*)))
 
   ;; with > 0 children
   (gen/sample (with-children jsx*))
-  (map #(obu/noget+ % :?text) (gen/sample (with-children subject-node*))))
+  (map #(obu/noget+ % :?text) (gen/sample (with-children subject-node*)))
+  )
