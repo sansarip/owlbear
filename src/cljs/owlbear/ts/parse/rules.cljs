@@ -42,6 +42,7 @@
 (def ts-interface-declaration "interface_declaration")
 (def ts-labeled-statement "labeled_statement")
 (def ts-lexical-declaration "lexical_declaration")
+(def ts-literal-type "literal_type")
 (def ts-new-expression "new_expression")
 (def ts-null "null")
 (def ts-number "number")
@@ -242,6 +243,7 @@
                            ts-interface-declaration
                            ts-labeled-statement
                            ts-lexical-declaration
+                           ts-literal-type
                            ts-new-expression
                            ts-null
                            ts-number
