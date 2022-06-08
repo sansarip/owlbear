@@ -65,15 +65,22 @@
   [{:keys [edit-history] :or {edit-history []} :as ctx} current-node forward-node]
   (if-let [insert-offsets (and (contains? #{ob-ts-rules/ts-string ob-ts-rules/ts-template-string}
                                           (obu/noget+ current-node :?type))
-                               (some->> (obu/noget+ forward-node :?text)
-                                        (obu/re-pos (->> (obu/noget+ current-node :?firstChild.?text) ; Quote char
-                                                         (str "(?<!\\\\)")
-                                                         re-pattern))
-                                        not-empty
-                                        (map :offset)
-                                        (obu/inc-offsets (-> forward-node
-                                                             (obu/noget+ :?startIndex)
-                                                             (obu/update-offset edit-history)))))]
+                               (let [forward-node-start-offset (obu/noget+ forward-node :?startIndex)
+                                     quote-char (obu/noget+ current-node :?firstChild.?text)]
+                                 (some-> (->> (obu/noget+ forward-node :?text)
+                                              (obu/re-pos (->> quote-char
+                                                               (str "(?<!\\\\)")
+                                                               re-pattern))
+                                              not-empty
+                                              (map :offset))
+                                         (cond->>
+                                          (= quote-char "`") (remove (into #{}
+                                                                           (mapcat (juxt #(- (obu/noget+ % :?startIndex)
+                                                                                             forward-node-start-offset)
+                                                                                         #(- (dec (obu/noget+ % :?endIndex))
+                                                                                             forward-node-start-offset)))
+                                                                           (ob-ts-rules/node->template-string-nodes-in-substitutions forward-node))))
+                                         (->> (obu/inc-offsets (obu/update-offset forward-node-start-offset edit-history))))))]
     (ob-ts-rules/escape-offsets ctx insert-offsets)
     ctx))
 

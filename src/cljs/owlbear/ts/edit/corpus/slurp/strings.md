@@ -109,6 +109,15 @@ ${}▌`
 ```
 
 ```typescript
+`▌`
+${`Hello!`}
+```
+```typescript
+`
+${`Hello!`}▌`
+```
+
+```typescript
 ${▌} 
 foo
 ```
