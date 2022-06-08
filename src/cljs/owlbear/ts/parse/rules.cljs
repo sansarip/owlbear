@@ -68,6 +68,7 @@
 (def ts-type-alias-declaration "type_alias_declaration")
 (def ts-type-annotation "type_annotation")
 (def ts-update-expression "update_expression")
+(def ts-variable-declarator "variable_declarator")
 (def ts-variable-declaration "variable_declaration")
 (def ts-while-statement "while_statement")
 
@@ -366,7 +367,8 @@
                            ts-while-statement}
                          node-type)
               (and (= ts-call-expression node-type)
-                   (not= ts-expression-statement (obu/noget+ node :?parent.?type))))
+                   (not= ts-expression-statement (obu/noget+ node :?parent.?type))
+                   (not= ts-variable-declarator (obu/noget+ node :?parent.?type))))
       node)))
 
 (defn subject-container-node

@@ -9,6 +9,16 @@ foo(
 a▌);
 ```
 
+## In Declaration
+```typescript
+const foo = bar(▌);
+a
+```
+```typescript
+const foo = bar(
+a▌);
+```
+
 ## Multiple Arguments
 ```typescript
 foo(a▌);
