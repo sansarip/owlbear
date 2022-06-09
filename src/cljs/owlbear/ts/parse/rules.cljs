@@ -590,3 +590,9 @@
          (cond-> (>= og-offset rm-offset) (update :offset dec))))
    ctx
    offsets))
+
+(defn ancestor-container-node
+  [node]
+  (obpr/some-parent-node #(or (subject-container-node %)
+                              (top-level-node %))
+                         node))
