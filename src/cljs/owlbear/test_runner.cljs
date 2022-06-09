@@ -13,6 +13,7 @@
              'owlbear.html.parse.rules-test
              'owlbear.parse.rules-test
              'owlbear.ts.edit.barf-test
+             'owlbear.ts.edit.raise-test
              'owlbear.ts.edit.slurp-test
              'owlbear.ts.parse.rules-test))
 
