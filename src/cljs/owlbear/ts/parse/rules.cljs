@@ -43,6 +43,7 @@
 (def ts-labeled-statement "labeled_statement")
 (def ts-lexical-declaration "lexical_declaration")
 (def ts-literal-type "literal_type")
+(def ts-member-expression "member_expression")
 (def ts-new-expression "new_expression")
 (def ts-null "null")
 (def ts-number "number")
@@ -61,6 +62,8 @@
 (def ts-string "string")
 (def ts-string-fragment "string_fragment")
 (def ts-structural-body "structural_body")
+(def ts-switch-body "switch_body")
+(def ts-switch-statement "switch_statement")
 (def ts-syntax "syntax")
 (def ts-template-fragment "template_fragment")
 (def ts-template-string "template_string")
@@ -87,6 +90,16 @@
   [node]
   (when (= ts-array (obu/noget+ node :?type))
     node))
+
+(defn ts-escape-sequence-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is an escape sequence"
+  [node]
+  (when (= ts-escape-sequence (obu/noget+ node :?type))
+    node))
+
+
 
 (defn ts-object-node
   "Given a `node`, 
@@ -171,6 +184,14 @@
   (when (= ts-comment-block-end (obu/noget+ node :?type))
     node))
 
+(defn ts-expression-statement-node
+  "given a `node`, 
+   returns the `node` 
+   if it is an expression statement node"
+  [node]
+  (when (= ts-expression-statement (obu/noget+ node :?type))
+    node))
+
 (defn ts-string-node
   "given a `node`, 
    returns the `node` 
@@ -185,6 +206,22 @@
    if it is a template string node"
   [node]
   (when (= ts-template-string (obu/noget+ node :?type))
+    node))
+
+(defn ts-identifier-node
+  "given a `node`, 
+   returns the `node` 
+   if it is an identifier node"
+  [node]
+  (when (= ts-identifier (obu/noget+ node :?type))
+    node))
+
+(defn ts-call-expression-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a call expression node"
+  [node]
+  (when (= ts-call-expression (obu/noget+ node :?type))
     node))
 
 (defn subject-node
@@ -204,6 +241,7 @@
                        ts-object-type
                        ts-statement-block
                        ts-structural-body
+                       ts-switch-body
                        ts-template-string
                        ts-template-substitution}
                      node-type) node
@@ -229,6 +267,7 @@
                            ts-class-declaration
                            ts-comment
                            ts-comment-block-content
+                           ts-computed-property-name
                            ts-error
                            ts-escape-sequence
                            ts-export-statement
@@ -245,6 +284,7 @@
                            ts-labeled-statement
                            ts-lexical-declaration
                            ts-literal-type
+                           ts-member-expression
                            ts-new-expression
                            ts-null
                            ts-number
@@ -258,6 +298,7 @@
                            ts-spread-element
                            ts-string
                            ts-string-fragment
+                           ts-switch-statement
                            ts-template-fragment
                            ts-template-string
                            ts-type-alias-declaration
@@ -361,7 +402,9 @@
                            ts-if-statement
                            ts-interface-declaration
                            ts-lexical-declaration
+                           ts-member-expression
                            ts-spread-element
+                           ts-switch-statement
                            ts-type-alias-declaration
                            ts-variable-declaration
                            ts-while-statement}
@@ -552,47 +595,3 @@
                               #(obu/noget+ % :?parent.?type)
                               ts-template-string-node)
                         node))
-
-(defn escape-offsets
-  "Given a context map, `ctx`, and a seq of `offsets`, 
-   returns the the context map with its src updated 
-   with backslashes inserted at the given offsets
-   
-   Also updates the offset and edit-history of the 
-   given context"
-  [{og-offset :offset :as ctx} offsets]
-  (reduce
-   (fn [c insert-offset]
-     (-> c
-         (update :src obu/str-insert \\ insert-offset)
-         (update :edit-history conj {:type :insert
-                                     :text "\\"
-                                     :offset insert-offset})
-         (cond-> (>= og-offset insert-offset) (update :offset inc))))
-   ctx
-   offsets))
-
-(defn unescape-offsets
-  "Given a context map, `ctx`, and a seq of `offsets`, 
-   returns the the context map with its src updated 
-   with backslashes removed at the given offsets
-   
-   Also updates the offset and edit-history of the 
-   given context"
-  [{og-offset :offset :as ctx} offsets]
-  (reduce
-   (fn [c rm-offset]
-     (-> c
-         (update :src obu/str-remove rm-offset)
-         (update :edit-history conj {:type :delete
-                                     :text "\\"
-                                     :offset rm-offset})
-         (cond-> (>= og-offset rm-offset) (update :offset dec))))
-   ctx
-   offsets))
-
-(defn ancestor-container-node
-  [node]
-  (obpr/some-parent-node #(or (subject-container-node %)
-                              (top-level-node %))
-                         node))

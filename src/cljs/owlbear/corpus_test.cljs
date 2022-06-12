@@ -3,6 +3,7 @@
   (:require [clojure.test]
             [owlbear.corpus :refer-macros [deftests watch-corpus-files]]
             [owlbear.ts.edit.barf]
+            [owlbear.ts.edit.raise]
             [owlbear.ts.edit.slurp]
             [owlbear.utilities]
             [shadow.resource]))

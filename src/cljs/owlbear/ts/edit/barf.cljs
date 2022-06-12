@@ -3,6 +3,7 @@
             [oops.core :refer [ocall]]
             [owlbear.parse :as obp]
             [owlbear.parse.rules :as obpr]
+            [owlbear.ts.edit.clean :as ts-clean]
             [owlbear.ts.parse.rules :as ob-ts-rules]
             [owlbear.utilities :as obu]))
 
@@ -18,7 +19,7 @@
           (obpr/flatten-children node)))
 
 (defn remove-superfluous-syntax
-  "Given a context, `ctx`, a current node, `current-node`, 
+  "Given a context, `ctx`, a ancestor node, `ancestor-node`, 
    and a child node, `child-node`, 
    returns an updated context with superflous syntax removed i.e. 
    commas or semicolons removed from empty collections/types
@@ -26,22 +27,22 @@
    
    Also updates the offset and edit-history of the given context 
    if updates were made"
-  [{:keys [offset current-node src] :as ctx}]
-  (let [rm-syntax? (and (or (ob-ts-rules/ts-arguments-node current-node)
-                            (ob-ts-rules/not-empty-ts-array-node current-node)
-                            (ob-ts-rules/incomplete-ts-object-node current-node)
-                            (ob-ts-rules/incomplete-ts-object-type-node current-node))
-                        (ob-ts-rules/ts-syntax-node (obu/noget+ current-node :?lastChild.?previousSibling))
-                        (->> (obu/noget+ current-node :?children)
+  [{:keys [offset ancestor-node src] :as ctx}]
+  (let [rm-syntax? (and (or (ob-ts-rules/ts-arguments-node ancestor-node)
+                            (ob-ts-rules/not-empty-ts-array-node ancestor-node)
+                            (ob-ts-rules/incomplete-ts-object-node ancestor-node)
+                            (ob-ts-rules/incomplete-ts-object-type-node ancestor-node))
+                        (ob-ts-rules/ts-syntax-node (obu/noget+ ancestor-node :?lastChild.?previousSibling))
+                        (->> (obu/noget+ ancestor-node :?children)
                              (filter (comp not ob-ts-rules/ts-syntax-node))
                              count
                              (= 1)))
         [rm-start-offset
          syntax-nodes-text] (when rm-syntax?
-                              (->> (obu/noget+ current-node :?lastChild)
+                              (->> (obu/noget+ ancestor-node :?lastChild)
                                    obpr/node->backward-sibling-nodes
                                    (take-while #(and (ob-ts-rules/ts-syntax-node %)
-                                                     (not= (obu/noget+ current-node :?firstChild.?id)
+                                                     (not= (obu/noget+ ancestor-node :?firstChild.?id)
                                                            (obu/noget+ % :?id))))
                                    ((juxt (comp #(obu/noget+ % :?previousSibling.?startIndex) last)
                                           (comp str/join
@@ -54,117 +55,9 @@
                                                  :src src}))
       (and rm-syntax? (>= offset rm-start-offset)) (update :offset - (- offset rm-start-offset)))))
 
-(defn escaped-comment-backslash-offsets 
-  "Given a string, `text`, 
-  returns the offsets of backslashes of escaped comments 
-  as a vector 
-  
-  An important note is that nested escaped comment backslashes 
-  will *not* be included in the result"  
-  [text]
-  (loop [[{:keys [offset text]} :as delims] (obu/re-pos #"\\/\*|\*\\/" text)
-         opening-delim-count 0
-         offsets []]
-    (cond
-      (= text "*\\/") (if (zero? opening-delim-count)
-                        (recur (rest delims)
-                               opening-delim-count
-                               offsets)
-                        (let [match? (= 1 opening-delim-count)]
-                          (recur (rest delims)
-                                 (dec opening-delim-count)
-                                 (cond-> offsets
-                                   match? (conj (inc offset))))))
-      (= text "\\/*") (recur (rest delims)
-                             (inc opening-delim-count)
-                             (cond-> offsets
-                               (zero? opening-delim-count) (conj offset)))
-      (empty? delims) offsets)))
-
-(defn unescape-comments
-  "Given a context, `ctx`, containing
-   a current node, `current-node`, 
-   and a child node, `child-node`, 
-   returns an updated context with 
-   escape sequence backslashes removed 
-   from the src -if applicable, 
-   else returns the given `ctx`
-   
-   Also updates the offset and edit-history of the given context 
-   if updates were made"
-  [{:keys [edit-history current-node child-node]
-    :or {edit-history []}
-    :as ctx}]
-  (if-let [rm-offsets (when (ob-ts-rules/ts-comment-block-node current-node)
-                        (some->> (obu/noget+ child-node :?text)
-                                 escaped-comment-backslash-offsets
-                                 not-empty
-                                 (obu/dec-offsets (-> child-node
-                                                      (obu/noget+ :?startIndex)
-                                                      (obu/update-offset edit-history)))))]
-    (ob-ts-rules/unescape-offsets ctx rm-offsets)
-    ctx))
-
-(defn escape-template-string
-  "Given a context, `ctx`, that contains 
-   a current node, `current-node`, 
-   and a forward node, `forward-node`, 
-   returns an updated context with strings escaped in the src 
-   -if applicable, else returns the given `ctx`
-   
-   Also updates the offset and edit-history of the given context 
-   if updates were made"
-  [{:keys [edit-history current-node child-node]
-    :or {edit-history []}
-    :as ctx}]
-  (if-let [insert-offsets (and (= ob-ts-rules/ts-template-substitution (obu/noget+ current-node :?type))
-                               (ob-ts-rules/ts-template-string-node (obu/noget+ current-node :?parent))
-                               (let [child-start-offset (obu/noget+ child-node :?startIndex)]
-                                 (some->> (obu/noget+ child-node :?text)
-                                          (obu/re-pos #"(?<!\\)`")
-                                          not-empty
-                                          (map :offset)
-                                          (remove (into #{}
-                                                        (mapcat (juxt #(- (obu/noget+ % :?startIndex)
-                                                                          child-start-offset)
-                                                                      #(- (dec (obu/noget+ % :?endIndex))
-                                                                          child-start-offset)))
-                                                        (ob-ts-rules/node->template-string-nodes-in-substitutions child-node)))
-                                          (obu/inc-offsets (obu/update-offset child-start-offset edit-history)))))]
-    (ob-ts-rules/escape-offsets ctx insert-offsets)
-    ctx))
-
-(defn unescape-escape-sequence
-  "Given a context, `ctx`, containing
-   a current node, `current-node`, 
-   and a child node, `child-node`, 
-   returns an updated context with 
-   escape sequence backslashes removed 
-   from the src -if applicable, 
-   else returns the given `ctx`
-   
-   Also updates the offset and edit-history of the given context 
-   if updates were made"
-  [{:keys [offset edit-history child-node src]
-    :or {edit-history []}
-    :as ctx}]
-  (let [rm-backslash? (= ob-ts-rules/ts-escape-sequence (obu/noget+ child-node :?type))
-        rm-offset (when rm-backslash?
-                    (obu/update-offset (obu/noget+ child-node :?startIndex)
-                                       edit-history))]
-    (if rm-backslash?
-      (-> ctx
-          (update :src obu/str-remove rm-offset)
-          (update :edit-history conj {:type :delete
-                                      :text "\\"
-                                      :offset rm-offset
-                                      :src src})
-          (cond-> (>= offset rm-offset) (update :offset dec)))
-      ctx)))
-
 (defn remove-computed-property
   "Given a context, `ctx`, containing
-   a current node, `current-node`, 
+   a ancestor node, `ancestor-node`, 
    and a child node, `child-node`, 
    returns an updated context with computed property 
    brackets removed from the src -if applicable, 
@@ -172,10 +65,10 @@
    
    Also updates the offset and edit-history of the given context 
    if updates were made"
-  [{:keys [offset edit-history src current-node child-node]
+  [{:keys [offset edit-history src ancestor-node child-node]
     :or {edit-history []}
     :as ctx}]
-  (let [computed-prop-node (when (and child-node (ob-ts-rules/incomplete-ts-object-node current-node))
+  (let [computed-prop-node (when (and child-node (ob-ts-rules/incomplete-ts-object-node ancestor-node))
                              (ob-ts-rules/ts-computed-property-name-node
                               (ocall child-node :?childForFieldName "key")))
         remove-brackets? (boolean computed-prop-node)
@@ -204,7 +97,7 @@
 
 (defn remove-pair-separator
   "Given a context, `ctx`, containing
-   a current node, `current-node`, 
+   a ancestor node, `ancestor-node`, 
    and a child node, `child-node`, 
    returns an updated context with pair separators i.e. 
    colons removed from the src -if applicable, 
@@ -212,11 +105,11 @@
    
    Also updates the offset and edit-history of the given context 
    if updates were made"
-  [{:keys [offset edit-history current-node child-node src]
+  [{:keys [offset edit-history ancestor-node child-node src]
     :or {edit-history []}
     :as ctx}]
-  (let [rm-separator? (or (ob-ts-rules/incomplete-ts-object-node current-node)
-                          (ob-ts-rules/incomplete-ts-object-type-node current-node))
+  (let [rm-separator? (or (ob-ts-rules/incomplete-ts-object-node ancestor-node)
+                          (ob-ts-rules/incomplete-ts-object-type-node ancestor-node))
         rm-offset (when rm-separator?
                     (obu/update-offset
                      (obu/noget+ child-node :?lastChild.?startIndex)
@@ -233,7 +126,7 @@
 
 (defn insert-item-separator
   "Given a context, `ctx`, containing
-   a current node, `current-node`, 
+   a ancestor node, `ancestor-node`, 
    and a forward node, `forward-node`, 
    returns an updated context with an [item] separator i.e. 
    comma or semicolon inserted in the src -if applicable, 
@@ -241,13 +134,13 @@
    
    Also updates the offset and edit-history of the given context 
    if updates were made"
-  [{:keys [src offset edit-history current-node child-node]
+  [{:keys [src offset edit-history ancestor-node child-node]
     :or {edit-history []}
     :as ctx}]
-  (let [insert-separator? (or (and (ob-ts-rules/not-empty-ts-arguments-node current-node)
-                                   (ob-ts-rules/ts-array-node (obu/noget+ current-node :?parent.?parent)))
-                              (and (ob-ts-rules/not-empty-ts-collection-node current-node)
-                                   (ob-ts-rules/ts-array-node (obu/noget+ current-node :?parent))))
+  (let [insert-separator? (or (and (ob-ts-rules/not-empty-ts-arguments-node ancestor-node)
+                                   (ob-ts-rules/ts-array-node (obu/noget+ ancestor-node :?parent.?parent)))
+                              (and (ob-ts-rules/not-empty-ts-collection-node ancestor-node)
+                                   (ob-ts-rules/ts-array-node (obu/noget+ ancestor-node :?parent))))
         insert-offset (when insert-separator?
                         (obu/update-offset
                          (obu/noget+ child-node :?startIndex)
@@ -261,7 +154,7 @@
       (and insert-separator? (>= offset insert-offset)) (update :offset inc))))
 
 (defn remove-item-separators
-  "Given a context, `ctx`, a current node, `current-node`, 
+  "Given a context, `ctx`, a ancestor node, `ancestor-node`, 
    and a child node, `child-node`, 
    returns an updated context with [item] separators i.e. 
    commas or semicolons removed from the src -if applicable, 
@@ -269,16 +162,16 @@
    
    Also updates the offset and edit-history of the given context 
    if updates were made"
-  [{:keys [offset edit-history current-node child-node]
+  [{:keys [offset edit-history ancestor-node child-node]
     :or {edit-history []}
     :as ctx}]
-  (let [rm-separators? (and (or (ob-ts-rules/ts-arguments-node current-node)
-                                (ob-ts-rules/not-empty-ts-array-node current-node)
-                                (ob-ts-rules/incomplete-ts-object-node current-node))
+  (let [rm-separators? (and (or (ob-ts-rules/ts-arguments-node ancestor-node)
+                                (ob-ts-rules/not-empty-ts-array-node ancestor-node)
+                                (ob-ts-rules/incomplete-ts-object-node ancestor-node))
                             (ob-ts-rules/ts-syntax-node (obu/noget+ child-node :?previousSibling)))
         separators (when rm-separators?
                      (take-while #(and (ob-ts-rules/ts-syntax-node %)
-                                       (not= (obu/noget+ current-node :?firstChild.?id)
+                                       (not= (obu/noget+ ancestor-node :?firstChild.?id)
                                              (obu/noget+ % :?id)))
                                  (obpr/node->backward-sibling-nodes child-node)))]
     (if rm-separators?
@@ -300,18 +193,18 @@
 
 (defn move-end-nodes
   "Given a context, `ctx` containing
-   a current node, `current-node`, 
+   a ancestor node, `ancestor-node`, 
    and a child node, `child-node`, 
    returns an updated context with the end node(s) of the 
-   given current node moved to the start of the given child
+   given ancestor node moved to the start of the given child
    node; these changes are reflected in the src of the `ctx`
    -if applicable, else returns the given `ctx`
    
    Also updates the offset and edit-history of the given context 
    if updates were made"
-  [{:keys [src offset edit-history current-node child-node]
+  [{:keys [src offset edit-history ancestor-node child-node]
     :or {edit-history []} :as ctx}]
-  (let [current-end-nodes (reverse (ob-ts-rules/end-nodes current-node))
+  (let [current-end-nodes (reverse (ob-ts-rules/end-nodes ancestor-node))
         current-end-node-text (->> current-end-nodes
                                    (map #(obu/noget+ % :?text))
                                    str/join)
@@ -372,13 +265,14 @@
                                          (ob-ts-rules/node->current-last-child-object-ctx offset))]
      (-> {:src src
           :offset offset
-          :current-node current-node
-          :child-node last-child-object-node}
+          :ancestor-node current-node
+          :child-node last-child-object-node
+          :target-node last-child-object-node}
          move-end-nodes
          remove-superfluous-syntax
-         unescape-comments
-         escape-template-string
-         unescape-escape-sequence
+         ts-clean/unescape-comments
+         ts-clean/escape-template-string
+         ts-clean/unescape-escape-sequence
          remove-computed-property
          remove-pair-separator
          remove-item-separators
@@ -400,7 +294,7 @@
                                    (ob-ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
-             :current-node current-node
+             :ancestor-node current-node
              :child-node last-child-object-node}]
     (move-end-nodes ctx))
   (let [src "[foo(a, b)];"
@@ -412,7 +306,7 @@
                                    (ob-ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
-             :current-node current-node
+             :ancestor-node current-node
              :child-node last-child-object-node}]
     (-> ctx
         move-end-nodes
@@ -426,7 +320,7 @@
                                    (ob-ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
-             :current-node current-node
+             :ancestor-node current-node
              :child-node last-child-object-node}]
     (-> ctx
         move-end-nodes
@@ -440,7 +334,7 @@
                                    (ob-ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
-             :current-node current-node
+             :ancestor-node current-node
              :child-node last-child-object-node}]
     (-> ctx
         move-end-nodes
@@ -454,7 +348,7 @@
                                    (ob-ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
-             :current-node current-node
+             :ancestor-node current-node
              :child-node last-child-object-node}]
     (-> ctx
         move-end-nodes
@@ -468,11 +362,11 @@
                                    (ob-ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
-             :current-node current-node
-             :child-node last-child-object-node}]
+             :ancestor-node current-node
+             :target-node last-child-object-node}]
     (-> ctx
         move-end-nodes
-        unescape-escape-sequence))
+        ts-clean/unescape-escape-sequence))
   (let [src "`${`${``}`}`"
         offset 1
         {:keys [last-child-object-node
@@ -482,12 +376,12 @@
                                    (ob-ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
-             :current-node current-node
+             :ancestor-node current-node
              :child-node last-child-object-node}]
     (-> ctx
         move-end-nodes
-        escape-template-string))
-  (escaped-comment-backslash-offsets "\\/* \\/* *\\/ *\\/")
+        ts-clean/escape-template-string))
+  (ts-clean/escaped-comment-backslash-offsets "\\/* \\/* *\\/ *\\/")
   (let [src "/* \\/* \\/* *\\/ *\\/ */"
         offset 1
         {:keys [last-child-object-node
@@ -497,11 +391,11 @@
                                    (ob-ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
-             :current-node current-node
+             :ancestor-node current-node
              :child-node last-child-object-node}]
     (-> ctx
         move-end-nodes
-        unescape-comments))
+        ts-clean/unescape-comments))
   (let [src "interface foo {a: string;}"
         offset 25
         {:keys [last-child-object-node
@@ -511,7 +405,7 @@
                                    (ob-ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
-             :current-node current-node
+             :ancestor-node current-node
              :child-node last-child-object-node}]
     (-> ctx
         move-end-nodes

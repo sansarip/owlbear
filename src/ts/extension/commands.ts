@@ -83,6 +83,14 @@ const raise: Handler = () => {
     case "html":
       editDoc(editor, ob.htmlRaise);
       return;
+    case "ts":
+    case "js":
+      editDoc(editor, ob.tsRaise);
+      return;
+    case "tsx":
+    case "jsx":
+      editDoc(editor, ob.tsxRaise);
+      return;
   }
 };
 

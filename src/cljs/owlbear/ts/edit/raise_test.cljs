@@ -6,7 +6,6 @@
             [owlbear.generators.tree.ts :as obgt-ts]
             [owlbear.parse.rules :as obpr]
             [owlbear.ts.edit.raise :as ob-ts-raise]
-            [owlbear.ts.parse.rules :as ob-ts-rules]
             [owlbear.utilities :refer [noget+] :as obu :refer-macros [&testing]]))
 
 (defspec raise-spec 5
@@ -18,24 +17,22 @@
                          current-node-start-index
                          current-node-end-index]} (gen/let [tree obgt-ts/tree-with-t-subject]
                                                     (let [root-node (noget+ tree :?rootNode)
-                                                          raise-objects (->> root-node
-                                                                             obpr/flatten-children
-                                                                             reverse
-                                                                             (filter (comp ob-ts-rules/ancestor-container-node
-                                                                                           ob-ts-rules/object-node)))]
-                                                      (gen/let [current-node (gen/elements raise-objects)
-                                                                in-bounds-offset (gen/elements
+                                                          {:keys [current-node
+                                                                  current-ancestor-node]} (->> root-node
+                                                                                               obpr/flatten-children
+                                                                                               shuffle
+                                                                                               (some #(ob-ts-raise/raise-ctx % (inc (noget+ % :?startIndex)))))] 
+                                                      (gen/let [in-bounds-offset (gen/elements
                                                                                   [(noget+ current-node :?startIndex)
                                                                                    (dec (noget+ current-node :?endIndex))])]
-                                                        (let [current-ancestor-node (ob-ts-rules/ancestor-container-node current-node)]
-                                                          {:src (noget+ root-node :?text)
-                                                           :ancestor-node-text (noget+ current-ancestor-node :?text)
-                                                           :ancestor-node-start-offset (noget+ current-ancestor-node :?parent.?startIndex)
-                                                           :in-bounds-offset in-bounds-offset
-                                                           :out-of-bounds-offset (inc (noget+ root-node :?endIndex))
-                                                           :current-node-text (noget+ current-node :?text)
-                                                           :current-node-start-index (noget+ current-node :?startIndex)
-                                                           :current-node-end-index (noget+ current-node :?endIndex)}))))]
+                                                        {:src (noget+ root-node :?text)
+                                                         :ancestor-node-text (noget+ current-ancestor-node :?text)
+                                                         :ancestor-node-start-offset (noget+ current-ancestor-node :?parent.?startIndex)
+                                                         :in-bounds-offset in-bounds-offset
+                                                         :out-of-bounds-offset (inc (noget+ root-node :?endIndex))
+                                                         :current-node-text (noget+ current-node :?text)
+                                                         :current-node-start-index (noget+ current-node :?startIndex)
+                                                         :current-node-end-index (noget+ current-node :?endIndex)})))]
     (&testing ""
       (&testing "when cursor out of bounds"
         (is (nil? (ob-ts-raise/raise src out-of-bounds-offset :tsx))

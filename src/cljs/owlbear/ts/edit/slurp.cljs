@@ -2,6 +2,7 @@
   (:require [clojure.string :as str]
             [owlbear.parse :as obp]
             [owlbear.parse.rules :as obpr]
+            [owlbear.ts.edit.clean :as ts-clean]
             [owlbear.ts.parse.rules :as ob-ts-rules]
             [owlbear.utilities :as obu]))
 
@@ -81,7 +82,7 @@
                                                                                              forward-node-start-offset)))
                                                                            (ob-ts-rules/node->template-string-nodes-in-substitutions forward-node))))
                                          (->> (obu/inc-offsets (obu/update-offset forward-node-start-offset edit-history))))))]
-    (ob-ts-rules/escape-offsets ctx insert-offsets)
+    (ts-clean/escape-offsets ctx insert-offsets)
     ctx))
 
 (defn escape-comment-block
@@ -101,7 +102,7 @@
                                         (obu/inc-offsets (-> forward-node
                                                              (obu/noget+ :?startIndex)
                                                              (obu/update-offset edit-history)))))]
-    (ob-ts-rules/escape-offsets ctx insert-offsets)
+    (ts-clean/escape-offsets ctx insert-offsets)
     ctx))
 
 (defn insert-computed-property-brackets

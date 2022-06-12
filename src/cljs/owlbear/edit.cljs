@@ -6,6 +6,7 @@
             [owlbear.html.edit.raise :as ob-html-raise]
             [owlbear.html.edit.slurp :as obp-slurp]
             [owlbear.ts.edit.barf :as ob-ts-barf]
+            [owlbear.ts.edit.raise :as ob-ts-raise]
             [owlbear.ts.edit.slurp :as ob-ts-slurp]))
 
 (def html-forward-barf (comp ->js obp-barf/forward-barf))
@@ -16,3 +17,5 @@
 (def tsx-forward-barf (comp ->js #(ob-ts-barf/forward-barf % %2 :tsx)))
 (def ts-forward-slurp (comp ->js ob-ts-slurp/forward-slurp))
 (def tsx-forward-slurp (comp ->js #(ob-ts-slurp/forward-slurp % %2 :tsx)))
+(def ts-raise (comp ->js ob-ts-raise/raise))
+(def tsx-raise (comp ->js #(ob-ts-raise/raise % %2 :tsx)))
