@@ -13,6 +13,8 @@
 
 A Visual Studio Code extension to support [paredit](https://github.com/sansarip/owlbear/wiki/Glossary#par-edit)-like features for HTML and TS!
 
+https://user-images.githubusercontent.com/12676521/173253609-313bf6c0-d64f-4cfa-bed4-9eb95941cee8.mov
+
 ## Installing the extension
 
 Until official releases are created for this project, there should be a `.vsix` file in the root project folder that you can use to install Owlbear manually.
