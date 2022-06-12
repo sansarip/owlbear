@@ -15,6 +15,7 @@
        stop
        (dec (oget node :endIndex)))))
 
+;; TODO: Rename to node->descendants
 (defn flatten-children
   "Given a node, 
    returns a flattened, depth-first traversed, lazy sequence 
@@ -92,6 +93,7 @@
   {:pre [(fn? pred)]}
   (filter pred (rest (flatten-children node))))
 
+;; TODO: Rename to every-descendant?
 (defn every-child-node?
   "Given a predicate function, `pred`, and a `node`, 
    returns true if every child that fulfills the predicate function"
@@ -99,6 +101,7 @@
   {:pre [(fn? pred)]}
   (every? pred (rest (flatten-children node))))
 
+;; TODO: Rename to some-ancestor-node
 (defn some-parent-node
   "Given a predicate function, `pred`, and a `node`, 
    returns the first parent that fulfills the predicate function"
