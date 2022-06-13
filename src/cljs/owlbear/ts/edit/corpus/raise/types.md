@@ -1,4 +1,19 @@
 # TypeScript Raise
+## Declaration
+```typescript
+type foo = ▌string;
+```
+```typescript
+▌string
+```
+
+```typescript
+type foo = ▌bar;
+```
+```typescript
+▌bar
+```
+
 ## Single Pair
 ```typescript
 type foo = {a: ▌string;}

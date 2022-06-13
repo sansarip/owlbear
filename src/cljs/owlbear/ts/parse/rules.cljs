@@ -70,6 +70,7 @@
 (def ts-template-substitution "template_substitution")
 (def ts-type-alias-declaration "type_alias_declaration")
 (def ts-type-annotation "type_annotation")
+(def ts-type-identifier "type_identifier")
 (def ts-update-expression "update_expression")
 (def ts-variable-declarator "variable_declarator")
 (def ts-variable-declaration "variable_declaration")
@@ -303,6 +304,7 @@
                            ts-template-string
                            ts-type-alias-declaration
                            ts-type-annotation
+                           ts-type-identifier
                            ts-update-expression
                            ts-variable-declaration
                            ts-while-statement}
