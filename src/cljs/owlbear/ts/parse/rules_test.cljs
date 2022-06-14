@@ -149,6 +149,6 @@
                                  (noget+ last-child-object-node :?endIndex))
             "last-child-object node is positionally within the current-node")
         (is (obpr/some-descendant-node (comp #(= (noget+ last-child-object-node :?id)
-                                            (noget+ % :?id))
-                                        ts-rules/object-node) current-node)
+                                                 (noget+ % :?id))
+                                             ts-rules/object-node) current-node)
             "last-child-object node is a child of the current node")))))
