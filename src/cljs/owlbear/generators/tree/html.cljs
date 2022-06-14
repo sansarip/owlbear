@@ -127,6 +127,4 @@
     comment-node]))
 
 (comment
-  (let [nodes (gen/sample (tree {:hiccup-gen-opts {:vector-gen-args [2 4]}}))]
-    (map owlbear.parse.utilities/flatten-children nodes))
   (gen/sample (hiccup-base (hiccup-base gen/string) {:vector-gen-args [2 4]})))
