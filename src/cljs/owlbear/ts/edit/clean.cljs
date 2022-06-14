@@ -1,4 +1,5 @@
-(ns owlbear.ts.edit.clean 
+(ns owlbear.ts.edit.clean
+  "Shared TypeScript text cleaning utilities, used after Owlbear-edit operations"
   (:require [owlbear.ts.parse.rules :as ts-rules]
             [owlbear.utilities :as obu]))
 
