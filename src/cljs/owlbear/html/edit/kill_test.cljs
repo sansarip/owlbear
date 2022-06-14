@@ -4,8 +4,8 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.html :as obgt-html]
-            [owlbear.html.edit.kill :as ob-html-kill]
-            [owlbear.html.parse.rules :as ob-html-rules]
+            [owlbear.html.edit.kill :as html-kill]
+            [owlbear.html.parse.rules :as html-rules]
             [owlbear.parse.rules :as obpr]
             [owlbear.utilities :refer [noget+] :as obu]))
 
@@ -19,7 +19,7 @@
                                                         root-node-text (noget+ root-node :?text)
                                                         object-nodes (->> root-node
                                                                           obpr/node->descendants
-                                                                          (filter #(and (ob-html-rules/object-node %)
+                                                                          (filter #(and (html-rules/object-node %)
                                                                                         (not= (noget+ % :?text) root-node-text))))]
                                                     (gen/let [current-node (gen/elements object-nodes)
                                                               in-bounds-offset (gen/elements
@@ -31,12 +31,12 @@
                                                        :in-bounds-offset in-bounds-offset
                                                        :out-of-bounds-offset (inc (noget+ root-node :?endIndex))})))]
     (testing "when cursor out of bounds"
-      (is (nil? (ob-html-kill/kill src out-of-bounds-offset))
+      (is (nil? (html-kill/kill src out-of-bounds-offset))
           "no result"))
     (testing "when cursor in bounds"
       (let [{result-offset :offset
              result-src :src
-             :as result} (ob-html-kill/kill src in-bounds-offset)]
+             :as result} (html-kill/kill src in-bounds-offset)]
         (is (some? result)
             "kill performed")
         (is (string? result-src)
@@ -54,7 +54,7 @@
 
 (deftest kill-test
   (testing "when src is empty"
-    (is (nil? (ob-html-kill/kill "" 0))
+    (is (nil? (html-kill/kill "" 0))
         "no result"))
   (testing "when root node"
-    (is (= {:src "" :offset 0} (ob-html-kill/kill "<div></div>" 0)))))
+    (is (= {:src "" :offset 0} (html-kill/kill "<div></div>" 0)))))

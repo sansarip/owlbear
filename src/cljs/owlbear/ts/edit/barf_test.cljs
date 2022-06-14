@@ -4,7 +4,7 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.ts :as obgt-ts]
-            [owlbear.ts.edit.barf :as ob-ts-barf]
+            [owlbear.ts.edit.barf :as ts-barf]
             [owlbear.utilities :as obu :refer-macros [&testing]]))
 
 (defspec forward-barf-spec 10
@@ -14,7 +14,7 @@
                          current-node-start-index
                          current-node-end-index]} (gen/let [tree obgt-ts/tree-with-t-subject]
                                                     (let [root-node (obu/noget+ tree :?rootNode)
-                                                          forward-barf-subjects (ob-ts-barf/node->forward-barf-subjects root-node)]
+                                                          forward-barf-subjects (ts-barf/node->forward-barf-subjects root-node)]
                                                       (gen/let [current-node (gen/elements forward-barf-subjects)]
                                                         {:src (obu/noget+ root-node :?text)
                                                          :out-of-bounds-offset (inc (obu/noget+ root-node :?endIndex))
@@ -35,11 +35,11 @@
                     "barfed src is different")))]
       (&testing "when TSX forward slurp"
         (&testing "and cursor out of bounds"
-          (is (nil? (ob-ts-barf/forward-barf src out-of-bounds-offset :tsx))
+          (is (nil? (ts-barf/forward-barf src out-of-bounds-offset :tsx))
               "no result"))
         (let [{result-src :src
                result-offset :offset
-               :as result} (ob-ts-barf/forward-barf src current-node-start-index :tsx)]
+               :as result} (ts-barf/forward-barf src current-node-start-index :tsx)]
           (&testing "and cursor at node start"
             (common-assertions result result-src result-offset)
             (is (= current-node-start-index result-offset)
@@ -50,13 +50,13 @@
         (let [cursor-offset (dec current-node-end-index)
               {result-src :src
                result-offset :offset
-               :as result} (ob-ts-barf/forward-barf src cursor-offset :tsx)]
+               :as result} (ts-barf/forward-barf src cursor-offset :tsx)]
           (&testing "and cursor offset is at node end"
             (common-assertions result result-src result-offset)))))))
 
 (deftest forward-barf-test
   (&testing "when src is empty"
-    (is (nil? (ob-ts-barf/forward-barf "" 0))
+    (is (nil? (ts-barf/forward-barf "" 0))
         "no result")
-    (is (nil? (ob-ts-barf/forward-barf "" 0 :tsx))
+    (is (nil? (ts-barf/forward-barf "" 0 :tsx))
         "no result")))

@@ -1,5 +1,5 @@
 (ns owlbear.ts.edit.clean 
-  (:require [owlbear.ts.parse.rules :as ob-ts-rules]
+  (:require [owlbear.ts.parse.rules :as ts-rules]
             [owlbear.utilities :as obu]))
 
 (defn escaped-comment-backslash-offsets 
@@ -81,7 +81,7 @@
   [{:keys [offset edit-history target-node src]
     :or {edit-history []}
     :as ctx}]
-  (let [rm-offset (when (ob-ts-rules/ts-escape-sequence-node target-node)
+  (let [rm-offset (when (ts-rules/ts-escape-sequence-node target-node)
                     (obu/update-offset (obu/noget+ target-node :?startIndex)
                                        edit-history))]
     (if rm-offset
@@ -109,7 +109,7 @@
   [{:keys [edit-history child-node ancestor-node]
     :or {edit-history []}
     :as ctx}]
-  (if-let [rm-offsets (when (ob-ts-rules/ts-comment-block-node ancestor-node)
+  (if-let [rm-offsets (when (ts-rules/ts-comment-block-node ancestor-node)
                         (some->> (obu/noget+ child-node :?text)
                                  escaped-comment-backslash-offsets
                                  not-empty
@@ -134,8 +134,8 @@
   [{:keys [edit-history ancestor-node child-node]
     :or {edit-history []}
     :as ctx}]
-  (if-let [insert-offsets (and (= ob-ts-rules/ts-template-substitution (obu/noget+ ancestor-node :?type))
-                               (ob-ts-rules/ts-template-string-node (obu/noget+ ancestor-node :?parent))
+  (if-let [insert-offsets (and (= ts-rules/ts-template-substitution (obu/noget+ ancestor-node :?type))
+                               (ts-rules/ts-template-string-node (obu/noget+ ancestor-node :?parent))
                                (let [child-start-offset (obu/noget+ child-node :?startIndex)]
                                  (some->> (obu/noget+ child-node :?text)
                                           (obu/re-pos #"(?<!\\)`")
@@ -146,7 +146,7 @@
                                                                           child-start-offset)
                                                                       #(- (dec (obu/noget+ % :?endIndex))
                                                                           child-start-offset)))
-                                                        (ob-ts-rules/node->template-string-nodes-in-substitutions child-node)))
+                                                        (ts-rules/node->template-string-nodes-in-substitutions child-node)))
                                           (obu/inc-offsets (obu/update-offset child-start-offset edit-history)))))]
     (escape-offsets ctx insert-offsets)
     ctx))

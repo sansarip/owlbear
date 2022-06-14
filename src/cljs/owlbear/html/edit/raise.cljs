@@ -1,7 +1,7 @@
 (ns owlbear.html.edit.raise
   (:require [oops.core :refer [oget]]
             [owlbear.parse :as obp]
-            [owlbear.html.parse.rules :as ob-html-rules]
+            [owlbear.html.parse.rules :as html-rules]
             [owlbear.utilities :as obu]))
 
 (defn raise
@@ -16,14 +16,14 @@
   (when-let [current-node (some-> src
                                   (obp/src->tree obp/html-lang-id)
                                   (obu/noget+ :?rootNode)
-                                  (ob-html-rules/node->current-object-nodes offset)
+                                  (html-rules/node->current-object-nodes offset)
                                   last)]
     (let [current-node-text (oget current-node :?text)
           current-node-start (oget current-node :?startIndex)
           current-parent-node (oget current-node :?parent)
           current-parent-node-start (oget current-parent-node :?startIndex)
           current-parent-node-end (oget current-parent-node :?endIndex)]
-      (when-not (ob-html-rules/fragment-node current-parent-node)
+      (when-not (html-rules/fragment-node current-parent-node)
         {:src (-> src
                   (obu/str-remove current-parent-node-start current-parent-node-end)
                   (obu/str-insert current-node-text current-parent-node-start))

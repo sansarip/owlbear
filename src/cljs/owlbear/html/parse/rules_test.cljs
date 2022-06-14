@@ -6,7 +6,7 @@
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.html :as obgt-html]
             [owlbear.generators.utilities :as obgu]
-            [owlbear.html.parse.rules :as ob-html-rules]
+            [owlbear.html.parse.rules :as html-rules]
             [owlbear.parse.rules :as obpr]
             [owlbear.utilities :refer [noget+]]))
 
@@ -16,7 +16,7 @@
                         (obgt-html/element-node*
                          {:hiccup-gen-opts
                           {:tag-name-gen obgt-html/container-tag-name}})])]
-    (let [end-tag-node (ob-html-rules/node->end-tag-node node)]
+    (let [end-tag-node (html-rules/node->end-tag-node node)]
       (testing "when end-tag is found"
         (is (some? end-tag-node)
             "end-tag is not nil")
@@ -33,7 +33,7 @@
                         (obgt-html/element-node*
                          {:hiccup-gen-opts
                           {:tag-name-gen obgt-html/container-tag-name}})])]
-    (let [start-tag-node (ob-html-rules/node->start-tag-node node)]
+    (let [start-tag-node (html-rules/node->start-tag-node node)]
       (testing "when start-tag is found"
         (is (some? start-tag-node)
             "start-tag is not nil")
@@ -47,7 +47,7 @@
 (defspec subject-node-spec 10
   (prop/for-all [node obgt-html/subject-node]
     (testing "when subject node"
-      (is (= node (ob-html-rules/subject-node node))
+      (is (= node (html-rules/subject-node node))
           "input node should equal returned node"))))
 
 (defspec self-closing-element-not-subjectifiable-spec 10
@@ -56,12 +56,12 @@
                                      {:vector-gen-args [0]
                                       :tag-name-gen (gen/fmap str/upper-case obgu/string-alphanumeric-starts-with-alpha)}})]
     (testing "when self-closing node"
-      (is (nil? (ob-html-rules/subject-node self-closing-node))
+      (is (nil? (html-rules/subject-node self-closing-node))
           "subject node not found"))))
 
 (deftest subject-node-test
   (testing "when invalid type"
-    (is (nil? (ob-html-rules/subject-node #js {:type (str (random-uuid))}))
+    (is (nil? (html-rules/subject-node #js {:type (str (random-uuid))}))
         "subject node not found")))
 
 (defspec node->current-subject-nodes-spec 10
@@ -69,21 +69,21 @@
                                                                           {:vector-gen-args [2 6]
                                                                            :tag-name-gen obgt-html/html-element-container-tag-name}})]
                                             (obpr/node->descendants (noget+ tree :?rootNode)))]
-    (let [current-subject-nodes (some #(ob-html-rules/node->current-subject-nodes % (noget+ % :?startIndex))
+    (let [current-subject-nodes (some #(html-rules/node->current-subject-nodes % (noget+ % :?startIndex))
                                       children)]
       (testing "when forward object node is found"
         (is (not-empty current-subject-nodes)
             "found current subject nodes")
-        (is (every? ob-html-rules/subject-node current-subject-nodes)
+        (is (every? html-rules/subject-node current-subject-nodes)
             "every node is a subject node")
         (is (reduce < (map #(noget+ % :?startIndex) current-subject-nodes))
             "nodes sorted from least to most specific")))))
 
 (deftest node->current-subject-nodes-test
   (testing "when node has no subject-node children"
-    (is (empty? (ob-html-rules/node->current-subject-nodes #js {:children #js [#js {:type (str (random-uuid))}]} 0))
+    (is (empty? (html-rules/node->current-subject-nodes #js {:children #js [#js {:type (str (random-uuid))}]} 0))
         "invalid child node type")
-    (is (empty? (ob-html-rules/node->current-subject-nodes #js {} 0))
+    (is (empty? (html-rules/node->current-subject-nodes #js {} 0))
         "no children")))
 
 (defspec node->current-object-nodes-spec 10
@@ -91,60 +91,60 @@
                                                                           {:vector-gen-args [2 6]
                                                                            :tag-name-gen obgt-html/html-element-container-tag-name}})]
                                             (obpr/node->descendants (noget+ tree :?rootNode)))]
-    (let [current-object-nodes (some #(ob-html-rules/node->current-object-nodes % (noget+ % :?startIndex))
+    (let [current-object-nodes (some #(html-rules/node->current-object-nodes % (noget+ % :?startIndex))
                                       children)]
       (testing "when forward object node is found"
         (is (not-empty current-object-nodes)
             "found current object nodes")
-        (is (every? ob-html-rules/object-node current-object-nodes)
+        (is (every? html-rules/object-node current-object-nodes)
             "every node is an object node")
         (is (reduce < (map #(noget+ % :?startIndex) current-object-nodes))
             "nodes sorted from least to most specific")))))
 
 (deftest node->current-object-nodes-test
   (testing "when node has no object-node children"
-    (is (empty? (ob-html-rules/node->current-object-nodes #js {:children #js [#js {:type (str (random-uuid))}]} 0))
+    (is (empty? (html-rules/node->current-object-nodes #js {:children #js [#js {:type (str (random-uuid))}]} 0))
         "invalid child node type")
-    (is (empty? (ob-html-rules/node->current-object-nodes #js {} 0))
+    (is (empty? (html-rules/node->current-object-nodes #js {} 0))
         "no children")))
 
 (defspec object-node-spec 10
   (prop/for-all [node obgt-html/object-node]
     (testing "when object node"
-      (is (= node (ob-html-rules/object-node node))
+      (is (= node (html-rules/object-node node))
           "input node should equal returned node"))))
 
 (defspec whitespace-text-not-objectifiable-spec 10
   (prop/for-all [text-node (obgt-html/text-node* [" " "\n"])]
     (testing "when text node contains only whitespace"
-      (is (nil? (ob-html-rules/object-node text-node))
+      (is (nil? (html-rules/object-node text-node))
           "object node is not found"))))
 
 (deftest object-node-test
   (testing "when invalid node type"
-    (is (nil? (ob-html-rules/object-node #js {:type (str (random-uuid))}))
+    (is (nil? (html-rules/object-node #js {:type (str (random-uuid))}))
         "object node is not found")))
 
 (defspec next-object-node-spec 10
   (prop/for-all [children (gen/let [tree (obgt-html/tree {:hiccup-gen-opts {:vector-gen-args [2 6]}})]
                             (obpr/node->descendants (noget+ tree :?rootNode)))]
     (let [[slurp-anchor-node
-           forward-object-node] (some #(when-let [fsn (ob-html-rules/next-forward-object-node %)]
+           forward-object-node] (some #(when-let [fsn (html-rules/next-forward-object-node %)]
                                          [% fsn])
                                       children)]
       (testing "when forward-object node is found"
         (is (some? forward-object-node)
             "forward-object node is not nil")
-        (is (ob-html-rules/object-node forward-object-node)
+        (is (html-rules/object-node forward-object-node)
             "forward-object node is actually object")
         (is (< (noget+ slurp-anchor-node :?startIndex) (noget+ forward-object-node :?startIndex))
             "forward-object node is positionally ahead")))))
 
 (deftest next-forward-object-node-test
   (testing "when next node is not objectifiable"
-    (is (nil? (ob-html-rules/next-forward-object-node #js {:nextSibling #js {:type (str (random-uuid))}}))
+    (is (nil? (html-rules/next-forward-object-node #js {:nextSibling #js {:type (str (random-uuid))}}))
         "invalid sibling node type")
-    (is (nil? (ob-html-rules/next-forward-object-node #js {}))
+    (is (nil? (html-rules/next-forward-object-node #js {}))
         "no siblings")))
 
 (defspec node->current-forward-object-ctx-spec 10
@@ -153,14 +153,14 @@
                                                                            :tag-name-gen obgt-html/html-element-container-tag-name}})]
                                             (obpr/node->descendants (noget+ tree :?rootNode)))]
     (let [{:keys [forward-object-node
-                  current-node]} (some #(ob-html-rules/node->current-forward-object-ctx % (noget+ % :?startIndex))
+                  current-node]} (some #(html-rules/node->current-forward-object-ctx % (noget+ % :?startIndex))
                                        children)]
       (testing "when forward-object node is found"
         (is (some? forward-object-node)
             "forward-object node is not nil")
-        (is (ob-html-rules/object-node forward-object-node)
+        (is (html-rules/object-node forward-object-node)
             "forward-object node is actually objectifiable")
-        (is (ob-html-rules/subject-node current-node)
+        (is (html-rules/subject-node current-node)
             "current node is subjectifiable")
         (is (< (noget+ current-node :?startIndex) (noget+ forward-object-node :?startIndex))
             "forward-object node is positionally ahead")
@@ -173,15 +173,15 @@
                                                               :tag-name-gen obgt-html/html-element-container-tag-name}})]
                                (noget+ tree :?rootNode))]
     (let [{:keys [last-child-object-node
-                  current-node]} (ob-html-rules/node->current-last-child-object-ctx
+                  current-node]} (html-rules/node->current-last-child-object-ctx
                                   parent-node
                                   (noget+ parent-node :?startIndex))]
       (testing "when last-child-object node is found"
         (is (some? last-child-object-node)
             "last-child-object node is not nil")
-        (is (ob-html-rules/object-node last-child-object-node)
+        (is (html-rules/object-node last-child-object-node)
             "last-child-object node is actually objectifiable")
-        (is (ob-html-rules/subject-node current-node)
+        (is (html-rules/subject-node current-node)
             "current node is subjectifiable")
         (is (obpr/range-in-node? current-node
                                  (noget+ last-child-object-node :?startIndex)

@@ -1,7 +1,7 @@
 (ns owlbear.html.edit.slurp
   (:require  [oops.core :refer [oget]]
              [owlbear.parse :as obp]
-             [owlbear.html.parse.rules :as ob-html-rules]
+             [owlbear.html.parse.rules :as html-rules]
              [owlbear.parse.rules :as obpr]
              [owlbear.utilities :as obu]))
 
@@ -11,9 +11,9 @@
    that are forward-slurp subjects"
   [node]
   (filter (comp not-empty
-                #(filter ob-html-rules/object-node %)
+                #(filter html-rules/object-node %)
                 obpr/node->forward-sibling-nodes
-                ob-html-rules/subject-node)
+                html-rules/subject-node)
           (obpr/node->descendants node)))
 
 (defn forward-slurp
@@ -30,10 +30,10 @@
   [src offset]
   {:pre [(string? src) (<= 0 offset)]}
   (when-let [{:keys [forward-object-node
-                     current-node]} (ob-html-rules/node->current-forward-object-ctx
+                     current-node]} (html-rules/node->current-forward-object-ctx
                                      (obu/noget+ (obp/src->tree src obp/html-lang-id) :?rootNode)
                                      offset)]
-    (when-let [current-node-end-tag (ob-html-rules/node->end-tag-node current-node)]
+    (when-let [current-node-end-tag (html-rules/node->end-tag-node current-node)]
       (let [current-node-end-tag-start-index (oget current-node-end-tag :?startIndex)
             current-node-end-tag-end-index (oget current-node-end-tag :?endIndex)
             current-node-end-tag-text (oget current-node-end-tag :?text)

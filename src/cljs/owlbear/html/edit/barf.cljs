@@ -1,7 +1,7 @@
 (ns owlbear.html.edit.barf
   (:require  [oops.core :refer [oget]]
              [owlbear.parse :as obp]
-             [owlbear.html.parse.rules :as ob-html-rules]
+             [owlbear.html.parse.rules :as html-rules]
              [owlbear.parse.rules :as obpr]
              [owlbear.utilities :as obu]))
 
@@ -11,9 +11,9 @@
    that are forward-barf subjects"
   [node]
   (filter (comp not-empty
-                #(filter ob-html-rules/object-node %)
+                #(filter html-rules/object-node %)
                 #(when % (oget % :?children))
-                ob-html-rules/subject-node)
+                html-rules/subject-node)
           (obpr/node->descendants node)))
 
 (defn forward-barf
@@ -29,10 +29,10 @@
    ```"
   [src offset]
   (when-let [{:keys [last-child-object-node
-                     current-node]} (ob-html-rules/node->current-last-child-object-ctx
+                     current-node]} (html-rules/node->current-last-child-object-ctx
                                      (obu/noget+ (obp/src->tree src :html) :?rootNode)
                                      offset)]
-    (when-let [current-node-end-tag (ob-html-rules/node->end-tag-node current-node)]
+    (when-let [current-node-end-tag (html-rules/node->end-tag-node current-node)]
       (let [current-node-end-tag-start-index (oget current-node-end-tag :?startIndex)
             current-node-end-tag-end-index (oget current-node-end-tag :?endIndex)
             current-node-end-tag-text (oget current-node-end-tag :?text)

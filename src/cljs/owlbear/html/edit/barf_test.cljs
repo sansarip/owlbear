@@ -5,7 +5,7 @@
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.html :as obgt-html]
             [owlbear.parse :as obp]
-            [owlbear.html.parse.rules :as ob-html-rules]
+            [owlbear.html.parse.rules :as html-rules]
             [owlbear.html.edit.barf :as obp-barf]
             [owlbear.utilities :refer [noget+]]))
 
@@ -38,7 +38,7 @@
                                      (-> result-src
                                          (obp/src->tree obp/html-lang-id)
                                          (noget+ :?rootNode)
-                                         (ob-html-rules/node->current-subject-nodes result-offset)
+                                         (html-rules/node->current-subject-nodes result-offset)
                                          last
                                          (noget+ :?text)
                                          count))

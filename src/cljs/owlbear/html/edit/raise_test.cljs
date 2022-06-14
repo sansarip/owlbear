@@ -4,9 +4,9 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.html :as obgt-html]
-            [owlbear.html.edit.raise :as ob-html-raise]
+            [owlbear.html.edit.raise :as html-raise]
             [owlbear.parse :as obp]
-            [owlbear.html.parse.rules :as ob-html-rules]
+            [owlbear.html.parse.rules :as html-rules]
             [owlbear.parse.rules :as obpr]
             [owlbear.utilities :refer [noget+]]))
 
@@ -21,7 +21,7 @@
                                                                                   {:vector-gen-args [1 6]
                                                                                    :tag-name-gen obgt-html/html-element-container-tag-name}})]
                                                     (let [root-node (noget+ tree :?rootNode)
-                                                          raise-subjects (filter (comp #(noget+ % :?parent.?parent) ob-html-rules/object-node)
+                                                          raise-subjects (filter (comp #(noget+ % :?parent.?parent) html-rules/object-node)
                                                                                  (obpr/node->descendants root-node))]
                                                       (gen/let [current-node (gen/elements raise-subjects)
                                                                 in-bounds-offset (gen/elements [(noget+ current-node :?startIndex) (dec (noget+ current-node :?endIndex))])]
@@ -34,12 +34,12 @@
                                                          :current-node-start-index (noget+ current-node :?startIndex)
                                                          :current-node-end-index (noget+ current-node :?endIndex)})))]
     (testing "when cursor out of bounds"
-      (is (nil? (ob-html-raise/raise src out-of-bounds-offset))
+      (is (nil? (html-raise/raise src out-of-bounds-offset))
           "no result"))
     (testing "when cursor in bounds"
       (let [{result-src :src
              result-offset :offset
-             :as result} (ob-html-raise/raise src in-bounds-offset)]
+             :as result} (html-raise/raise src in-bounds-offset)]
         (is (some? result)
             "raise performed")
         (is (string? result-src)
@@ -55,7 +55,7 @@
         (is (= (-> result-src
                    (obp/src->tree obp/html-lang-id)
                    (noget+ :?rootNode)
-                   (ob-html-rules/node->current-object-nodes parent-node-start-offset)
+                   (html-rules/node->current-object-nodes parent-node-start-offset)
                    last
                    (noget+ :?text))
                current-node-text)
@@ -63,8 +63,8 @@
 
 (deftest raise-test
   (testing "when src is empty"
-    (is (nil? (ob-html-raise/raise "" 0))
+    (is (nil? (html-raise/raise "" 0))
         "no result"))
   (testing "when root node"
-    (is (nil? (ob-html-raise/raise "<div>hello</div>" 0))
+    (is (nil? (html-raise/raise "<div>hello</div>" 0))
         "no result")))

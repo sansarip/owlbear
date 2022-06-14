@@ -1,7 +1,7 @@
 (ns owlbear.ts.edit.raise
   (:require [owlbear.parse :as obp]
             [owlbear.ts.edit.clean :as ts-clean]
-            [owlbear.ts.parse.rules :as ob-ts-rules]
+            [owlbear.ts.parse.rules :as ts-rules]
             [owlbear.utilities :as obu]))
 
 (defn raise-ctx
@@ -10,38 +10,38 @@
    to raise, `current-node`, and an 
    ancestor node to replace, `ancestor-node`"
   [node offset]
-  (let [[first-current-node :as current-nodes] (reverse (ob-ts-rules/node->current-object-nodes node offset))
+  (let [[first-current-node :as current-nodes] (reverse (ts-rules/node->current-object-nodes node offset))
         [current-node-index
          current-node] (loop [i 0
                               [node & rest-nodes] current-nodes
                               prev-result [0 node]]
                          (if (and node
                                   (not (contains?
-                                        #{ob-ts-rules/ts-incomplete-pair
-                                          ob-ts-rules/ts-incomplete-property-signature
-                                          ob-ts-rules/ts-pair
-                                          ob-ts-rules/ts-property-signature}
+                                        #{ts-rules/ts-incomplete-pair
+                                          ts-rules/ts-incomplete-property-signature
+                                          ts-rules/ts-pair
+                                          ts-rules/ts-property-signature}
                                         (obu/noget+ node :?type)))
                                   (= (obu/noget+ first-current-node :?startIndex)
                                      (obu/noget+ node :?startIndex)))
                            (recur (inc i) rest-nodes [i node])
                            prev-result))
-        current-ancestor-node (some #(or (when-let [sc-node (ob-ts-rules/subject-container-node %)]
+        current-ancestor-node (some #(or (when-let [sc-node (ts-rules/subject-container-node %)]
                                            (let [parent-node (obu/noget+ % :?parent)]
                                              (cond
-                                               (ob-ts-rules/ts-call-expression-node parent-node)
+                                               (ts-rules/ts-call-expression-node parent-node)
                                                parent-node
 
-                                               (contains? #{ob-ts-rules/ts-type-alias-declaration
-                                                            ob-ts-rules/ts-lexical-declaration}
+                                               (contains? #{ts-rules/ts-type-alias-declaration
+                                                            ts-rules/ts-lexical-declaration}
                                                           (obu/noget+ sc-node :?type))
                                                %
 
-                                               (ob-ts-rules/ts-expression-statement-node sc-node)
+                                               (ts-rules/ts-expression-statement-node sc-node)
                                                (obu/noget+ sc-node :?firstChild)
 
                                                :else sc-node)))
-                                         (ob-ts-rules/top-level-node %))
+                                         (ts-rules/top-level-node %))
                                     (-> current-nodes
                                         vec
                                         (subvec current-node-index)

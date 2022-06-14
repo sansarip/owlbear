@@ -5,7 +5,7 @@
             [clojure.test.check.properties :as prop]
             [owlbear.generators.tree.ts :as obgt-ts]
             [owlbear.parse.rules :as obpr]
-            [owlbear.ts.edit.raise :as ob-ts-raise]
+            [owlbear.ts.edit.raise :as ts-raise]
             [owlbear.utilities :refer [noget+] :as obu :refer-macros [&testing]]))
 
 (defspec raise-spec 5
@@ -21,7 +21,7 @@
                                                                   current-ancestor-node]} (->> root-node
                                                                                                obpr/node->descendants
                                                                                                shuffle
-                                                                                               (some #(ob-ts-raise/raise-ctx % (inc (noget+ % :?startIndex)))))] 
+                                                                                               (some #(ts-raise/raise-ctx % (inc (noget+ % :?startIndex)))))] 
                                                       (gen/let [in-bounds-offset (gen/elements
                                                                                   [(noget+ current-node :?startIndex)
                                                                                    (dec (noget+ current-node :?endIndex))])]
@@ -35,11 +35,11 @@
                                                          :current-node-end-index (noget+ current-node :?endIndex)})))]
     (&testing ""
       (&testing "when cursor out of bounds"
-        (is (nil? (ob-ts-raise/raise src out-of-bounds-offset :tsx))
+        (is (nil? (ts-raise/raise src out-of-bounds-offset :tsx))
             "no result"))
       (let [{result-src :src
              result-offset :offset
-             :as result} (ob-ts-raise/raise src in-bounds-offset :tsx)]
+             :as result} (ts-raise/raise src in-bounds-offset :tsx)]
         (&testing "when cursor in bounds"
           (is (map? result)
               "raise performed")
@@ -56,8 +56,8 @@
 
 (deftest raise-test
   (testing "when src is empty"
-    (is (nil? (ob-ts-raise/raise "" 0))
+    (is (nil? (ts-raise/raise "" 0))
         "no result"))
   (testing "when root node"
-    (is (nil? (ob-ts-raise/raise "<div>hello</div>" 0))
+    (is (nil? (ts-raise/raise "<div>hello</div>" 0))
         "no result")))

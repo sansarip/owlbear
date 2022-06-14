@@ -4,7 +4,7 @@
             [owlbear.parse :as obp]
             [owlbear.parse.rules :as obpr]
             [owlbear.ts.edit.clean :as ts-clean]
-            [owlbear.ts.parse.rules :as ob-ts-rules]
+            [owlbear.ts.parse.rules :as ts-rules]
             [owlbear.utilities :as obu]))
 
 (defn node->forward-barf-subjects
@@ -13,9 +13,9 @@
    that are forward-barf subjects"
   [node]
   (filter (comp not-empty
-                #(filter ob-ts-rules/object-node %)
+                #(filter ts-rules/object-node %)
                 #(when % (obu/noget+ % :?children))
-                ob-ts-rules/subject-node)
+                ts-rules/subject-node)
           (obpr/node->descendants node)))
 
 (defn remove-superfluous-syntax
@@ -28,20 +28,20 @@
    Also updates the offset and edit-history of the given context 
    if updates were made"
   [{:keys [offset ancestor-node src] :as ctx}]
-  (let [rm-syntax? (and (or (ob-ts-rules/ts-arguments-node ancestor-node)
-                            (ob-ts-rules/not-empty-ts-array-node ancestor-node)
-                            (ob-ts-rules/incomplete-ts-object-node ancestor-node)
-                            (ob-ts-rules/incomplete-ts-object-type-node ancestor-node))
-                        (ob-ts-rules/ts-syntax-node (obu/noget+ ancestor-node :?lastChild.?previousSibling))
+  (let [rm-syntax? (and (or (ts-rules/ts-arguments-node ancestor-node)
+                            (ts-rules/not-empty-ts-array-node ancestor-node)
+                            (ts-rules/incomplete-ts-object-node ancestor-node)
+                            (ts-rules/incomplete-ts-object-type-node ancestor-node))
+                        (ts-rules/ts-syntax-node (obu/noget+ ancestor-node :?lastChild.?previousSibling))
                         (->> (obu/noget+ ancestor-node :?children)
-                             (filter (comp not ob-ts-rules/ts-syntax-node))
+                             (filter (comp not ts-rules/ts-syntax-node))
                              count
                              (= 1)))
         [rm-start-offset
          syntax-nodes-text] (when rm-syntax?
                               (->> (obu/noget+ ancestor-node :?lastChild)
                                    obpr/node->backward-sibling-nodes
-                                   (take-while #(and (ob-ts-rules/ts-syntax-node %)
+                                   (take-while #(and (ts-rules/ts-syntax-node %)
                                                      (not= (obu/noget+ ancestor-node :?firstChild.?id)
                                                            (obu/noget+ % :?id))))
                                    ((juxt (comp #(obu/noget+ % :?previousSibling.?startIndex) last)
@@ -68,8 +68,8 @@
   [{:keys [offset edit-history src ancestor-node child-node]
     :or {edit-history []}
     :as ctx}]
-  (let [computed-prop-node (when (and child-node (ob-ts-rules/incomplete-ts-object-node ancestor-node))
-                             (ob-ts-rules/ts-computed-property-name-node
+  (let [computed-prop-node (when (and child-node (ts-rules/incomplete-ts-object-node ancestor-node))
+                             (ts-rules/ts-computed-property-name-node
                               (ocall child-node :?childForFieldName "key")))
         remove-brackets? (boolean computed-prop-node)
         [opening-remove-offset
@@ -108,8 +108,8 @@
   [{:keys [offset edit-history ancestor-node child-node src]
     :or {edit-history []}
     :as ctx}]
-  (let [rm-separator? (or (ob-ts-rules/incomplete-ts-object-node ancestor-node)
-                          (ob-ts-rules/incomplete-ts-object-type-node ancestor-node))
+  (let [rm-separator? (or (ts-rules/incomplete-ts-object-node ancestor-node)
+                          (ts-rules/incomplete-ts-object-type-node ancestor-node))
         rm-offset (when rm-separator?
                     (obu/update-offset
                      (obu/noget+ child-node :?lastChild.?startIndex)
@@ -137,10 +137,10 @@
   [{:keys [src offset edit-history ancestor-node child-node]
     :or {edit-history []}
     :as ctx}]
-  (let [insert-separator? (or (and (ob-ts-rules/not-empty-ts-arguments-node ancestor-node)
-                                   (ob-ts-rules/ts-array-node (obu/noget+ ancestor-node :?parent.?parent)))
-                              (and (ob-ts-rules/not-empty-ts-collection-node ancestor-node)
-                                   (ob-ts-rules/ts-array-node (obu/noget+ ancestor-node :?parent))))
+  (let [insert-separator? (or (and (ts-rules/not-empty-ts-arguments-node ancestor-node)
+                                   (ts-rules/ts-array-node (obu/noget+ ancestor-node :?parent.?parent)))
+                              (and (ts-rules/not-empty-ts-collection-node ancestor-node)
+                                   (ts-rules/ts-array-node (obu/noget+ ancestor-node :?parent))))
         insert-offset (when insert-separator?
                         (obu/update-offset
                          (obu/noget+ child-node :?startIndex)
@@ -165,12 +165,12 @@
   [{:keys [offset edit-history ancestor-node child-node]
     :or {edit-history []}
     :as ctx}]
-  (let [rm-separators? (and (or (ob-ts-rules/ts-arguments-node ancestor-node)
-                                (ob-ts-rules/not-empty-ts-array-node ancestor-node)
-                                (ob-ts-rules/incomplete-ts-object-node ancestor-node))
-                            (ob-ts-rules/ts-syntax-node (obu/noget+ child-node :?previousSibling)))
+  (let [rm-separators? (and (or (ts-rules/ts-arguments-node ancestor-node)
+                                (ts-rules/not-empty-ts-array-node ancestor-node)
+                                (ts-rules/incomplete-ts-object-node ancestor-node))
+                            (ts-rules/ts-syntax-node (obu/noget+ child-node :?previousSibling)))
         separators (when rm-separators?
-                     (take-while #(and (ob-ts-rules/ts-syntax-node %)
+                     (take-while #(and (ts-rules/ts-syntax-node %)
                                        (not= (obu/noget+ ancestor-node :?firstChild.?id)
                                              (obu/noget+ % :?id)))
                                  (obpr/node->backward-sibling-nodes child-node)))]
@@ -204,7 +204,7 @@
    if updates were made"
   [{:keys [src offset edit-history ancestor-node child-node]
     :or {edit-history []} :as ctx}]
-  (let [current-end-nodes (reverse (ob-ts-rules/end-nodes ancestor-node))
+  (let [current-end-nodes (reverse (ts-rules/end-nodes ancestor-node))
         current-end-node-text (->> current-end-nodes
                                    (map #(obu/noget+ % :?text))
                                    str/join)
@@ -262,7 +262,7 @@
                       current-node]} (-> src
                                          (obp/src->tree (if tsx? obp/tsx-lang-id obp/ts-lang-id))
                                          (obu/noget+ :?rootNode)
-                                         (ob-ts-rules/node->current-last-child-object-ctx offset))]
+                                         (ts-rules/node->current-last-child-object-ctx offset))]
      (-> {:src src
           :offset offset
           :ancestor-node current-node
@@ -284,14 +284,14 @@
   (-> "<div><></></div>"
       (obp/src->tree obp/tsx-lang-id)
       (obu/noget+ :?rootNode)
-      (ob-ts-rules/node->current-last-child-object-ctx 1))
+      (ts-rules/node->current-last-child-object-ctx 1))
   (let [src "<><div><input/></div></>"
         offset 0
         {:keys [last-child-object-node
                 current-node]} (-> src
                                    (obp/src->tree obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
-                                   (ob-ts-rules/node->current-last-child-object-ctx offset))
+                                   (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
              :ancestor-node current-node
@@ -303,7 +303,7 @@
                 current-node]} (-> src
                                    (obp/src->tree obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
-                                   (ob-ts-rules/node->current-last-child-object-ctx offset))
+                                   (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
              :ancestor-node current-node
@@ -317,7 +317,7 @@
                 current-node]} (-> src
                                    (obp/src->tree obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
-                                   (ob-ts-rules/node->current-last-child-object-ctx offset))
+                                   (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
              :ancestor-node current-node
@@ -331,7 +331,7 @@
                 current-node]} (-> src
                                    (obp/src->tree obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
-                                   (ob-ts-rules/node->current-last-child-object-ctx offset))
+                                   (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
              :ancestor-node current-node
@@ -345,7 +345,7 @@
                 current-node]} (-> src
                                    (obp/src->tree obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
-                                   (ob-ts-rules/node->current-last-child-object-ctx offset))
+                                   (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
              :ancestor-node current-node
@@ -359,7 +359,7 @@
                 current-node]} (-> src
                                    (obp/src->tree obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
-                                   (ob-ts-rules/node->current-last-child-object-ctx offset))
+                                   (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
              :ancestor-node current-node
@@ -373,7 +373,7 @@
                 current-node]} (-> src
                                    (obp/src->tree obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
-                                   (ob-ts-rules/node->current-last-child-object-ctx offset))
+                                   (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
              :ancestor-node current-node
@@ -388,7 +388,7 @@
                 current-node]} (-> src
                                    (obp/src->tree obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
-                                   (ob-ts-rules/node->current-last-child-object-ctx offset))
+                                   (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
              :ancestor-node current-node
@@ -402,7 +402,7 @@
                 current-node]} (-> src
                                    (obp/src->tree obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
-                                   (ob-ts-rules/node->current-last-child-object-ctx offset))
+                                   (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
              :offset offset
              :ancestor-node current-node

@@ -3,7 +3,7 @@
             [owlbear.parse :as obp]
             [owlbear.parse.rules :as obpr]
             [owlbear.ts.edit.clean :as ts-clean]
-            [owlbear.ts.parse.rules :as ob-ts-rules]
+            [owlbear.ts.parse.rules :as ts-rules]
             [owlbear.utilities :as obu]))
 
 (defn node->forward-slurp-subjects
@@ -11,9 +11,9 @@
    returns all nodes within the node, including the given node itself, 
    that are forward-slurp subjects"
   [node]
-  (filter (comp #(some ob-ts-rules/object-node %)
+  (filter (comp #(some ts-rules/object-node %)
                 obpr/node->forward-sibling-nodes
-                ob-ts-rules/subject-container-node)
+                ts-rules/subject-container-node)
           (obpr/node->descendants node)))
 
 (defn end-node-prefix
@@ -33,23 +33,23 @@
    ```"
   [node]
   (letfn [(object-type-needs-semicolon? []
-            (and (ob-ts-rules/ts-object-type-node node)
+            (and (ts-rules/ts-object-type-node node)
                  (not= ";" (some-> node
-                                   ob-ts-rules/end-nodes
+                                   ts-rules/end-nodes
                                    last
                                    (obu/noget+ :?type)))))]
     (cond
       ;; type foo = {a: string}
-      (and (ob-ts-rules/complete-ts-object-node node)
+      (and (ts-rules/complete-ts-object-node node)
            (object-type-needs-semicolon?))
       ":;"
       ;; const foo = {} | const foo = {a: 1} | type foo = {a: string;}
-      (or (ob-ts-rules/empty-ts-object-node node)
-          (ob-ts-rules/ts-object-ends-with-pair node)
-          (ob-ts-rules/complete-ts-object-node node))
+      (or (ts-rules/empty-ts-object-node node)
+          (ts-rules/ts-object-ends-with-pair node)
+          (ts-rules/complete-ts-object-node node))
       ":"
       ;; type = {}
-      (ob-ts-rules/empty-ts-object-type-node node)
+      (ts-rules/empty-ts-object-type-node node)
       ":;"
       ;; type = {a:}
       (object-type-needs-semicolon?)
@@ -64,7 +64,7 @@
    Also updates the offset and edit-history of the given context 
    if updates were made"
   [{:keys [edit-history] :or {edit-history []} :as ctx} current-node forward-node]
-  (if-let [insert-offsets (and (contains? #{ob-ts-rules/ts-string ob-ts-rules/ts-template-string}
+  (if-let [insert-offsets (and (contains? #{ts-rules/ts-string ts-rules/ts-template-string}
                                           (obu/noget+ current-node :?type))
                                (let [forward-node-start-offset (obu/noget+ forward-node :?startIndex)
                                      quote-char (obu/noget+ current-node :?firstChild.?text)]
@@ -80,7 +80,7 @@
                                                                                              forward-node-start-offset)
                                                                                          #(- (dec (obu/noget+ % :?endIndex))
                                                                                              forward-node-start-offset)))
-                                                                           (ob-ts-rules/node->template-string-nodes-in-substitutions forward-node))))
+                                                                           (ts-rules/node->template-string-nodes-in-substitutions forward-node))))
                                          (->> (obu/inc-offsets (obu/update-offset forward-node-start-offset edit-history))))))]
     (ts-clean/escape-offsets ctx insert-offsets)
     ctx))
@@ -94,7 +94,7 @@
    Also updates the offset and edit-history of the given context 
    if updates were made"
   [{:keys [edit-history] :or {edit-history []} :as ctx} current-node forward-node]
-  (if-let [insert-offsets (and (ob-ts-rules/ts-comment-block-node current-node)
+  (if-let [insert-offsets (and (ts-rules/ts-comment-block-node current-node)
                                (some->> (obu/noget+ forward-node :?text)
                                         (obu/re-pos #"(?<!\\)(/)(?=\*)|(?<=\*)(?<!\\)(/)")
                                         not-empty
@@ -115,10 +115,10 @@
    Also updates the offset and edit-history of the given context 
    if updates were made"
   [{:keys [src offset edit-history] :or {edit-history []} :as ctx} current-node forward-node]
-  (let [insert-brackets? (and (or (ob-ts-rules/ts-object-ends-with-pair current-node)
-                                  (ob-ts-rules/empty-ts-object-node current-node))
-                              (and (not (ob-ts-rules/expression-statement-of #{ob-ts-rules/ts-string} forward-node))
-                                   (not (ob-ts-rules/ts-string-node forward-node))))
+  (let [insert-brackets? (and (or (ts-rules/ts-object-ends-with-pair current-node)
+                                  (ts-rules/empty-ts-object-node current-node))
+                              (and (not (ts-rules/expression-statement-of #{ts-rules/ts-string} forward-node))
+                                   (not (ts-rules/ts-string-node forward-node))))
         [opening-insert-offset
          closing-insert-offset] (when insert-brackets?
                                   (let [opening-insert-offset (obu/update-offset
@@ -151,8 +151,8 @@
    Also updates the offset and edit-history of the given context 
    if updates were made"
   [{:keys [src offset edit-history] :or {edit-history []} :as ctx} current-node forward-node]
-  (let [rm-semicolon? (and (not (ob-ts-rules/ts-statement-block-node current-node))
-                           (not (ob-ts-rules/ts-comment-block-node current-node))
+  (let [rm-semicolon? (and (not (ts-rules/ts-statement-block-node current-node))
+                           (not (ts-rules/ts-comment-block-node current-node))
                            (= ";" (obu/noget+ forward-node :?lastChild.?type)))
         insert-offset (when rm-semicolon?
                         (obu/update-offset
@@ -175,19 +175,19 @@
    Also updates the offset and edit-history of the given context 
    if updates were made"
   [{:keys [src offset edit-history] :or {edit-history []} :as ctx} current-node]
-  (let [separator (cond (and (or (ob-ts-rules/not-empty-ts-array-node current-node)
-                                 (ob-ts-rules/ts-object-ends-with-pair current-node))
+  (let [separator (cond (and (or (ts-rules/not-empty-ts-array-node current-node)
+                                 (ts-rules/ts-object-ends-with-pair current-node))
                              ;; e.g. [[], 1]
                              (not= "," (obu/noget+ current-node :?nextSibling.?type)))
                         ","
-                        (and (ob-ts-rules/not-empty-ts-arguments-node current-node)
+                        (and (ts-rules/not-empty-ts-arguments-node current-node)
                              ;; e.g. [foo(a), 1]
                              (-> current-node
-                                 ob-ts-rules/subject-container-node
+                                 ts-rules/subject-container-node
                                  (obu/noget+ :?nextSibling.?type)
                                  (not= ",")))
                         ","
-                        (ob-ts-rules/complete-ts-object-node current-node)
+                        (ts-rules/complete-ts-object-node current-node)
                         ";"
                         :else nil)
         insert-offset (when separator
@@ -212,14 +212,14 @@
    Also updates the offset and edit-history of the given context 
    if updates were made"
   [{:keys [offset edit-history] :or {edit-history []} :as ctx} current-node forward-node]
-  (let [rm-separators? (and (or (ob-ts-rules/empty-ts-arguments-node current-node)
-                                (ob-ts-rules/empty-ts-collection-node current-node)
+  (let [rm-separators? (and (or (ts-rules/empty-ts-arguments-node current-node)
+                                (ts-rules/empty-ts-collection-node current-node)
                                 ;; e.g. [{a: }, 1]
-                                (and (ob-ts-rules/ts-object-node current-node)
-                                     (not (ob-ts-rules/ts-object-ends-with-pair current-node))))
-                            (ob-ts-rules/ts-syntax-node (obu/noget+ forward-node :?previousSibling)))
+                                (and (ts-rules/ts-object-node current-node)
+                                     (not (ts-rules/ts-object-ends-with-pair current-node))))
+                            (ts-rules/ts-syntax-node (obu/noget+ forward-node :?previousSibling)))
         separators (when rm-separators?
-                     (take-while ob-ts-rules/ts-syntax-node
+                     (take-while ts-rules/ts-syntax-node
                                  (obpr/node->backward-sibling-nodes forward-node)))]
     (if rm-separators?
       (reduce
@@ -249,7 +249,7 @@
    Also updates the offset and edit-history of the given context 
    if updates were made"
   [{:keys [src offset edit-history] :or {edit-history []} :as ctx} current-node forward-node]
-  (let [current-end-nodes (reverse (ob-ts-rules/end-nodes current-node))
+  (let [current-end-nodes (reverse (ts-rules/end-nodes current-node))
         end-node-prefix (end-node-prefix current-node)
         current-end-node-text (->> current-end-nodes
                                    (map #(obu/noget+ % :?text))
@@ -311,7 +311,7 @@
   ([src offset tsx?]
    {:pre [(string? src) (<= 0 offset)]}
    (when-let [{:keys [forward-object-node
-                      current-node]} (ob-ts-rules/node->current-forward-object-ctx
+                      current-node]} (ts-rules/node->current-forward-object-ctx
                                       (obu/noget+ (obp/src->tree src (if tsx? obp/tsx-lang-id obp/ts-lang-id)) :?rootNode)
                                       offset)]
      (some-> {:src src
@@ -331,7 +331,7 @@
   (let [src "[]\n1"
         offset 1
         {:keys [current-node
-                forward-object-node]} (ob-ts-rules/node->current-forward-object-ctx
+                forward-object-node]} (ts-rules/node->current-forward-object-ctx
                                        (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
@@ -339,7 +339,7 @@
   (let [src "[[], 1]"
         offset 1
         {:keys [current-node
-                forward-object-node]} (ob-ts-rules/node->current-forward-object-ctx
+                forward-object-node]} (ts-rules/node->current-forward-object-ctx
                                        (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
@@ -349,7 +349,7 @@
   (let [src "[1]\n2"
         offset 1
         {:keys [current-node
-                forward-object-node]} (ob-ts-rules/node->current-forward-object-ctx
+                forward-object-node]} (ts-rules/node->current-forward-object-ctx
                                        (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
@@ -359,7 +359,7 @@
   (let [src "const foo = {};\na"
         offset 13
         {:keys [current-node
-                forward-object-node]} (ob-ts-rules/node->current-forward-object-ctx
+                forward-object-node]} (ts-rules/node->current-forward-object-ctx
                                        (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
@@ -369,7 +369,7 @@
   (let [src "\"\"\n\"\""
         offset 1
         {:keys [current-node
-                forward-object-node]} (ob-ts-rules/node->current-forward-object-ctx
+                forward-object-node]} (ts-rules/node->current-forward-object-ctx
                                        (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
@@ -379,7 +379,7 @@
   (let [src "/**/\n/**/"
         offset 1
         {:keys [current-node
-                forward-object-node]} (ob-ts-rules/node->current-forward-object-ctx
+                forward-object-node]} (ts-rules/node->current-forward-object-ctx
                                        (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset 1}]
@@ -389,7 +389,7 @@
   (let [src "[]\na;"
         offset 1
         {:keys [current-node
-                forward-object-node]} (ob-ts-rules/node->current-forward-object-ctx
+                forward-object-node]} (ts-rules/node->current-forward-object-ctx
                                        (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset 1}]
