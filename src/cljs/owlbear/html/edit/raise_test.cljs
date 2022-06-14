@@ -8,7 +8,7 @@
             [owlbear.parse :as obp]
             [owlbear.html.parse.rules :as html-rules]
             [owlbear.parse.rules :as obpr]
-            [owlbear.utilities :refer [noget+]]))
+            [owlbear.utilities :refer-macros [&testing] :refer [noget+]]))
 
 (defspec raise-spec 5
   (prop/for-all [{:keys [src
@@ -33,13 +33,13 @@
                                                          :current-node-text (noget+ current-node :?text)
                                                          :current-node-start-index (noget+ current-node :?startIndex)
                                                          :current-node-end-index (noget+ current-node :?endIndex)})))]
-    (testing "when cursor out of bounds"
+    (&testing "when cursor out of bounds"
       (is (nil? (html-raise/raise src out-of-bounds-offset))
           "no result"))
-    (testing "when cursor in bounds"
-      (let [{result-src :src
-             result-offset :offset
-             :as result} (html-raise/raise src in-bounds-offset)]
+    (let [{result-src :src
+           result-offset :offset
+           :as result} (html-raise/raise src in-bounds-offset)]
+      (&testing "when cursor in bounds"
         (is (some? result)
             "raise performed")
         (is (string? result-src)

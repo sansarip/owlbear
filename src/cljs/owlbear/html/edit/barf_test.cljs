@@ -7,7 +7,7 @@
             [owlbear.parse :as obp]
             [owlbear.html.parse.rules :as html-rules]
             [owlbear.html.edit.barf :as obp-barf]
-            [owlbear.utilities :refer [noget+]]))
+            [owlbear.utilities :refer-macros [&testing] :refer [noget+]]))
 
 (defspec forward-barf-spec 10
   (prop/for-all [{:keys [src
@@ -26,38 +26,48 @@
                                                          :current-node-start-index (noget+ current-node :?startIndex)
                                                          :current-node-end-index (noget+ current-node :?endIndex)})))]
 
-    (testing "when cursor out of bounds"
+    (&testing "when cursor out of bounds"
       (is (nil? (obp-barf/forward-barf src out-of-bounds-offset))
-          "no result"))
-    (let [common-assertions (fn [result-src result-offset]
-                              (is (= (count src) (count result-src))
-                                  "src text length does not change")
-                              (is (not= src result-src)
-                                  "barfed src is different")
-                              (is (> (count current-node-text)
-                                     (-> result-src
-                                         (obp/src->tree obp/html-lang-id)
-                                         (noget+ :?rootNode)
-                                         (html-rules/node->current-subject-nodes result-offset)
-                                         last
-                                         (noget+ :?text)
-                                         count))
-                                  "current node is smaller after barf"))]
-      (testing "when cursor at node start"
-        (let [{result-src :src
-               result-offset :offset
-               :as barf-result} (obp-barf/forward-barf src current-node-start-index)]
-          (is (= current-node-start-index result-offset)
-              "cursor offset does not change")
-          (common-assertions result-src result-offset)))
-      (testing "when cursor offset is at node end"
-        (let [cursor-offset (dec current-node-end-index)
-              {result-src :src
-               result-offset :offset
-               :as barf-result} (obp-barf/forward-barf src cursor-offset)]
-          (is (> cursor-offset result-offset)
-              "cursor offset is moved backward")
-          (common-assertions result-src result-offset))))))
+          "no result")) 
+    (let [{result-src :src
+           result-offset :offset
+           :as barf-result} (obp-barf/forward-barf src current-node-start-index)]
+      (&testing "when cursor at node start"
+        (is (= current-node-start-index result-offset)
+            "cursor offset does not change")
+        (is (= (count src) (count result-src))
+            "src text length does not change")
+        (is (not= src result-src)
+            "barfed src is different")
+        (is (> (count current-node-text)
+               (-> result-src
+                   (obp/src->tree obp/html-lang-id)
+                   (noget+ :?rootNode)
+                   (html-rules/node->current-subject-nodes result-offset)
+                   last
+                   (noget+ :?text)
+                   count))
+            "current node is smaller after barf")))
+    (let [cursor-offset (dec current-node-end-index)
+          {result-src :src
+           result-offset :offset
+           :as barf-result} (obp-barf/forward-barf src cursor-offset)]
+      (&testing "when cursor offset is at node end"
+        (is (> cursor-offset result-offset)
+            "cursor offset is moved backward")
+        (is (= (count src) (count result-src))
+            "src text length does not change")
+        (is (not= src result-src)
+            "barfed src is different")
+        (is (> (count current-node-text)
+               (-> result-src
+                   (obp/src->tree obp/html-lang-id)
+                   (noget+ :?rootNode)
+                   (html-rules/node->current-subject-nodes result-offset)
+                   last
+                   (noget+ :?text)
+                   count))
+            "current node is smaller after barf")))))
 
 (deftest forward-barf-test
   (testing "when src is empty"

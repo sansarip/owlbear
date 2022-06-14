@@ -8,7 +8,7 @@
              [owlbear.parse :as obp]
              [owlbear.html.parse.rules :as html-rules]
              [owlbear.html.edit.slurp :as obp-slurp]
-             [owlbear.utilities :refer [noget+]]))
+             [owlbear.utilities :refer-macros [&testing] :refer [noget+]]))
 
 (defspec forward-slurp-spec 5
   (prop/for-all [{:keys [src
@@ -27,13 +27,13 @@
                                                          :current-node-text (noget+ current-node :?text)
                                                          :current-node-start-index (noget+ current-node :?startIndex)
                                                          :current-node-end-index (noget+ current-node :?endIndex)})))]
-    (testing "when cursor out of bounds"
+    (&testing "when cursor out of bounds"
       (is (nil? (obp-slurp/forward-slurp src out-of-bounds-offset))
           "no result"))
-    (testing "when cursor at node start"
-      (let [{result-src :src
-             result-offset :offset
-             :as slurp-result} (obp-slurp/forward-slurp src current-node-start-index)]
+    (let [{result-src :src
+           result-offset :offset
+           :as slurp-result} (obp-slurp/forward-slurp src current-node-start-index)]
+      (&testing "when cursor at node start"
         (is (= (count src) (count result-src))
             "text length does not change")
         (is (= current-node-start-index result-offset)
@@ -46,11 +46,11 @@
                                                  (noget+ :?text))]
           (is (str/includes? slurp-result-current-node-text current-node-next-sibling-text)
               "slurped former forward sibling"))))
-    (testing "when cursor offset is at node end"
-      (let [cursor-offset (dec current-node-end-index)
-            {result-src :src
-             result-offset :offset
-             :as slurp-result} (obp-slurp/forward-slurp src cursor-offset)]
+    (let [cursor-offset (dec current-node-end-index)
+          {result-src :src
+           result-offset :offset
+           :as slurp-result} (obp-slurp/forward-slurp src cursor-offset)]
+      (&testing "when cursor offset is at node end"
         (is (= (count src) (count result-src))
             "text length does not change")
         (is (< cursor-offset result-offset)
