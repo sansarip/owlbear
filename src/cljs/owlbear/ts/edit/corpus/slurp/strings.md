@@ -27,7 +27,7 @@ a
 a▌`
 ```
 
-## Strings Meet Strings
+## Nested Strings
 ```typescript
 "▌"
 ""
