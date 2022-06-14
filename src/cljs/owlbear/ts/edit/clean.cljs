@@ -3,13 +3,13 @@
   (:require [owlbear.ts.parse.rules :as ts-rules]
             [owlbear.utilities :as obu]))
 
-(defn escaped-comment-backslash-offsets 
+(defn escaped-comment-backslash-offsets
   "Given a string, `text`, 
   returns the offsets of backslashes of escaped comments 
   as a vector 
   
   An important note is that nested escaped comment backslashes 
-  will *not* be included in the result"  
+  will *not* be included in the result"
   [text]
   (loop [[{:keys [offset text]} :as delims] (obu/re-pos #"\\/\*|\*\\/" text)
          opening-delim-count 0
