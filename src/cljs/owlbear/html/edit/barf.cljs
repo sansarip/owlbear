@@ -14,7 +14,7 @@
                 #(filter ob-html-rules/object-node %)
                 #(when % (oget % :?children))
                 ob-html-rules/subject-node)
-          (obpr/flatten-children node)))
+          (obpr/node->descendants node)))
 
 (defn forward-barf
   "Given a `src` string and character `offset`, 
@@ -36,7 +36,6 @@
       (let [current-node-end-tag-start-index (oget current-node-end-tag :?startIndex)
             current-node-end-tag-end-index (oget current-node-end-tag :?endIndex)
             current-node-end-tag-text (oget current-node-end-tag :?text)
-            ;; TODO: When comment node gets implemented, need to add in its tag start because we need to parse comment content separately 
             end-tag-insert-offset (oget last-child-object-node :?startIndex)]
         {:src (-> src
                   (obu/str-remove current-node-end-tag-start-index current-node-end-tag-end-index)

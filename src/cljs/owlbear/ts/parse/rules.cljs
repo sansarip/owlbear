@@ -322,7 +322,7 @@
    if it is an empty collection node"
   [node]
   (when (and (ts-collection-node node)
-             (obpr/every-child-node? (complement object-node) node))
+             (obpr/every-descendant? (complement object-node) node))
     node))
 
 (defn not-empty-ts-collection-node
@@ -349,7 +349,7 @@
    if it is an empty TS object node"
   [node]
   (when (and (ts-object-type-node node)
-             (obpr/every-child-node? (complement object-node) node))
+             (obpr/every-descendant? (complement object-node) node))
     node))
 
 (defn not-empty-ts-array-node
@@ -367,7 +367,7 @@
    if it is an empty arguments node"
   [node]
   (when (and (ts-arguments-node node)
-             (obpr/every-child-node? (complement object-node) node))
+             (obpr/every-descendant? (complement object-node) node))
     node))
 
 (defn not-empty-ts-arguments-node
@@ -519,7 +519,7 @@
   [node offset]
   {:pre [(<= 0 offset)]}
   (some-> node
-          obpr/flatten-children
+          obpr/node->descendants
           (->> (filter subject-node))
           (obpr/filter-current-nodes offset)))
 
@@ -529,7 +529,7 @@
   [node offset]
   {:pre [(<= 0 offset)]}
   (some-> node
-          obpr/flatten-children
+          obpr/node->descendants
           (->> (filter object-node))
           (obpr/filter-current-nodes offset)))
 
@@ -593,7 +593,7 @@
    `${() => ``}`
    ```"
   [node]
-  (obpr/filter-children (comp #{ts-template-substitution}
+  (obpr/filter-descendants (comp #{ts-template-substitution}
                               #(obu/noget+ % :?parent.?type)
                               ts-template-string-node)
                         node))

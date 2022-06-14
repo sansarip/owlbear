@@ -22,7 +22,7 @@
                                                                                    :tag-name-gen obgt-html/html-element-container-tag-name}})]
                                                     (let [root-node (noget+ tree :?rootNode)
                                                           raise-subjects (filter (comp #(noget+ % :?parent.?parent) ob-html-rules/object-node)
-                                                                                 (obpr/flatten-children root-node))]
+                                                                                 (obpr/node->descendants root-node))]
                                                       (gen/let [current-node (gen/elements raise-subjects)
                                                                 in-bounds-offset (gen/elements [(noget+ current-node :?startIndex) (dec (noget+ current-node :?endIndex))])]
                                                         {:src (noget+ root-node :?text)

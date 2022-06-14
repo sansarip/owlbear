@@ -18,7 +18,7 @@
                                                   (let [root-node (noget+ tree :?rootNode)
                                                         root-node-text (noget+ root-node :?text)
                                                         object-nodes (->> root-node
-                                                                          obpr/flatten-children
+                                                                          obpr/node->descendants
                                                                           (filter #(and (ob-html-rules/object-node %)
                                                                                         (not= (noget+ % :?text) root-node-text))))]
                                                     (gen/let [current-node (gen/elements object-nodes)

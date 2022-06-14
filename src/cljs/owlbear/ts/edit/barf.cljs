@@ -16,7 +16,7 @@
                 #(filter ob-ts-rules/object-node %)
                 #(when % (obu/noget+ % :?children))
                 ob-ts-rules/subject-node)
-          (obpr/flatten-children node)))
+          (obpr/node->descendants node)))
 
 (defn remove-superfluous-syntax
   "Given a context, `ctx`, a ancestor node, `ancestor-node`, 

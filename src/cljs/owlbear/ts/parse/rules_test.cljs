@@ -23,7 +23,7 @@
 
 (defspec node->current-subject-nodes-spec 10
   (prop/for-all [{:keys [nodes]} (gen/let [tree obgt-ts/tree-with-t-subject]
-                                   (let [[root-node :as nodes] (obpr/flatten-children (noget+ tree :?rootNode))]
+                                   (let [[root-node :as nodes] (obpr/node->descendants (noget+ tree :?rootNode))]
                                      {:nodes nodes
                                       :src (noget+ root-node :?text)}))]
     (let [current-subject-nodes (some (comp not-empty #(ob-ts-rules/node->current-subject-nodes % (noget+ % :?startIndex)))
@@ -60,7 +60,7 @@
 
 (defspec node->current-object-nodes-spec 10
   (prop/for-all [{:keys [nodes]} (gen/let [tree obgt-ts/tree-with-t-subject]
-                                   (let [[root-node :as nodes] (obpr/flatten-children (noget+ tree :?rootNode))]
+                                   (let [[root-node :as nodes] (obpr/node->descendants (noget+ tree :?rootNode))]
                                      {:nodes nodes
                                       :src (noget+ root-node :?text)}))]
     (let [current-object-nodes (some (comp not-empty #(ob-ts-rules/node->current-object-nodes % (noget+ % :?startIndex)))
@@ -83,7 +83,7 @@
 (defspec next-object-node-spec 10
   (prop/for-all [{:keys [nodes]} (gen/let [tree obgt-ts/tree-with-t-subject]
                                    (let [root-node (noget+ tree :?rootNode)]
-                                     {:nodes (obpr/flatten-children root-node)
+                                     {:nodes (obpr/node->descendants root-node)
                                       :src (noget+ root-node :?text)}))]
     (let [[slurp-anchor-node
            forward-object-node] (some #(when-let [fsn (ob-ts-rules/next-forward-object-node %)]
@@ -106,7 +106,7 @@
 
 (defspec node->current-forward-object-ctx-spec 10
   (prop/for-all [{:keys [nodes]} (gen/let [tree obgt-ts/tree-with-t-subject]
-                                   (let [[root-node :as nodes] (obpr/flatten-children (noget+ tree :?rootNode))]
+                                   (let [[root-node :as nodes] (obpr/node->descendants (noget+ tree :?rootNode))]
                                      {:nodes nodes
                                       :src (noget+ root-node :?text)}))]
     (let [{:keys [forward-object-node
@@ -148,7 +148,7 @@
                                  (noget+ last-child-object-node :?startIndex)
                                  (noget+ last-child-object-node :?endIndex))
             "last-child-object node is positionally within the current-node")
-        (is (obpr/some-child-node (comp #(= (noget+ last-child-object-node :?id)
+        (is (obpr/some-descendant-node (comp #(= (noget+ last-child-object-node :?id)
                                             (noget+ % :?id))
                                         ob-ts-rules/object-node) current-node)
             "last-child-object node is a child of the current node")))))

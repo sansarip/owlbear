@@ -160,7 +160,7 @@
      {:pre [(not-empty dir-paths)]}
      #_{:clj-kondo/ignore [:unresolved-symbol]}
      (some->> dir-paths
-              (map (comp obpr/flatten-children #(dirt %)))
+              (map (comp obpr/node->descendants #(dirt %)))
               flatten
               (filter (comp #(str/ends-with? % ".md") #(obu/noget+ % :?name)))
               (map #(obu/noget+ % :?path)))))
@@ -209,7 +209,7 @@
                               (fs/readFileSync "utf8")
                               (obp/src->tree :markdown)
                               (obu/noget+ :?rootNode)
-                              obpr/flatten-children
+                              obpr/node->descendants
                               (->> (filter test-node))
                               (vector %)))
                 test-nodes->test-blocks

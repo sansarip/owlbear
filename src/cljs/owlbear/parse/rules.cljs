@@ -15,11 +15,10 @@
        stop
        (dec (oget node :endIndex)))))
 
-;; TODO: Rename to node->descendants
-(defn flatten-children
+(defn node->descendants
   "Given a node, 
    returns a flattened, depth-first traversed, lazy sequence 
-   of all of the node's children and their children"
+   of all of the node's descendants"
   [node]
   (tree-seq #(oget % :?children) #(oget % :?children) node))
 
@@ -51,7 +50,7 @@
    return a lazy sequence of the child nodes containing the given offset"
   [node offset]
   {:pre [(<= 0 offset)]}
-  (filter-current-nodes (flatten-children node) offset))
+  (filter-current-nodes (node->descendants node) offset))
 
 (defn node->backward-sibling-nodes
   "Given a node, 
@@ -78,33 +77,32 @@
   {:pre [(fn? pred)]}
   (some pred (node->forward-sibling-nodes node)))
 
-(defn some-child-node
+(defn some-descendant-node
   "Given a predicate function, `pred`, and a `node`, 
-   returns the first child that fulfills the predicate function"
-  [pred node]
-  {:pre [(fn? pred)]}
-  (some pred (rest (flatten-children node))))
-
-(defn filter-children
-  "Given a predicate function, `pred`, and a `node`, 
-   returns a lazy seq of all the children that fulfill 
+   returns the first descendant node that fulfills 
    the predicate function"
   [pred node]
   {:pre [(fn? pred)]}
-  (filter pred (rest (flatten-children node))))
+  (some pred (rest (node->descendants node))))
 
-;; TODO: Rename to every-descendant?
-(defn every-child-node?
+(defn filter-descendants
   "Given a predicate function, `pred`, and a `node`, 
-   returns true if every child that fulfills the predicate function"
+   returns a lazy seq of all the descendant nodes 
+   that fulfill the predicate function"
   [pred node]
   {:pre [(fn? pred)]}
-  (every? pred (rest (flatten-children node))))
+  (filter pred (rest (node->descendants node))))
 
-;; TODO: Rename to some-ancestor-node
-(defn some-parent-node
+(defn every-descendant?
   "Given a predicate function, `pred`, and a `node`, 
-   returns the first parent that fulfills the predicate function"
+   returns true if every descendant node fulfills the predicate function"
+  [pred node]
+  {:pre [(fn? pred)]}
+  (every? pred (rest (node->descendants node))))
+
+(defn some-ancestor-node
+  "Given a predicate function, `pred`, and a `node`, 
+   returns the first ancestor node that fulfills the predicate function"
   [pred node]
   {:pre [(fn? pred)]}
   (some pred (node->ancestors node)))

@@ -68,7 +68,7 @@
   (prop/for-all [[root-node :as children] (gen/let [tree (obgt-html/tree {:hiccup-gen-opts
                                                                           {:vector-gen-args [2 6]
                                                                            :tag-name-gen obgt-html/html-element-container-tag-name}})]
-                                            (obpr/flatten-children (noget+ tree :?rootNode)))]
+                                            (obpr/node->descendants (noget+ tree :?rootNode)))]
     (let [current-subject-nodes (some #(ob-html-rules/node->current-subject-nodes % (noget+ % :?startIndex))
                                       children)]
       (testing "when forward object node is found"
@@ -90,7 +90,7 @@
   (prop/for-all [[root-node :as children] (gen/let [tree (obgt-html/tree {:hiccup-gen-opts
                                                                           {:vector-gen-args [2 6]
                                                                            :tag-name-gen obgt-html/html-element-container-tag-name}})]
-                                            (obpr/flatten-children (noget+ tree :?rootNode)))]
+                                            (obpr/node->descendants (noget+ tree :?rootNode)))]
     (let [current-object-nodes (some #(ob-html-rules/node->current-object-nodes % (noget+ % :?startIndex))
                                       children)]
       (testing "when forward object node is found"
@@ -127,7 +127,7 @@
 
 (defspec next-object-node-spec 10
   (prop/for-all [children (gen/let [tree (obgt-html/tree {:hiccup-gen-opts {:vector-gen-args [2 6]}})]
-                            (obpr/flatten-children (noget+ tree :?rootNode)))]
+                            (obpr/node->descendants (noget+ tree :?rootNode)))]
     (let [[slurp-anchor-node
            forward-object-node] (some #(when-let [fsn (ob-html-rules/next-forward-object-node %)]
                                          [% fsn])
@@ -151,7 +151,7 @@
   (prop/for-all [[root-node :as children] (gen/let [tree (obgt-html/tree {:hiccup-gen-opts
                                                                           {:vector-gen-args [2 6]
                                                                            :tag-name-gen obgt-html/html-element-container-tag-name}})]
-                                            (obpr/flatten-children (noget+ tree :?rootNode)))]
+                                            (obpr/node->descendants (noget+ tree :?rootNode)))]
     (let [{:keys [forward-object-node
                   current-node]} (some #(ob-html-rules/node->current-forward-object-ctx % (noget+ % :?startIndex))
                                        children)]
@@ -187,5 +187,5 @@
                                  (noget+ last-child-object-node :?startIndex)
                                  (dec (noget+ last-child-object-node :?endIndex)))
             "last-child-object node is positionally within the current-node")
-        (is (obpr/some-child-node #(= last-child-object-node %) current-node)
+        (is (obpr/some-descendant-node #(= last-child-object-node %) current-node)
             "last-child-object node is a child of the current node")))))

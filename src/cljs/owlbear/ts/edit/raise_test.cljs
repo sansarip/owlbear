@@ -19,7 +19,7 @@
                                                     (let [root-node (noget+ tree :?rootNode)
                                                           {:keys [current-node
                                                                   current-ancestor-node]} (->> root-node
-                                                                                               obpr/flatten-children
+                                                                                               obpr/node->descendants
                                                                                                shuffle
                                                                                                (some #(ob-ts-raise/raise-ctx % (inc (noget+ % :?startIndex)))))] 
                                                       (gen/let [in-bounds-offset (gen/elements

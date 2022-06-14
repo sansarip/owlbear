@@ -14,7 +14,7 @@
   (filter (comp #(some ob-ts-rules/object-node %)
                 obpr/node->forward-sibling-nodes
                 ob-ts-rules/subject-container-node)
-          (obpr/flatten-children node)))
+          (obpr/node->descendants node)))
 
 (defn end-node-prefix
   "Given a `node`, 

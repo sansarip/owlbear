@@ -105,7 +105,7 @@
   [node offset]
   {:pre [(<= 0 offset)]}
   (some-> node
-          obpr/flatten-children
+          obpr/node->descendants
           (->> (filter subject-node))
           (obpr/filter-current-nodes offset)))
 
@@ -115,7 +115,7 @@
   [node offset]
   {:pre [(<= 0 offset)]}
   (some-> node
-          obpr/flatten-children
+          obpr/node->descendants
           (->> (filter object-node))
           (obpr/filter-current-nodes offset)))
 

@@ -14,7 +14,7 @@
                 #(filter ob-html-rules/object-node %)
                 obpr/node->forward-sibling-nodes
                 ob-html-rules/subject-node)
-          (obpr/flatten-children node)))
+          (obpr/node->descendants node)))
 
 (defn forward-slurp
   "Given a `src` string and character `offset`, 
