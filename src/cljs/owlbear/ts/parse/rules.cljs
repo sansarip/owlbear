@@ -567,18 +567,6 @@
                       :current-node current-node})))
            last))
 
-(defn node->last-child
-  "Given a node, 
-   returns the end node for that node if available"
-  [node]
-  (last (obu/noget+ node :?children)))
-
-(defn node->first-child
-  "Given a node, 
-   returns the start node for that node if available"
-  [node]
-  (first (obu/noget+ node :?children)))
-
 (defn node->template-string-nodes-in-substitutions
   "Given a `node`, 
    returns all the child nodes (recursive) that are 
