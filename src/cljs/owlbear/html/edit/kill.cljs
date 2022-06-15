@@ -4,7 +4,16 @@
             [owlbear.html.parse.rules :as html-rules]
             [owlbear.utilities :as obu]))
 
-(defn kill [src offset]
+(defn kill
+  "Given a `src` string and character `offset`, 
+   returns a new src string with the kill operation applied at the `offset`
+
+   e.g.
+   ```html
+     <div><📍h1></h1></div> => <div></div> 
+   ```"
+  [src offset]
+  {:pre [(string? src) (>= offset 0)]}
   (when-let [current-node (some-> src
                                   (obp/src->tree obp/html-lang-id)
                                   (obu/noget+ :?rootNode)
