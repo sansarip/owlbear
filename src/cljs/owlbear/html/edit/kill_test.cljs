@@ -16,16 +16,15 @@
                          out-of-bounds-offset]} (gen/let [tree (obgt-html/tree {:hiccup-gen-opts
                                                                                 {:vector-gen-args [1 6]}})]
                                                   (let [root-node (noget+ tree :?rootNode)
-                                                        root-node-text (noget+ root-node :?text)
-                                                        object-nodes (->> root-node
+                                                        current-node (->> root-node
                                                                           obpr/node->descendants
-                                                                          (filter #(and (html-rules/object-node %)
-                                                                                        (not= (noget+ % :?text) root-node-text))))]
-                                                    (gen/let [current-node (gen/elements object-nodes)
-                                                              in-bounds-offset (gen/elements
-                                                                                [(noget+ current-node :?startIndex)
-                                                                                 (dec (noget+ current-node :?endIndex))])]
-                                                      {:src root-node-text
+                                                                          rest
+                                                                          shuffle
+                                                                          (some html-rules/object-node))]
+                                                    (gen/let [in-bounds-offset (gen/choose
+                                                                                (noget+ current-node :?startIndex)
+                                                                                (dec (noget+ current-node :?endIndex)))]
+                                                      {:src (noget+ root-node :?text)
                                                        :current-node current-node
                                                        :current-node-text (noget+ current-node :?text)
                                                        :in-bounds-offset in-bounds-offset
