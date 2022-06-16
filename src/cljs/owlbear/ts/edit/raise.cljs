@@ -29,14 +29,17 @@
         current-ancestor-node (some #(or (when-let [sc-node (ts-rules/subject-container-node %)]
                                            (let [parent-node (obu/noget+ % :?parent)]
                                              (cond
+                                               ;; const a = foo.bar(a).qux(▌b); -targets full left-expression
                                                (ts-rules/ts-call-expression-node parent-node)
                                                parent-node
 
+                                               ;; type foo = {▌a:} -targets declaration value
                                                (contains? #{ts-rules/ts-type-alias-declaration
                                                             ts-rules/ts-lexical-declaration}
                                                           (obu/noget+ sc-node :?type))
                                                %
 
+                                               ;; const foo = ▌bar(); -preserves semicolon
                                                (ts-rules/ts-expression-statement-node sc-node)
                                                (obu/noget+ sc-node :?firstChild)
 
