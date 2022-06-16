@@ -16,6 +16,7 @@
    update this whenever a new test-suite (h1-header) is added"
   {"TypeScript Forward Slurp" 'owlbear.ts.edit.slurp/forward-slurp
    "TypeScript Forward Barf" 'owlbear.ts.edit.barf/forward-barf
+   "TypeScript Kill" 'owlbear.ts.edit.kill/kill
    "TypeScript Raise" 'owlbear.ts.edit.raise/raise})
 
 (defn src->cursor-ctx
