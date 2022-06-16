@@ -107,6 +107,7 @@
   ([src offset]
    (raise src offset false))
   ([src offset tsx?]
+   {:pre [(string? src) (>= offset 0)]}
    (when-let [{:keys [current-node
                       current-ancestor-node]} (some-> src
                                                       (obp/src->tree (if tsx? obp/tsx-lang-id obp/ts-lang-id))
