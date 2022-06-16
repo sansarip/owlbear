@@ -73,6 +73,14 @@ const kill: Handler = () => {
     case "html":
       editDoc(editor, ob.htmlKill);
       return;
+    case "ts":
+    case "js":
+      editDoc(editor, ob.tsKill);
+      return;
+    case "tsx":
+    case "jsx":
+      editDoc(editor, ob.tsxKill);
+      return;
   }
 };
 

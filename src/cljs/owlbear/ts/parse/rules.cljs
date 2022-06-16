@@ -100,7 +100,21 @@
   (when (= ts-escape-sequence (obu/noget+ node :?type))
     node))
 
+(defn ts-member-expression-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a member-expression node"
+  [node]
+  (when (= ts-member-expression (obu/noget+ node :?type))
+    node))
 
+(defn ts-spread-element-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a spread-element node"
+  [node]
+  (when (= ts-spread-element (obu/noget+ node :?type))
+    node))
 
 (defn ts-object-node
   "Given a `node`, 
@@ -582,6 +596,6 @@
    ```"
   [node]
   (obpr/filter-descendants (comp #{ts-template-substitution}
-                              #(obu/noget+ % :?parent.?type)
-                              ts-template-string-node)
-                        node))
+                                 #(obu/noget+ % :?parent.?type)
+                                 ts-template-string-node)
+                           node))

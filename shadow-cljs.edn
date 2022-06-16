@@ -21,10 +21,12 @@
                      :loadLanguageWasm owlbear.parse/load-language-wasm!
                      :tsForwardBarf owlbear.edit/ts-forward-barf
                      :tsForwardSlurp owlbear.edit/ts-forward-slurp
+                     :tsKill owlbear.edit/ts-kill
                      :tsLangId owlbear.parse/ts-lang-id
                      :tsRaise owlbear.edit/ts-raise
                      :tsxForwardBarf owlbear.edit/tsx-forward-barf
                      :tsxForwardSlurp owlbear.edit/tsx-forward-slurp
+                     :tsxKill owlbear.edit/tsx-kill
                      :tsxLangId owlbear.parse/tsx-lang-id
                      :tsxRaise owlbear.edit/tsx-raise}
            :output-to "out/cljs/owlbear.js"}

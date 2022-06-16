@@ -258,6 +258,7 @@
    ```"
   ([src offset] (forward-barf src offset false))
   ([src offset tsx?]
+   {:pre [(string? src) (>= offset 0)]}
    (when-let [{:keys [last-child-object-node
                       current-node]} (-> src
                                          (obp/src->tree (if tsx? obp/tsx-lang-id obp/ts-lang-id))
