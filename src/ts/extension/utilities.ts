@@ -7,6 +7,7 @@ import {
   TextEditor,
   TextEditorEdit,
 } from "vscode";
+import { EditCtx } from "./types";
 
 export const textRange = (document: TextDocument): Range => {
   const firstLine = document.lineAt(0);
@@ -14,32 +15,37 @@ export const textRange = (document: TextDocument): Range => {
   return new Range(firstLine.range.start, lastLine.range.end);
 };
 
-export const replace = (
+export const replace = async (
   editor: TextEditor,
-  newSrc: string,
   cursorOffset: number,
-  newCursorOffset: number
-) => {
-  editor.edit((editBuilder: TextEditorEdit) => {
-    if (newSrc) {
-      editBuilder.replace(textRange(editor.document), newSrc);
-      if (newCursorOffset && newCursorOffset !== cursorOffset) {
-        const newCursorPosition: Position =
-          editor.document.positionAt(newCursorOffset);
-        const newCursorRange: Range = new Range(
-          newCursorPosition,
-          newCursorPosition
-        );
-        const newCursorSelection: Selection = new Selection(
-          newCursorPosition,
-          newCursorPosition
-        );
-        editor.selection = newCursorSelection;
-        editor.revealRange(newCursorRange);
-      }
-      commands.executeCommand("editor.action.formatDocument");
+  editCtx: EditCtx
+): Promise<EditCtx | undefined> => {
+  const { src: newSrc, offset: newCursorOffset } = editCtx;
+  const didEdit = await editor.edit((editBuilder: TextEditorEdit) => {
+    if (!newSrc) {
+      return false;
     }
+    editBuilder.replace(textRange(editor.document), newSrc);
+
+    if (isNaN(newCursorOffset) || newCursorOffset === cursorOffset) {
+      return false;
+    }
+    const newCursorPosition: Position =
+      editor.document.positionAt(newCursorOffset);
+    const newCursorRange: Range = new Range(
+      newCursorPosition,
+      newCursorPosition
+    );
+    const newCursorSelection: Selection = new Selection(
+      newCursorPosition,
+      newCursorPosition
+    );
+    editor.selection = newCursorSelection;
+    editor.revealRange(newCursorRange);
+    commands.executeCommand("editor.action.formatDocument");
+    return true;
   });
+  return didEdit ? editCtx : undefined;
 };
 
 export const getFileExtension = (document: TextDocument | undefined) =>

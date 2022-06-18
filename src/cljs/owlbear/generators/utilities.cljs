@@ -1,22 +1,21 @@
 (ns owlbear.generators.utilities
   (:require [clojure.string :as str]
-            [clojure.test.check.generators :as gen]
-            [owlbear.utilities :as obu]))
+            [clojure.test.check.generators :as gen]))
 
-(def large-pos-integer (gen/fmap obu/abs gen/large-integer))
+(def large-pos-integer (gen/fmap abs gen/large-integer))
 
-(def small-pos-integer (gen/fmap obu/abs gen/small-integer))
+(def small-pos-integer (gen/fmap abs gen/small-integer))
 
 (def small-pos-range
   "Generates a range of small positive integers"
-  (gen/let [start (gen/fmap obu/abs gen/small-integer)
-            addend (gen/fmap (comp inc obu/abs) gen/small-integer)]
+  (gen/let [start (gen/fmap abs gen/small-integer)
+            addend (gen/fmap (comp inc abs) gen/small-integer)]
     (range start (+ start addend))))
 
 (def large-pos-range
   "Generates a range of large positive integers"
-  (gen/let [start (gen/fmap obu/abs gen/large-integer)
-            addend (gen/fmap (comp inc obu/abs) gen/large-integer)]
+  (gen/let [start (gen/fmap abs gen/large-integer)
+            addend (gen/fmap (comp inc abs) gen/large-integer)]
     (range start (+ start addend))))
 
 (defn subvec*

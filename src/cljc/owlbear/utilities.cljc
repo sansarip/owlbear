@@ -68,7 +68,7 @@
    returns lazy seq of updated offsets, 
    each updated offset being 
    offset + addend - index"
-  ([offsets] 
+  ([offsets]
    (dec-offsets 0 offsets))
   ([addend offsets]
    (map-indexed
@@ -81,7 +81,7 @@
    returns lazy seq of updated offsets, 
    each updated offset being a sum of itself, 
    the given addend, and its index position"
-  ([offsets] 
+  ([offsets]
    (inc-offsets 0 offsets))
   ([addend offsets]
    (map-indexed
@@ -93,12 +93,6 @@
   [arg]
   (println arg)
   arg)
-
-#?(:cljs
-   (defn abs
-     "js/Math.abs"
-     ([num]
-      (js/Math.abs num))))
 
 #?(:cljs
    (defn noget+
@@ -149,3 +143,10 @@
          (if-let [m (.exec re s)]
            (recur (conj res {:offset (.-index m) :text (first m)}))
            res)))))
+
+#?(:cljs
+   (defn kabob->camel
+     "Given a string, `s`, 
+      returns a string with all kabob-case words converted to camelCase"
+     [s]
+     (.replace s (js/RegExp. "-." "g") #(str/upper-case (get % 1)))))

@@ -56,4 +56,8 @@
     (is (nil? (html-kill/kill "" 0))
         "no result"))
   (testing "when root node"
-    (is (= {:src "" :offset 0} (html-kill/kill "<div></div>" 0)))))
+    (let [src "<div></div>"]
+      (is (= {:src ""
+              :offset 0
+              :removed-text src}
+             (html-kill/kill src 0))))))
