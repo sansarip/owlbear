@@ -22,7 +22,8 @@
     (let [current-node-start (oget current-node :?startIndex)
           current-node-end (oget current-node :?endIndex)]
       {:src (obu/str-remove src current-node-start current-node-end)
-       :offset current-node-start})))
+       :offset current-node-start
+       :removed-text (obu/noget+ current-node :?text)})))
 
 (comment
   ;; Kill example
