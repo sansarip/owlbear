@@ -5,42 +5,37 @@ import {
   TextEditor,
   window,
 } from "vscode";
-import { EditCtx } from "./types";
-import { getFileExtension, replace } from "./utilities";
+import { EditCtx, OwlbearFunction } from "./types";
+import { getEditCtx, getFileExtension, replace } from "./utilities";
 import clipboard from "clipboardy";
 
 const ob = require("../../../out/cljs/owlbear");
 
-type Handler = () => undefined | Thenable<EditCtx | undefined>;
+type Handler = (editCtx?: EditCtx | undefined) => undefined | Thenable<EditCtx | undefined>;
 
 type Command = {
   id: string;
   handler: Handler;
 };
 
-type GetEditCtx = (src: string, offset: number) => EditCtx;
-
 type Edit = (
-  editor: TextEditor | undefined,
-  getEditCtx: GetEditCtx
+  editor: TextEditor,
+  obFn: OwlbearFunction
 ) => Promise<EditCtx | undefined> | undefined;
 
-const editDoc: Edit = (editor, getEditCtx) => {
-  if (!editor) {
-    return;
-  }
-  const document = editor.document;
-  const cursorOffset = document.offsetAt(editor.selection.active);
-  const source = document.getText();
-  const editCtx = getEditCtx(source, cursorOffset);
+const editDoc: Edit = (editor, obFn) => {
+  const editCtx = getEditCtx(editor, obFn);
   if (!editCtx) {
     return;
   }
-  return replace(editor, cursorOffset, editCtx);
+  return replace(editor, editCtx);
 };
 
 const forwardSlurp: Handler = () => {
   const editor = window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
   const fileExtension = getFileExtension(editor?.document);
   switch (fileExtension) {
     case "html":
@@ -56,6 +51,9 @@ const forwardSlurp: Handler = () => {
 
 const forwardBarf: Handler = () => {
   const editor = window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
   const fileExtension = getFileExtension(editor?.document);
   switch (fileExtension) {
     case "html":
@@ -71,6 +69,9 @@ const forwardBarf: Handler = () => {
 
 const kill: Handler = () => {
   const editor = window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
   const fileExtension = getFileExtension(editor?.document);
   switch (fileExtension) {
     case "html":
@@ -84,18 +85,43 @@ const kill: Handler = () => {
   }
 };
 
+const copy: Handler = async (editCtx = undefined) => {
+  const editor = window.activeTextEditor;
+  if (!editor) {
+    return undefined;
+  }
+  const fileExtension = getFileExtension(editor.document);
+  const doCopy = (obFn: OwlbearFunction) => {
+    const ctx = editCtx ?? getEditCtx(editor, obFn);
+    const removedText = ctx?.removedText;
+    if (!removedText) {
+      return;
+    }
+    clipboard.writeSync(ctx.removedText);
+    return ctx;
+  };
+  switch (fileExtension) {
+    case "html":
+      return doCopy(ob.htmlKill);
+    case "ts":
+    case "js":
+      return doCopy(ob.tsKill);
+    case "tsx":
+    case "jsx":
+      return doCopy(ob.tsxKill);
+  }
+};
+
 const cut: Handler = async () => {
   const editCtx = await kill();
-  const removedText = editCtx?.removedText;
-  if (!removedText) {
-    return;
-  }
-  clipboard.writeSync(removedText);
-  return editCtx;
+  return await copy(editCtx);
 };
 
 const raise: Handler = () => {
   const editor = window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
   const fileExtension = getFileExtension(editor?.document);
   switch (fileExtension) {
     case "html":
@@ -110,6 +136,7 @@ const raise: Handler = () => {
 };
 
 const commands: Command[] = [
+  { id: "owlbear.copy", handler: copy },
   { id: "owlbear.cut", handler: cut },
   { id: "owlbear.forwardBarf", handler: forwardBarf },
   { id: "owlbear.forwardSlurp", handler: forwardSlurp },
