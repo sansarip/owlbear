@@ -2,20 +2,25 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 const App = () => {
-  const name = "World";
   return (
     <>
-      <h1>
-        Hello {name}!
-        {...[
-          <h2>
-            {" "}
-            Hello again!, <h3> And again!</h3>
-          </h2>,
-        ]}
-      </h1>
-      <p>This is the first JSX Element!</p>
-      <p>This is a another JSX Element</p>
+      <section></section>
+      <h1>Hello, World!</h1>
+      <p>
+        I'm baby aesthetic neutra cornhole, austin keytar ethical 3 wolf moon
+        flexitarian normcore paleo wolf chillwave. Selvage craft beer direct
+        trade pitchfork. Four dollar toast try-hard salvia yr. Viral activated
+        charcoal microdosing put a bird on it, prism blue bottle scenester tofu.
+        Beard craft beer vegan, edison bulb blue bottle chicharrones
+        farm-to-table pug wayfarers selfies man bun.
+      </p>
+      <p>
+        Truffaut twee mixtape typewriter prism hot chicken try-hard. Tote bag
+        taxidermy vegan vaporware you probably haven't heard of them vice
+        cornhole distillery tilde DSA intelligentsia literally cred raw denim.
+        8-bit vinyl ethical kale chips unicorn jean shorts cloud bread four
+        loko. Mixtape fingerstache kombucha bushwick ramps.
+      </p>
     </>
   );
 };
