@@ -17,7 +17,7 @@ export const textRange = (document: TextDocument): Range => {
 
 export const getCurrentOffset = (editor: TextEditor): number => {
   return editor.document.offsetAt(editor.selection.active);
-}
+};
 
 export const replace = async (
   editor: TextEditor,
@@ -62,12 +62,4 @@ export const getDocCtx = (editor: TextEditor): DocCtx => {
   const cursorOffset = document.offsetAt(editor.selection.active);
   const source = document.getText();
   return { src: source, offset: cursorOffset };
-};
-
-export const getEditCtx = (
-  editor: TextEditor,
-  obFn: OwlbearFunction
-): EditCtx => {
-  const { src, offset } = getDocCtx(editor);
-  return obFn(src, offset);
 };
