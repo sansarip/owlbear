@@ -19,6 +19,10 @@
   "contributes": {
     "commands": [
       {
+        "command": "owlbear.copy",
+        "title": "Owlbear: Copy"
+      },
+      {
         "command": "owlbear.cut",
         "title": "Owlbear: Cut"
       },
