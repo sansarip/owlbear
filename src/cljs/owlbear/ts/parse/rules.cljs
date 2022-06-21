@@ -19,6 +19,7 @@
 (def ts-array "array")
 (def ts-arrow-function "arrow_function")
 (def ts-assignment-expression "assignment_expression")
+(def ts-await-expression "await_expression")
 (def ts-binary-expression "binary_expression")
 (def ts-call-expression "call_expression")
 (def ts-class-body "class_body")
@@ -90,6 +91,14 @@
    if it is an array"
   [node]
   (when (= ts-array (obu/noget+ node :?type))
+    node))
+
+(defn ts-await-expression-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is an await expression"
+  [node]
+  (when (= ts-await-expression (obu/noget+ node :?type))
     node))
 
 (defn ts-escape-sequence-node
@@ -277,6 +286,7 @@
                            ts-abstract-class-declaration
                            ts-arrow-function
                            ts-assignment-expression
+                           ts-await-expression
                            ts-binary-expression
                            ts-call-expression
                            ts-class-declaration
@@ -425,7 +435,9 @@
                            ts-variable-declaration
                            ts-while-statement}
                          node-type)
-              (and (= ts-call-expression node-type)
+              (and (contains? #{ts-await-expression
+                                ts-call-expression}
+                              node-type)
                    (not= ts-expression-statement (obu/noget+ node :?parent.?type))
                    (not= ts-variable-declarator (obu/noget+ node :?parent.?type))))
       node)))

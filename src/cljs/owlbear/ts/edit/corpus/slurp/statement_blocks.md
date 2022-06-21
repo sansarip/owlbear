@@ -63,3 +63,13 @@ var foo = 2;
 {
 var foo = 2;▌}
 ```
+
+## Async Expression
+```typescript
+{▌}
+await foo();
+```
+```typescript
+{
+await foo();▌}
+```

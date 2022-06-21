@@ -29,22 +29,20 @@
         current-ancestor-node (some #(or (when-let [sc-node (ts-rules/subject-container-node %)]
                                            (let [parent-node (obu/noget+ % :?parent)]
                                              (cond
-                                               ;; const a = foo.bar(a).qux(▌b); -targets full left-expression
+                                               ;; const a = foo.bar(a).qux(▌b); => const a = ▌b;
                                                (ts-rules/ts-call-expression-node parent-node)
                                                parent-node
 
-                                               ;; type foo = {▌a:} -targets declaration value
+                                               ;; type foo = {▌a:} => type foo = ▌a;
                                                (contains? #{ts-rules/ts-type-alias-declaration
                                                             ts-rules/ts-lexical-declaration}
                                                           (obu/noget+ sc-node :?type))
                                                %
 
-                                               ;; const foo = ▌bar(); -preserves semicolon
-                                               (ts-rules/ts-expression-statement-node sc-node)
-                                               (obu/noget+ sc-node :?firstChild)
-
                                                :else sc-node)))
-                                         (ts-rules/top-level-node %))
+                                         (ts-rules/top-level-node %)
+                                         ;; const a = await ▌foo() => const a = ▌foo();
+                                         (ts-rules/ts-await-expression-node %))
                                     (-> current-nodes
                                         vec
                                         (subvec current-node-index)
@@ -52,7 +50,7 @@
     (and current-node
          current-ancestor-node
          {:current-node current-node
-          :current-ancestor-node current-ancestor-node})))
+          :current-ancestor-node current-ancestor-node}))) 
 
 (defn raise-node
   "Given a context, `ctx` containing

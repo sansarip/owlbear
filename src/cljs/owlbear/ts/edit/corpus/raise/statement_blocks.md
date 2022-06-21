@@ -97,3 +97,13 @@ switch (a) {
 ```typescript
 ▌foo();
 ```
+
+## Async Statements
+```typescript
+{
+  ▌await foo();
+}
+```
+```typescript
+▌await foo();
+```

@@ -34,3 +34,25 @@ const a = foo.bar(a).qux(▌b);
 ```typescript
 const a = ▌b;
 ```
+
+```typescript
+const a = ▌foo();
+```
+```typescript
+▌foo()
+```
+
+## Async Expressions
+```typescript
+const foo = ▌await bar();
+```
+```typescript
+▌await bar()
+```
+
+```typescript
+const foo = await ▌bar();
+```
+```typescript
+const foo = ▌bar();
+```
