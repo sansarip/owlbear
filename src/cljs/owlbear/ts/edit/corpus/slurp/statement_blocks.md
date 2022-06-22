@@ -73,3 +73,14 @@ await foo();
 {
 await foo();▌}
 ```
+
+## Comments
+```typescript
+{▌}
+// Yee haw! 🤠
+```
+```typescript
+{
+// Yee haw! 🤠▌
+}
+```

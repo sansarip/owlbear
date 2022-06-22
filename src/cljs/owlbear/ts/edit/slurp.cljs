@@ -31,29 +31,33 @@
    // e.g. after a slurp      ⬇️
    interface foo {a: string; b:}
    ```"
-  [node]
+  [current-node forward-node]
   (letfn [(object-type-needs-semicolon? []
-            (and (ts-rules/ts-object-type-node node)
-                 (not= ";" (some-> node
+            (and (ts-rules/ts-object-type-node current-node)
+                 (not= ";" (some-> current-node
                                    ts-rules/end-nodes
                                    last
                                    (obu/noget+ :?type)))))]
     (cond
-      ;; type foo = {a: string}
-      (and (ts-rules/complete-ts-object-node node)
+      ;; type foo = {a: string;▌} b => type foo = {a: string; b:;▌} 
+      (and (ts-rules/complete-ts-object-node current-node)
            (object-type-needs-semicolon?))
       ":;"
       ;; const foo = {} | const foo = {a: 1} | type foo = {a: string;}
-      (or (ts-rules/empty-ts-object-node node)
-          (ts-rules/ts-object-ends-with-pair node)
-          (ts-rules/complete-ts-object-node node))
+      (or (ts-rules/empty-ts-object-node current-node)
+          (ts-rules/ts-object-ends-with-pair current-node)
+          (ts-rules/complete-ts-object-node current-node))
       ":"
-      ;; type = {}
-      (ts-rules/empty-ts-object-type-node node)
+      ;; type foo = {▌} a => type foo = {a:;▌} 
+      (ts-rules/empty-ts-object-type-node current-node)
       ":;"
-      ;; type = {a:}
+      ;; type foo = {a: ▌} b => type = {a: b;▌}
       (object-type-needs-semicolon?)
-      ";")))
+      ";"
+      
+      ;; {▌} // hello, world => {▌//hello, wordld\n}
+      (ts-rules/ts-comment-node forward-node)
+      "\n")))
 
 (defn escape-string
   "Given a context, `ctx`, a current node, `current-node`, 
@@ -250,7 +254,7 @@
    if updates were made"
   [{:keys [src offset edit-history] :or {edit-history []} :as ctx} current-node forward-node]
   (let [current-end-nodes (reverse (ts-rules/end-nodes current-node))
-        end-node-prefix (end-node-prefix current-node)
+        end-node-prefix (end-node-prefix current-node forward-node)
         current-end-node-text (->> current-end-nodes
                                    (map #(obu/noget+ % :?text))
                                    str/join

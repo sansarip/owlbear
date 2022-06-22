@@ -192,6 +192,14 @@
   (when (= jsx-fragment-end-tag (obu/noget+ node :?type))
     node))
 
+(defn ts-comment-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a comment node"
+  [node]
+  (when (= ts-comment (obu/noget+ node :?type))
+    node))
+
 (defn ts-comment-block-node
   "given a `node`, 
    returns the `node` 
