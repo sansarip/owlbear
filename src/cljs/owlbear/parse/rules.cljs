@@ -77,6 +77,13 @@
   {:pre [(fn? pred)]}
   (some pred (node->forward-sibling-nodes node)))
 
+(defn some-child-node 
+  "Given a predicate function, `pred`, and a `node`, 
+   returns the first child node that fulfills the predicate function"
+  [pred node]
+  {:pre [(fn? pred)]}
+  (some pred (obu/noget+ node :?children)))
+
 (defn some-descendant-node
   "Given a predicate function, `pred`, and a `node`, 
    returns the first descendant node that fulfills 

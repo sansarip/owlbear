@@ -8,6 +8,7 @@
 (def html-comment-end-tag "comment_end_tag")
 (def html-doctype "doctype")
 (def html-element "element")
+(def html-error "ERROR")
 (def html-end-tag "end_tag")
 (def html-fragment "fragment")
 (def html-erroneous-end-tag "erroneous_end_tag")
@@ -92,6 +93,7 @@
         (contains? #{html-comment
                      html-doctype
                      html-element
+                     html-error
                      html-script
                      html-style}
                    node-type) node
@@ -119,7 +121,10 @@
           (->> (filter object-node))
           (obpr/filter-current-nodes offset)))
 
-(defn next-forward-object-node [node]
+(defn next-forward-object-node 
+  "Given a `node`, 
+   returns the next object node in the forward direction"  
+  [node]
   (obpr/some-forward-sibling-node object-node node))
 
 (defn node->current-forward-object-ctx

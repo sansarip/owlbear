@@ -22,27 +22,38 @@
     "commands": [
       {
         "command": "owlbear.copy",
-        "title": "Owlbear: Copy"
+        "title": "Owlbear: Copy",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
       },
       {
         "command": "owlbear.cut",
-        "title": "Owlbear: Cut"
+        "title": "Owlbear: Cut",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
       },
       {
         "command": "owlbear.forwardBarf",
-        "title": "Owlbear: Forward Barf"
+        "title": "Owlbear: Barf Forward",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
+      },
+      {
+        "command": "owlbear.forwardMove",
+        "title": "Owlbear: Move Cursor Forward",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
       },
       {
         "command": "owlbear.forwardSlurp",
-        "title": "Owlbear: Forward Slurp"
+        "title": "Owlbear: Slurp Forward",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
       },
       {
         "command": "owlbear.kill",
-        "title": "Owlbear: Kill"
+        "title": "Owlbear: Kill",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
       },
       {
         "command": "owlbear.raise",
-        "title": "Owlbear: Raise"
+        "title": "Owlbear: Raise",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
       }
     ]
   },

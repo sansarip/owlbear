@@ -14,6 +14,7 @@
           :lib/prod
           {:target :node-library
            :exports {:htmlForwardBarf owlbear.edit/html-forward-barf
+                     :htmlForwardMove owlbear.edit/html-forward-move
                      :htmlForwardSlurp owlbear.edit/html-forward-slurp
                      :htmlKill owlbear.edit/html-kill
                      :htmlLangId owlbear.parse/html-lang-id

@@ -11,13 +11,19 @@
             [owlbear.config :as cfg]
             [owlbear.utilities :as obu]))
 
+(defn with-tsx [sym]
+  (fn [& args]
+    (concat (list sym) args '(:tsx))))
+
 (def corpus-title-to-function-map
-  "Map of corpus h1-header to Owlbear functions to be tested; 
+  "Map of corpus h1-header to higher-order functions that return 
+   s-expressions of the Owlbear functions to be tested; 
    update this whenever a new test-suite (h1-header) is added"
-  {"TypeScript Forward Slurp" 'owlbear.ts.edit.slurp/forward-slurp
-   "TypeScript Forward Barf" 'owlbear.ts.edit.barf/forward-barf
-   "TypeScript Kill" 'owlbear.ts.edit.kill/kill
-   "TypeScript Raise" 'owlbear.ts.edit.raise/raise})
+  {"HTML Forward Move" (partial list 'owlbear.html.edit.move/forward-move)
+   "TypeScript Forward Slurp" (with-tsx 'owlbear.ts.edit.slurp/forward-slurp)
+   "TypeScript Forward Barf" (with-tsx 'owlbear.ts.edit.barf/forward-barf)
+   "TypeScript Kill" (with-tsx 'owlbear.ts.edit.kill/kill)
+   "TypeScript Raise" (with-tsx 'owlbear.ts.edit.raise/raise)})
 
 (defn src->cursor-ctx
   "Given a source string, `src`, 
@@ -38,13 +44,17 @@
 
 (defn assertion->is-exp
   "Given a map containing an `input` and `output`, 
-   and a fully-qualified symbol of a test function, `test-fn-sym`, 
+   and a function that returns an s-expression containing the test function, `test-s-exp`, 
    returns a correspinding test assertion s-expression"
-  [{:keys [input output]} test-fn-sym]
-  {:pre [(symbol? test-fn-sym)]}
+  [{:keys [input output]} test-s-exp]
   (let [{:keys [src-without-cursor offset]} (src->cursor-ctx input)
-        actual `(let [{:keys [~'src ~'offset]} (~test-fn-sym ~src-without-cursor ~offset :tsx)]
-                  (obu/str-insert (str ~'src) "▌" ~'offset))]
+        actual `(let [{:keys [~'src ~'offset] :as ~'result} ~(test-s-exp src-without-cursor offset)]
+                  (obu/str-insert (str (when (map? ~'result)
+                                         (if (contains? ~'result :src)
+                                           ~'src
+                                           ~src-without-cursor)))
+                                  "▌"
+                                  ~'offset))]
     `(let [~'difference-str ~`(obu/str-diff ~output ~actual)]
        (if (empty? ~'difference-str)
          (do-report {:type :pass})
@@ -57,12 +67,11 @@
 
 (defn section->testing-exp
   "Given a map containing a `description` and `assertions`, 
-   and a fully-qualified symbol of a test function, `test-fn-sym`, 
+   and a function that returns an s-expression containing the test function, `test-s-exp`, 
    returns a corresponding `testing` s-expression"
-  [{:keys [description assertions]} test-fn-sym]
-  {:pre [(symbol? test-fn-sym)]}
+  [{:keys [description assertions]} test-s-exp]
   (concat (list `testing description)
-          (map #(assertion->is-exp % test-fn-sym) assertions)))
+          (map #(assertion->is-exp % test-s-exp) assertions)))
 
 (defn combine-sections
   "Given a map containing a `title` and `sections`, 
@@ -80,9 +89,9 @@
                       obu/string->snake-case
                       (str "-test")
                       symbol)
-        test-fn-sym (corpus-title-to-function-map title)]
+        test-s-exp (corpus-title-to-function-map title)]
     (concat `(deftest ~test-name)
-            (map #(section->testing-exp % test-fn-sym) sections))))
+            (map #(section->testing-exp % test-s-exp) sections))))
 
 #?(:clj
    (defn parse-corpus-files
