@@ -2,6 +2,7 @@
   "Defines all of the corpus tests"
   (:require [clojure.test]
             [owlbear.corpus :refer-macros [deftests watch-corpus-files]]
+            [owlbear.html.edit.move]
             [owlbear.ts.edit.barf]
             [owlbear.ts.edit.kill]
             [owlbear.ts.edit.raise]

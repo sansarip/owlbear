@@ -5,7 +5,7 @@ import {
   window,
 } from "vscode";
 import { EditCtx, OwlbearFunction } from "./types";
-import { getDocCtx, getFileExtension, replace } from "./utilities";
+import { getDocCtx, getFileExtension, edit } from "./utilities";
 import clipboard from "clipboardy";
 
 const ob = require("../../../out/cljs/owlbear");
@@ -23,20 +23,7 @@ type Edit = (
   obOp: OwlbearOperation
 ) => Promise<EditCtx | undefined> | undefined;
 
-type OwlbearOperation = "ForwardSlurp" | "ForwardBarf" | "Kill" | "Raise";
-
-export const getEditCtx = (obOp: OwlbearOperation): EditCtx | undefined => {
-  const editor = window.activeTextEditor;
-  if (!editor) {
-    return;
-  }
-  const { src, offset } = getDocCtx(editor);
-  const obFn = getOwlbearFunction(obOp);
-  if (!obFn) {
-    return;
-  }
-  return obFn(src, offset);
-};
+type OwlbearOperation = "ForwardSlurp" | "ForwardBarf" | "ForwardMove" | "Kill" | "Raise";
 
 const getOwlbearFunction = (
   operation: OwlbearOperation
@@ -58,25 +45,42 @@ const getOwlbearFunction = (
   return ob[langPrefix + operation];
 };
 
-const editDoc: Edit = (obOp: OwlbearOperation) => {
+export const getEditCtx = (obOp: OwlbearOperation): EditCtx | undefined => {
+  const editor = window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
+  const { src, offset } = getDocCtx(editor);
+  const obFn = getOwlbearFunction(obOp);
+  if (!obFn) {
+    return;
+  }
+  return obFn(src, offset);
+};
+
+const doEditOp: Edit = (obOp: OwlbearOperation) => {
   const editor = window.activeTextEditor;
   const editCtx = getEditCtx(obOp);
   if (!editor || !editCtx) {
     return;
   }
-  return replace(editor, editCtx);
+  return edit(editor, editCtx);
 };
 
 const forwardSlurp: Handler = () => {
-  return editDoc("ForwardSlurp");
+  return doEditOp("ForwardSlurp");
 };
 
 const forwardBarf: Handler = () => {
-  return editDoc("ForwardBarf");
+  return doEditOp("ForwardBarf");
 };
 
+const forwardMove: Handler = () => {
+  return doEditOp("ForwardMove");
+}
+
 const kill: Handler = () => {
-  return editDoc("Kill");
+  return doEditOp("Kill");
 };
 
 const copy: Handler = async (editCtx = undefined) => {
@@ -95,13 +99,14 @@ const cut: Handler = async () => {
 };
 
 const raise: Handler = () => {
-  return editDoc("Raise");
+  return doEditOp("Raise");
 };
 
 const commands: Command[] = [
   { id: "owlbear.copy", handler: copy },
   { id: "owlbear.cut", handler: cut },
   { id: "owlbear.forwardBarf", handler: forwardBarf },
+  { id: "owlbear.forwardMove", handler: forwardMove },
   { id: "owlbear.forwardSlurp", handler: forwardSlurp },
   { id: "owlbear.kill", handler: kill },
   { id: "owlbear.raise", handler: raise },

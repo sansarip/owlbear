@@ -8,6 +8,7 @@
   (run-tests 'owlbear.corpus-test
              'owlbear.html.edit.barf-test
              'owlbear.html.edit.kill-test
+             'owlbear.html.edit.move-test
              'owlbear.html.edit.raise-test
              'owlbear.html.edit.slurp-test
              'owlbear.html.parse.rules-test
