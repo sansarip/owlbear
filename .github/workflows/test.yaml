@@ -15,8 +15,8 @@ jobs:
         with:
           node-version: 16
 
-      - name: Compile code
+      - name: Compile CLJS
         run: npm i && npm run compile-cljs-test
 
-      - name: Test code and check for errors
+      - name: Test CLJS code
         run: test -n "$(npm run cljs-test | grep "0 failures, 0 errors.")"
