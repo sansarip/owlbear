@@ -24,7 +24,7 @@
       (is (obpr/range-in-node? node range-start)
           "start offset in node's bounds"))
     (testing "when given start and stop offsets"
-      (is (obpr/range-in-node? node range-start range-stop)
+      (is false
           "range is in node's bounds"))))
 
 (defspec invalid-range-not-in-node-test 10

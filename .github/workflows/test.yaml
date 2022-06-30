@@ -1,0 +1,22 @@
+name: Test PR
+
+on: [pull_request]
+
+jobs:
+  compile-and-test:
+    name: Test code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Compile code
+        run: npm i && npm run compile-cljs-test
+
+      - name: Test code and check for errors
+        run: test -n "$(npm run cljs-test | grep "0 failures, 0 errors.")"
