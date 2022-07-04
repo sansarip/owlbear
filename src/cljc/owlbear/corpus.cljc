@@ -23,6 +23,7 @@
    "TypeScript Forward Slurp" (with-tsx 'owlbear.ts.edit.slurp/forward-slurp)
    "TypeScript Forward Barf" (with-tsx 'owlbear.ts.edit.barf/forward-barf)
    "TypeScript Kill" (with-tsx 'owlbear.ts.edit.kill/kill)
+   "TypeScript Forward Move" (with-tsx 'owlbear.ts.edit.move/forward-move)
    "TypeScript Raise" (with-tsx 'owlbear.ts.edit.raise/raise)})
 
 (defn src->cursor-ctx
@@ -48,22 +49,37 @@
    returns a correspinding test assertion s-expression"
   [{:keys [input output]} test-s-exp]
   (let [{:keys [src-without-cursor offset]} (src->cursor-ctx input)
-        actual `(let [{:keys [~'src ~'offset] :as ~'result} ~(test-s-exp src-without-cursor offset)]
-                  (obu/str-insert (str (when (map? ~'result)
-                                         (if (contains? ~'result :src)
-                                           ~'src
-                                           ~src-without-cursor)))
-                                  "▌"
-                                  ~'offset))]
-    `(let [~'difference-str ~`(obu/str-diff ~output ~actual)]
-       (if (empty? ~'difference-str)
-         (do-report {:type :pass})
-         (do (do-report {:type :fail
-                         :expected ~output
-                         :actual ~actual})
-             (println "    diff: " ~'difference-str)
-             (println "   input: " (pr-str ~input))
-             (println "  offset: " ~offset))))))
+        result-s-exp (test-s-exp src-without-cursor offset)
+        print-input-info-s-exp `(do (println "   input: " (pr-str ~input))
+                                    (println "  offset: " ~offset))
+        insert-cursor (fn [r]
+                        `(let [{:keys [~'src ~'offset]} ~r]
+                           (obu/str-insert (str (when (map? ~r)
+                                                  (if (contains? ~r :src)
+                                                    ~'src
+                                                    ~src-without-cursor)))
+                                           "▌"
+                                           ~'offset)))
+        pass-s-exp `(do-report {:type :pass})
+        negative-test? (= output "❎")]
+    (if negative-test?
+      `(let [~'result ~result-s-exp]
+         (if (nil? ~'result)
+           ~pass-s-exp
+           (do (do-report {:type :fail
+                           :expected nil
+                           :actual ~(insert-cursor 'result)})
+               ~print-input-info-s-exp)))
+      `(let [{:keys [~'src ~'offset] :as ~'result} ~result-s-exp
+             ~'actual ~(insert-cursor 'result)
+             ~'difference-str ~`(obu/str-diff ~output ~'actual)]
+         (if (empty? ~'difference-str)
+           ~pass-s-exp
+           (do (do-report {:type :fail
+                           :expected ~output
+                           :actual ~'actual})
+               (println "    diff: " ~'difference-str)
+               ~print-input-info-s-exp))))))
 
 (defn section->testing-exp
   "Given a map containing a `description` and `assertions`, 

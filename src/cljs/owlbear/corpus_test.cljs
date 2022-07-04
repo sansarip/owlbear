@@ -5,6 +5,7 @@
             [owlbear.html.edit.move]
             [owlbear.ts.edit.barf]
             [owlbear.ts.edit.kill]
+            [owlbear.ts.edit.move]
             [owlbear.ts.edit.raise]
             [owlbear.ts.edit.slurp]
             [owlbear.utilities]

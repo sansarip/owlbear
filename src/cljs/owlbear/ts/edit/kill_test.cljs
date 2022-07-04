@@ -18,6 +18,7 @@
                                                         current-node (->> root-node
                                                                           obpr/node->descendants
                                                                           rest
+                                                                          obpr/distinct-by-start-index ;; This makes sure only the most specific nodes are elligible
                                                                           shuffle
                                                                           (some ts-rules/object-node))]
                                                     (gen/let [in-bounds-offset (gen/choose

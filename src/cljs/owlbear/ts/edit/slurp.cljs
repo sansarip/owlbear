@@ -36,7 +36,7 @@
             (and (ts-rules/ts-object-type-node current-node)
                  (not= ";" (some-> current-node
                                    ts-rules/end-nodes
-                                   last
+                                   first
                                    (obu/noget+ :?type)))))]
     (cond
       ;; type foo = {a: string;▌} b => type foo = {a: string; b:;▌} 
@@ -253,7 +253,7 @@
    Also updates the offset and edit-history of the given context 
    if updates were made"
   [{:keys [src offset edit-history] :or {edit-history []} :as ctx} current-node forward-node]
-  (let [current-end-nodes (reverse (ts-rules/end-nodes current-node))
+  (let [current-end-nodes (ts-rules/end-nodes current-node)
         end-node-prefix (end-node-prefix current-node forward-node)
         current-end-node-text (->> current-end-nodes
                                    (map #(obu/noget+ % :?text))

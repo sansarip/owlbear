@@ -86,8 +86,8 @@
 
 (defn some-descendant-node
   "Given a predicate function, `pred`, and a `node`, 
-   returns the first descendant node that fulfills 
-   the predicate function"
+   returns the first truthy value of the predicate function 
+   applied to the node's descendants" 
   [pred node]
   {:pre [(fn? pred)]}
   (some pred (rest (node->descendants node))))
@@ -109,7 +109,8 @@
 
 (defn some-ancestor-node
   "Given a predicate function, `pred`, and a `node`, 
-   returns the first ancestor node that fulfills the predicate function"
+   returns the first truthy value of the predicate 
+   function applied to the node's descendants"
   [pred node]
   {:pre [(fn? pred)]}
   (some pred (node->ancestors node)))
@@ -122,3 +123,15 @@
                 (obu/noget+ :?text)
                 (->> (re-matches #"\s+")))
     node))
+
+(defn distinct-by-start-index 
+  "Given a sequence of nodes, 
+   returns a sequence of the nodes 
+   deduped by their start indices"  
+  [nodes]
+  (vals
+   (reduce
+    (fn [coll node]
+      (assoc coll (obu/noget+ node :?startIndex) node))
+    {}
+    nodes)))

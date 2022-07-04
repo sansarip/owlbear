@@ -38,7 +38,7 @@ foo().bar(▌baz())
 ▌baz()
 ```
 
-## Superflous Commas
+## Superfluous Commas
 ```typescript
 foo(a, ▌b,,,)
 ```
