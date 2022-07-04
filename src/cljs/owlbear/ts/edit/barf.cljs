@@ -21,7 +21,7 @@
 (defn remove-superfluous-syntax
   "Given a context, `ctx`, a ancestor node, `ancestor-node`, 
    and a child node, `child-node`, 
-   returns an updated context with superflous syntax removed i.e. 
+   returns an updated context with superfluous syntax removed i.e. 
    commas or semicolons removed from empty collections/types
    -if applicable, else returns the given `ctx`
    
@@ -204,7 +204,7 @@
    if updates were made"
   [{:keys [src offset edit-history ancestor-node child-node]
     :or {edit-history []} :as ctx}]
-  (let [current-end-nodes (reverse (ts-rules/end-nodes ancestor-node))
+  (let [current-end-nodes (ts-rules/end-nodes ancestor-node)
         current-end-node-text (->> current-end-nodes
                                    (map #(obu/noget+ % :?text))
                                    str/join)
@@ -260,10 +260,19 @@
   ([src offset tsx?]
    {:pre [(string? src) (>= offset 0)]}
    (when-let [{:keys [last-child-object-node
-                      current-node]} (-> src
-                                         (obp/src->tree (if tsx? obp/tsx-lang-id obp/ts-lang-id))
-                                         (obu/noget+ :?rootNode)
-                                         (ts-rules/node->current-last-child-object-ctx offset))]
+                      current-node]} (some-> src
+                                             (obp/src->tree (if tsx? obp/tsx-lang-id obp/ts-lang-id))
+                                             (obu/noget+ :?rootNode)
+                                             (ts-rules/node->current-last-child-object-ctx offset)
+                                             (update :last-child-object-node
+                                                     #(cond
+                                                       (ts-rules/ts-pair-node %)
+                                                       (ocall % :?childForFieldName "value")
+
+                                                       (ts-rules/ts-property-signature-node %)
+                                                       (obu/noget+ (ocall % :?childForFieldName "type") :?children.?1)
+
+                                                       :else %)))]
      (-> {:src src
           :offset offset
           :ancestor-node current-node

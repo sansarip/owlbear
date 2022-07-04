@@ -22,7 +22,7 @@
 {▌}
 ```
 
-## Superflous Commas
+## Superfluous Commas
 ```typescript
 {▌a: ,,,}
 ```
