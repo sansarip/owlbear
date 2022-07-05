@@ -88,6 +88,29 @@ function foo () {}
 ▌bar();
 ```
 
+## Generator Function Declarations
+```typescript
+▌function* foo () {}
+bar();
+```
+```typescript
+function* foo () {}
+▌bar();
+```
+
+```typescript
+function* foo () {
+  ▌yield 1 + 1;
+  bar();
+}
+```
+```typescript
+function* foo () {
+  yield 1 + 1;
+  ▌bar();
+}
+```
+
 ## Member Expressions
 ```typescript
 foo().▌bar();
