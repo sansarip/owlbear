@@ -307,11 +307,13 @@
   (let [fn-body-gen (function-body*)]
     (gen/let [fn-name obgu/string-alphanumeric-starts-with-alpha
               fn-params function-params
-              fn-body fn-body-gen]
-      (fmt/render "function {{&name}} {{&params}} {{&body}};"
+              fn-body fn-body-gen
+              generator? gen/boolean]
+      (fmt/render "function{{&suffix}} {{&name}} {{&params}} {{&body}};"
                   {:name fn-name
                    :params fn-params
-                   :body fn-body}))))
+                   :body fn-body
+                   :suffix (when generator? "*")}))))
 (def named-function-statement (named-function-statement*))
 
 (defn jsx*
@@ -362,6 +364,15 @@
   []
   (concat-semicolon (*expression*)))
 (def expression-statement (expression-statement*))
+
+(defn yield-statement*
+  "Returns a generator that generates an yield-statement string 
+   e.g. `yield 1 + 1;`"
+  []
+  (->> (*expression*)
+       (gen/fmap (partial str "yield "))
+       concat-semicolon))
+(def yield-statement (yield-statement*))
 
 (defn arrow-function-statement*
   "Returns a generator that generates an arrow-function-expression string 
@@ -425,7 +436,8 @@
                                          jsx-component-function*
                                          named-function-statement*
                                          type-alias*
-                                         while-loop*]
+                                         while-loop*
+                                         yield-statement*]
                                         (filter (or (not-empty greenlist) identity))
                                         (remove redlist)
                                         (map obu/call-fn))]

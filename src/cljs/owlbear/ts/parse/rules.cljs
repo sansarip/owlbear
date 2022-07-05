@@ -36,6 +36,7 @@
 (def ts-for-statement "for_statement")
 (def ts-for-in-statement "for_in_statement")
 (def ts-formal-parameters "formal_parameters")
+(def ts-generator-function-declaration "generator_function_declaration")
 (def ts-function-declaration "function_declaration")
 (def ts-identifier "identifier")
 (def ts-if-statement "if_statement")
@@ -81,6 +82,7 @@
 (def ts-variable-declarator "variable_declarator")
 (def ts-variable-declaration "variable_declaration")
 (def ts-while-statement "while_statement")
+(def ts-yield-expression "yield_expression")
 
 (defn ts-arguments-node
   "Given a `node`, 
@@ -352,6 +354,7 @@
                        ts-for-in-statement
                        ts-formal-parameters
                        ts-function-declaration
+                       ts-generator-function-declaration
                        ts-identifier
                        ts-if-statement
                        ts-import-statement
@@ -387,7 +390,8 @@
                        ts-type-identifier
                        ts-update-expression
                        ts-variable-declaration
-                       ts-while-statement}
+                       ts-while-statement
+                       ts-yield-expression}
                      node-type) node
           (= node-type jsx-text) (when-not (obpr/all-white-space-chars node)
                                    node)
@@ -487,6 +491,7 @@
                            ts-for-statement
                            ts-for-in-statement
                            ts-function-declaration
+                           ts-generator-function-declaration
                            ts-if-statement
                            ts-interface-declaration
                            ts-lexical-declaration
