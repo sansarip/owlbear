@@ -1,6 +1,17 @@
 # TypeScript Forward Move
 ## Declaration
 ```typescript
+type foo = ▌null;
+
+bar();
+```
+```typescript
+type foo = null;
+
+▌bar();
+```
+
+```typescript
 type foo = ▌string;
 
 bar();

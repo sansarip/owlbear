@@ -334,7 +334,8 @@
   [node]
   (or (let [node-type (obu/noget+ node :?type)]
         (cond
-          (= ts-predefined-type (obu/noget+ node :?parent.?type)) nil
+          (contains? #{ts-literal-type ts-predefined-type} (obu/noget+ node :?parent.?type))
+          nil
           (contains? #{jsx-self-closing-element
                        ts-abstract-class-declaration
                        ts-arrow-function
