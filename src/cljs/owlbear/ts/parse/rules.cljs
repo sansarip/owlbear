@@ -504,7 +504,8 @@
                            ts-while-statement}
                          node-type)
               (and (contains? #{ts-await-expression
-                                ts-call-expression}
+                                ts-call-expression
+                                ts-arrow-function}
                               node-type)
                    (not= ts-expression-statement (obu/noget+ node :?parent.?type))
                    (not= ts-variable-declarator (obu/noget+ node :?parent.?type))))

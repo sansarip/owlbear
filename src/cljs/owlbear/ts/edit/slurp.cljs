@@ -218,6 +218,7 @@
   [{:keys [offset edit-history] :or {edit-history []} :as ctx} current-node forward-node]
   (let [rm-separators? (and (or (ts-rules/empty-ts-arguments-node current-node)
                                 (ts-rules/empty-ts-collection-node current-node)
+                                (ts-rules/ts-statement-block-node current-node)
                                 ;; e.g. [{a: }, 1]
                                 (and (ts-rules/ts-object-node current-node)
                                      (not (ts-rules/ts-object-ends-with-pair current-node))))
@@ -386,7 +387,7 @@
                 forward-object-node]} (ts-rules/node->current-forward-object-ctx
                                        (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
                                        offset)
-        ctx {:src src :offset 1}]
+        ctx {:src src :offset offset}]
     (-> ctx
         (move-end-nodes current-node forward-object-node)
         (escape-comment-block current-node forward-object-node)))
@@ -396,7 +397,17 @@
                 forward-object-node]} (ts-rules/node->current-forward-object-ctx
                                        (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
                                        offset)
-        ctx {:src src :offset 1}]
+        ctx {:src src :offset offset}]
     (-> ctx
         (move-end-nodes current-node forward-object-node)
-        (remove-statement-semicolon current-node forward-object-node))))
+        (remove-statement-semicolon current-node forward-object-node)))
+  (let [src "foo(() => {}, bar(), baz())"
+        offset 11
+        {:keys [current-node
+                forward-object-node]} (ts-rules/node->current-forward-object-ctx
+                                       (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
+                                       offset)
+        ctx {:src src :offset offset}]
+    (-> ctx
+        (move-end-nodes current-node forward-object-node)
+        (remove-item-separators current-node forward-object-node))))

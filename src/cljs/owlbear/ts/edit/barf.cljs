@@ -137,10 +137,12 @@
   [{:keys [src offset edit-history ancestor-node child-node]
     :or {edit-history []}
     :as ctx}]
-  (let [insert-separator? (or (and (ts-rules/not-empty-ts-arguments-node ancestor-node)
-                                   (ts-rules/ts-array-node (obu/noget+ ancestor-node :?parent.?parent)))
-                              (and (ts-rules/not-empty-ts-collection-node ancestor-node)
-                                   (ts-rules/ts-array-node (obu/noget+ ancestor-node :?parent))))
+  (let [insert-separator? (and (or (ts-rules/not-empty-ts-arguments-node ancestor-node)
+                                   (ts-rules/not-empty-ts-collection-node ancestor-node)
+                                   (ts-rules/ts-statement-block-node ancestor-node))
+                               (some #(contains? #{ts-rules/ts-array ts-rules/ts-arguments} %)
+                                     [(obu/noget+ ancestor-node :?parent.?type)
+                                      (obu/noget+ ancestor-node :?parent.?parent.?type)]))
         insert-offset (when insert-separator?
                         (obu/update-offset
                          (obu/noget+ child-node :?startIndex)
@@ -266,13 +268,13 @@
                                              (ts-rules/node->current-last-child-object-ctx offset)
                                              (update :last-child-object-node
                                                      #(cond
-                                                       (ts-rules/ts-pair-node %)
-                                                       (ocall % :?childForFieldName "value")
+                                                        (ts-rules/ts-pair-node %)
+                                                        (ocall % :?childForFieldName "value")
 
-                                                       (ts-rules/ts-property-signature-node %)
-                                                       (obu/noget+ (ocall % :?childForFieldName "type") :?children.?1)
+                                                        (ts-rules/ts-property-signature-node %)
+                                                        (obu/noget+ (ocall % :?childForFieldName "type") :?children.?1)
 
-                                                       :else %)))]
+                                                        :else %)))]
      (-> {:src src
           :offset offset
           :ancestor-node current-node

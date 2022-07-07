@@ -29,6 +29,22 @@ foo(a,
 b▌);
 ```
 
+## Statement Blocks
+```typescript
+foo(() => {▌}, bar(), baz())
+```
+```typescript
+foo(() => { bar()▌}, baz())
+```
+
+## Nested Args
+```typescript
+foo(bar(▌), baz(), qux())
+```
+```typescript
+foo(bar( baz()▌), qux())
+```
+
 ## Statements
 ```typescript
 foo(▌);
