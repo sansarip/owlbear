@@ -14,8 +14,10 @@
   ],
   "activationEvents": [
     "onLanguage:html",
-    "onLanguage:typescriptreact",
-    "onLanguage:javascriptreact"
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -23,37 +25,37 @@
       {
         "command": "owlbear.copy",
         "title": "Owlbear: Copy",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       },
       {
         "command": "owlbear.cut",
         "title": "Owlbear: Cut",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       },
       {
         "command": "owlbear.forwardBarf",
         "title": "Owlbear: Barf Forward",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       },
       {
         "command": "owlbear.forwardMove",
         "title": "Owlbear: Move Cursor Forward",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       },
       {
         "command": "owlbear.forwardSlurp",
         "title": "Owlbear: Slurp Forward",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       },
       {
         "command": "owlbear.kill",
         "title": "Owlbear: Kill",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       },
       {
         "command": "owlbear.raise",
         "title": "Owlbear: Raise",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact"
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       }
     ]
   },
