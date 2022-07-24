@@ -79,3 +79,27 @@ type foo = {a: {▌b: string}};
 ```typescript
 type foo = {a: {▌: string}};
 ```
+
+## Function Type
+```typescript
+type foo = ▌() => {}
+```
+```typescript
+type foo = ▌
+```
+
+## Union Type
+```typescript
+type foo = ▌"hello" | "world"
+```
+```typescript
+type foo = ▌
+```
+
+## Intersection Type
+```typescript
+type foo = ▌"hello" & "world"
+```
+```typescript
+type foo = ▌
+```

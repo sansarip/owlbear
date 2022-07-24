@@ -36,14 +36,16 @@
 (def ts-for-statement "for_statement")
 (def ts-for-in-statement "for_in_statement")
 (def ts-formal-parameters "formal_parameters")
-(def ts-generator-function-declaration "generator_function_declaration")
 (def ts-function-declaration "function_declaration")
+(def ts-function-type "function_type")
+(def ts-generator-function-declaration "generator_function_declaration")
 (def ts-identifier "identifier")
 (def ts-if-statement "if_statement")
 (def ts-import-statement "import_statement")
 (def ts-incomplete-pair "incomplete_pair")
 (def ts-incomplete-property-signature "incomplete_property_signature")
 (def ts-interface-declaration "interface_declaration")
+(def ts-intersection-type "intersection_type")
 (def ts-labeled-statement "labeled_statement")
 (def ts-lexical-declaration "lexical_declaration")
 (def ts-literal-type "literal_type")
@@ -79,6 +81,7 @@
 (def ts-type-annotation "type_annotation")
 (def ts-type-identifier "type_identifier")
 (def ts-update-expression "update_expression")
+(def ts-union-type "union_type")
 (def ts-variable-declarator "variable_declarator")
 (def ts-variable-declaration "variable_declaration")
 (def ts-while-statement "while_statement")
@@ -164,6 +167,14 @@
   (when (= ts-computed-property-name (obu/noget+ node :?type))
     node))
 
+(defn ts-literal-type-node 
+  "Given a `node`, 
+   returns the `node` 
+   if it is a literal type"
+  [node]
+  (when (= ts-literal-type (obu/noget+ node :?type))
+    node))
+
 (defn ts-collection-node
   "Given a `node`, 
    returns the `node` 
@@ -179,14 +190,14 @@
    if it is a statement block"
   [node]
   (when (= ts-statement-block (obu/noget+ node :?type))
-    node)) 
+    node))
 
-(defn syntax-str? 
+(defn syntax-str?
   "Given a string, `s`,  
    returns true if the string 
    consists entirely of TS syntax chars"
   [s]
-  (re-matches #"[:;,/`'\"\(\)\{\}\[\]\<\>\=]" (str s)))
+  (re-matches #"[:;,/`'&\|\"\(\)\{\}\[\]\<\>\=]" (str s)))
 
 (defn ts-syntax-node
   "Given a `node`, 
@@ -355,6 +366,7 @@
                        ts-for-in-statement
                        ts-formal-parameters
                        ts-function-declaration
+                       ts-function-type
                        ts-generator-function-declaration
                        ts-identifier
                        ts-if-statement
@@ -362,6 +374,7 @@
                        ts-incomplete-pair
                        ts-incomplete-property-signature
                        ts-interface-declaration
+                       ts-intersection-type
                        ts-labeled-statement
                        ts-lexical-declaration
                        ts-literal-type
@@ -390,6 +403,7 @@
                        ts-type-annotation
                        ts-type-identifier
                        ts-update-expression
+                       ts-union-type
                        ts-variable-declaration
                        ts-while-statement
                        ts-yield-expression}
@@ -453,7 +467,7 @@
              (obpr/every-descendant? (complement object-node) node))
     node))
 
-(defn expression-node 
+(defn expression-node
   "Returns the given `node` 
    if it is an expression node"
   [node]
@@ -503,9 +517,10 @@
                            ts-variable-declaration
                            ts-while-statement}
                          node-type)
-              (and (contains? #{ts-await-expression
+              (and (contains? #{ts-arrow-function
+                                ts-await-expression
                                 ts-call-expression
-                                ts-arrow-function}
+                                ts-function-declaration}
                               node-type)
                    (not= ts-expression-statement (obu/noget+ node :?parent.?type))
                    (not= ts-variable-declarator (obu/noget+ node :?parent.?type))))
@@ -519,9 +534,11 @@
    is the subject node and the lexical declaration, while not 
    a subject node itself, is the subject-container node
    
-   Accepts an optional argument, `default`, 
-   that is returned if a container is not found - 
-   defaults to the given `node`"
+   Accepts an optional map containing:
+   - `default`: the default value returned if a container is not found -defaults to the given `node`
+   - `container-type-greenlist`: a set of container types to treat as top-level node types
+   - `container-type-redlist`: a set of container types to ignore as top-level node types
+   - `for-any-node?`: if true, the container node is returned for any node, otherwise only for subject nodes"
   ([node] (subject-container-node node {}))
   ([node {:keys [container-type-greenlist
                  container-type-redlist
