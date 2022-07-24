@@ -129,3 +129,71 @@ type foo = {▌a: number}
 ```typescript
 type foo = {a: ▌number}
 ```
+
+## Function Type
+```typescript
+type foo▌ = () => {}
+```
+```typescript
+type foo = ▌() => {}
+```
+
+```typescript
+type foo = ▌() => {}
+```
+```typescript
+type foo = () => ▌{}
+```
+
+```typescript
+type foo = () => ▌{}
+bar();
+```
+```typescript
+type foo = () => {}
+▌bar();
+```
+
+## Union Type
+```typescript
+type foo▌ = "hello" | "world"
+```
+```typescript
+type foo = ▌"hello" | "world"
+```
+
+```typescript
+type foo = ▌"hello" | "world"
+```
+```typescript
+type foo = "hello" | ▌"world"
+```
+
+```typescript
+type foo = "hello" |▌ "world"
+```
+```typescript
+type foo = "hello" | ▌"world"
+```
+
+## Intersection Type
+```typescript
+type foo▌ = "hello" & "world"
+```
+```typescript
+type foo = ▌"hello" & "world"
+```
+
+```typescript
+type foo = ▌"hello" & "world"
+```
+```typescript
+type foo = "hello" & ▌"world"
+```
+
+```typescript
+type foo = "hello" &▌ "world"
+```
+```typescript
+type foo = "hello" & ▌"world"
+```

@@ -38,7 +38,8 @@
                            (ts-rules/subject-node node))
                        (ts-rules/subject-container-node
                         {:for-any-node? true
-                         :container-type-greenlist #{ts-rules/ts-lexical-declaration}
+                         :container-type-greenlist #{ts-rules/ts-lexical-declaration 
+                                                     ts-rules/ts-literal-type}
                          :container-type-redlist #{ts-rules/ts-member-expression}}))
         current-parent-node (obu/noget+ current-node :?parent)
         ancestor-signature (obpr/some-ancestor-node
@@ -60,8 +61,10 @@
 
                                   ;; [...▌foo, bar] => [...foo, ▌bar]
                                   ;; /* ▌foo */ bar(); => /* foo */ ▌bar();
+                                  ;; type foo = ▌"Jell-O" | "World" => type foo = "Jell-O" | ▌"World" 
                                   (contains? #{ts-rules/ts-spread-element
-                                               ts-rules/ts-comment-block}
+                                               ts-rules/ts-comment-block
+                                               ts-rules/ts-literal-type}
                                              (obu/noget+ current-parent-node :?type))))
                                current-parent-node
 
@@ -99,7 +102,7 @@
                                                    (ts-rules/object-node %))))
                                  last
                                  ;; This is because the root-node (a program node) is not always the full text
-                                 (or (when (<= offset root-node-start) root-node)))]
+                                 (or (when (<= offset root-node-start) root-node)))] 
        (some->> (or (when (< offset root-node-start) root-node-start)
                     (next-child-offset current-node offset)
                     (next-sibling-offset current-node))
@@ -110,4 +113,5 @@
   (forward-move "type foo = {a: number; b: string;}" 15 :tsx)
   (forward-move "const foo = await bar();\nbaz();" 12 :tsx)
   (forward-move "const foo = {a, b: 2}" 13 :tsx)
-  (forward-move "function foo (a= foo(), b, c) {}" 17 :tsx))
+  (forward-move "function foo (a= foo(), b, c) {}" 17 :tsx)
+  (forward-move "type foo = \"hello\" | \"world\" | \"!\"" 11 :tsx))
