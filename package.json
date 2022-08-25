@@ -23,6 +23,11 @@
   "contributes": {
     "commands": [
       {
+        "command": "owlbear.backwardMove",
+        "title": "Owlbear: Move Cursor Backward",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
         "command": "owlbear.copy",
         "title": "Owlbear: Copy",
         "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"

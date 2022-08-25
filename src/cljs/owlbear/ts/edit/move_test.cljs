@@ -21,7 +21,8 @@
                                                                                            rest
                                                                                            (filter ts-rules/object-node)
                                                                                            shuffle
-                                                                                           (some #(when-let [fon (some->> (ts-move/next-sibling-offset %) ; Ensures nodes are move-eligible
+                                                                                           ;; Ensures nodes are move-eligible
+                                                                                           (some #(when-let [fon (some->> (ts-move/forward-sibling-offset root-node (obu/noget+ % :?startIndex)) 
                                                                                                                           (ts-rules/node->current-object-nodes root-node)
                                                                                                                           last)]
                                                                                                     {:current-node %
@@ -55,3 +56,42 @@
   (testing "when root node"
     (is (nil? (:offset (ts-move/forward-move "<div></div>" 0 :tsx))))))
 
+(defspec move-backward-spec 5
+  (prop/for-all [{:keys [src
+                         current-node-text
+                         current-node-start
+                         out-of-bounds-offset]} (gen/let [tree obgt-ts/tree-with-t-subject]
+                                                  (let [root-node (noget+ tree :?rootNode)
+                                                        {:keys [current-node
+                                                                backward-object-node]} (->> root-node
+                                                                                           obpr/node->descendants
+                                                                                           rest
+                                                                                           (filter ts-rules/object-node)
+                                                                                           shuffle
+                                                                                           ;; Ensures nodes are move-eligible
+                                                                                           (some #(when-let [bon (some->> (ts-move/backward-sibling-offset root-node (obu/noget+ % :?startIndex))
+                                                                                                                          (ts-rules/node->current-object-nodes root-node)
+                                                                                                                          last)]
+                                                                                                    {:current-node %
+                                                                                                     :backward-object-node bon})))]
+                                                    {:src (noget+ root-node :?text)
+                                                     :current-node-start (noget+ current-node :?startIndex)
+                                                     :current-node-text (noget+ current-node :?text)
+                                                     :backward-object-node-start (noget+ backward-object-node :?startIndex)
+                                                     :backward-object-node-text (noget+ backward-object-node :?text)
+                                                     :out-of-bounds-offset (inc (noget+ root-node :?endIndex))}))]
+    (&testing ""
+      (&testing "when cursor out of bounds"
+        (is (nil? (ts-move/backward-move src out-of-bounds-offset :tsx))
+            "no result"))
+      (let [{result-offset :offset
+             :as result} (ts-move/backward-move src current-node-start :tsx)]
+        (&testing "when cursor in bounds"
+          (is (some? result)
+              "move performed")
+          (is (number? result-offset)
+              "resulting offset is a number")
+          (is (>= result-offset 0)
+              "resulting offset is non-negative")
+          (is (< result-offset current-node-start)
+              "resulting offset is less than original"))))))

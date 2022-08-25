@@ -20,12 +20,14 @@
                      :htmlLangId owlbear.parse/html-lang-id
                      :htmlRaise owlbear.edit/html-raise
                      :loadLanguageWasm owlbear.parse/load-language-wasm!
+                     :tsBackwardMove owlbear.edit/ts-backward-move
                      :tsForwardBarf owlbear.edit/ts-forward-barf
                      :tsForwardMove owlbear.edit/ts-forward-move
                      :tsForwardSlurp owlbear.edit/ts-forward-slurp
                      :tsKill owlbear.edit/ts-kill
                      :tsLangId owlbear.parse/ts-lang-id
                      :tsRaise owlbear.edit/ts-raise
+                     :tsxBackwardMove owlbear.edit/tsx-backward-move
                      :tsxForwardBarf owlbear.edit/tsx-forward-barf
                      :tsxForwardMove owlbear.edit/tsx-forward-move
                      :tsxForwardSlurp owlbear.edit/tsx-forward-slurp

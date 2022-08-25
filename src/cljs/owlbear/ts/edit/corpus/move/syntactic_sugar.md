@@ -22,15 +22,66 @@
 ```
 
 ```typescript
-[...▌foo(), bar]
+[...▌foo()]
+```
+```typescript
+[...foo▌()]
+```
+
+```typescript
+[...foo▌(), bar]
 ```
 ```typescript
 [...foo(), ▌bar]
 ```
 
 ```typescript
-[...▌foo.bar(), baz()]
+[...▌foo.bar()]
 ```
 ```typescript
-[...foo.bar(), ▌baz()]
+[...foo.▌bar()]
+```
+
+# TypeScript Backward Move
+## Spread Syntax
+```typescript
+[...foo, ▌bar]
+```
+```typescript
+[▌...foo, bar]
+```
+
+```typescript
+[bar, ..▌.foo]
+```
+```typescript
+[▌bar, ...foo]
+```
+
+```typescript
+[bar, ...▌foo]
+```
+```typescript
+[▌bar, ...foo]
+```
+
+```typescript
+[...foo▌()]
+```
+```typescript
+[...▌foo()]
+```
+
+```typescript
+[...foo(), ▌bar]
+```
+```typescript
+[▌...foo(), bar]
+```
+
+```typescript
+[...foo.▌bar()]
+```
+```typescript
+[...▌foo.bar()]
 ```

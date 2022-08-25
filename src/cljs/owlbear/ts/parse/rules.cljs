@@ -167,7 +167,7 @@
   (when (= ts-computed-property-name (obu/noget+ node :?type))
     node))
 
-(defn ts-literal-type-node 
+(defn ts-literal-type-node
   "Given a `node`, 
    returns the `node` 
    if it is a literal type"
@@ -309,6 +309,22 @@
    if it is a call expression node"
   [node]
   (when (= ts-call-expression (obu/noget+ node :?type))
+    node))
+
+(defn ts-required-parameter-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a required parameter node"
+  [node]
+  (when (= ts-required-parameter (obu/noget+ node :?type))
+    node))
+
+(defn ts-formal-parameters-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a formal parameters node"
+  [node]
+  (when (= ts-formal-parameters (obu/noget+ node :?type))
     node))
 
 (defn subject-node
@@ -473,6 +489,14 @@
   [node]
   (when (some-> (obu/noget+ node :?type)
                 (str/ends-with? "expression"))
+    node))
+
+(defn statement-node
+  "Returns the given `node` 
+   if it is a statement node"
+  [node]
+  (when (some-> (obu/noget+ node :?type)
+                (str/ends-with? "statement"))
     node))
 
 (defn not-empty-ts-arguments-node
@@ -696,26 +720,73 @@
           (->> (filter object-node))
           (obpr/filter-current-nodes offset)))
 
-(defn next-forward-object-node
+(defn node->forward-object-node
   "Given a `node`, 
    returns the first sibling node in the forward direction 
    that is an object node"
   [node]
   (obpr/some-forward-sibling-node object-node node))
 
+(defn node->backward-object-node
+  "Given a `node`, 
+   returns the first sibling node in the forward direction 
+   that is an object node"
+  [node]
+  (obpr/some-backward-sibling-node object-node node))
+
 (defn node->current-forward-object-ctx
   "Given a `node` and character `offset`, 
    returns a map of the deepest node containing the `offset`, `:current-node`,
-   and the next forward sibling object at the subject-container level, `:forward-object-node`, 
-   of the current node or nil if there is no current node or forward-object node"
-  [node offset]
-  {:pre [(<= 0 offset)]}
-  (some->> (node->current-subject-nodes node offset)
-           (keep (fn [current-node]
-                   (when-let [forward-object-node (next-forward-object-node (subject-container-node current-node))]
-                     {:forward-object-node forward-object-node
-                      :current-node current-node})))
-           last))
+   and the next forward sibling object [optionally] at the subject-container level, `:forward-object-node`, 
+   of the current node or nil if there is no current node or forward-object node
+   
+   Accepts an options map which can specify whether the operation should 
+   allow object nodes as well, `:object-nodes?` (default false), 
+   and whether the forward node should be found from the subject container of the current node, `:from-subject-container?`"
+  ([node offset]
+   (node->current-forward-object-ctx node offset {}))
+  ([node offset {:keys [object-nodes? from-subject-container?]
+                 :or {from-subject-container? true}}]
+   {:pre [(<= 0 offset)]}
+   (let [current-nodes-fn (if object-nodes?
+                            node->current-object-nodes
+                            node->current-subject-nodes)
+         subject-container-fn (if from-subject-container?
+                                subject-container-node
+                                identity)]
+     (some->> (current-nodes-fn node offset)
+              (keep (fn [current-node]
+                      (when-let [forward-object-node (node->forward-object-node (subject-container-fn current-node))]
+                        {:forward-object-node forward-object-node
+                         :current-node current-node})))
+              last))))
+
+(defn node->current-backward-object-ctx
+  "Given a `node` and character `offset`, 
+   returns a map of the deepest node containing the `offset`, `:current-node`,
+   and the previous backward sibling object [optionally] at the subject-container level, `:backward-object-node`, 
+   of the current node or nil if there is no current node or backward-object node
+   
+   Accepts an options map which can specify whether the operation should 
+   allow object nodes as well, `:object-nodes?` (default false), 
+   and whether the forward node should be found from the subject container of the current node, `:from-subject-container?`"
+  ([node offset]
+   (node->current-backward-object-ctx node offset {}))
+  ([node offset {:keys [object-nodes? from-subject-container?]
+                 :or {from-subject-container? true}}]
+   {:pre [(<= 0 offset)]}
+   (let [current-nodes-fn (if object-nodes?
+                            node->current-object-nodes
+                            node->current-subject-nodes)
+         subject-container-fn (if from-subject-container?
+                                subject-container-node
+                                identity)]
+     (some->> (current-nodes-fn node offset)
+              (keep (fn [current-node]
+                      (when-let [backward-object-node (node->backward-object-node (subject-container-fn current-node))]
+                        {:backward-object-node backward-object-node
+                         :current-node current-node})))
+              last))))
 
 (defn node->child-object-nodes [node]
   (when node
@@ -774,3 +845,23 @@
    of insignificant characters like ws and syntax 😉"
   [s]
   (or (str/blank? s) (syntax-str? s)))
+
+(defn insignicantly-in-node?
+  "Returns true of the `offset` is 
+   an insignificant area of the given `node`"
+  [node offset]
+  (let [node-start (obu/noget+ node :?startIndex)
+        [content-start content-end] (content-range node)]
+    (and (<= content-start offset content-end)
+         (boolean (some-> node
+                          (obu/noget+ :?text)
+                          (get (- offset node-start))
+                          insignificant-str?)))))
+
+(defn default-value
+  "Given a `node`,
+   returns the default value of the parameter 
+   if the `node` is a required-parameter node"
+  [node]
+  (when (ts-required-parameter-node node)
+    (ocall node :?childForFieldName "value")))
