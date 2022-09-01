@@ -30,7 +30,7 @@
         operator (if backward? >= <=)
         at-program-end? (and (ts-rules/ts-program-node node) (= offset (obu/noget+ node :?endIndex)))]
     (when (or at-program-end? (ts-rules/insignicantly-in-node? node offset))
-      (let [descendants (cond-> (rest (obpr/node->descendants node))
+      (let [descendants (cond-> (ts-rules/node->child-object-nodes node)
                           backward? reverse)]
         (some-> (some
                  #(when (operator offset (obu/noget+ % :?startIndex))

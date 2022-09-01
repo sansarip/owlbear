@@ -249,7 +249,7 @@ type foo = {
 ```typescript
 type foo = {
   a: number;
-  b: ▌string;
+  ▌b: string;
 
 } 
 ```
@@ -263,7 +263,7 @@ type foo = {
 ```
 ```typescript
 type foo = {
-  a: ▌number;
+  ▌a: number;
   
   b: string;
 } 
@@ -325,17 +325,10 @@ type foo = ▌"hello" | "world"
 ```
 
 ```typescript
-type foo = "hello" | ▌"world"
-```
-```typescript
-type foo = ▌"hello" | "world"
-```
-
-```typescript
 type foo = "hello" | ▌ "world"
 ```
 ```typescript
-type foo = "▌hello" |  "world"
+type foo = ▌"hello" |  "world"
 ```
 
 ## Intersection Type

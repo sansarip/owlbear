@@ -98,7 +98,7 @@ const foo = (
 ▌
 ```
 ```tsx
-<h1>Hello, World!</▌h1>
+▌<h1>Hello, World!</h1>
 
 
 
@@ -133,9 +133,9 @@ const foo = (
 ```
 ```tsx
 const foo = (
-  <section>
+  ▌<section>
     <h1>Hello, World!</h1>
-  </▌section>
+  </section>
   
 );
 ```
@@ -151,7 +151,7 @@ const foo = (
 ```tsx
 const foo = (
   <section>
-    <h1>Hello, World!</▌h1>
+    ▌<h1>Hello, World!</h1>
     
   </section>
 );
@@ -174,7 +174,7 @@ const foo = (
   <>
     <section>
 	    <h1>Hello, World!</h1>
-	    <h2>The name is Zabip!</▌h2>
+	    ▌<h2>The name is Zabip!</h2>
 	    
     </section>
     <div></div>
