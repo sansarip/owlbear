@@ -13,7 +13,8 @@
            :output-to "out/cljs/owlbear-dev.js"}
           :lib/prod
           {:target :node-library
-           :exports {:htmlForwardBarf owlbear.edit/html-forward-barf
+           :exports {:htmlBackwardMove owlbear.edit/html-backward-move
+                     :htmlForwardBarf owlbear.edit/html-forward-barf
                      :htmlForwardMove owlbear.edit/html-forward-move
                      :htmlForwardSlurp owlbear.edit/html-forward-slurp
                      :htmlKill owlbear.edit/html-kill

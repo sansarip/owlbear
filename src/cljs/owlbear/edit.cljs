@@ -16,6 +16,7 @@
 (defn ->js* [m]
   (->js (update-keys m (comp obu/kabob->camel name))))
 
+(def html-backward-move (comp ->js* html-move/backward-move))
 (def html-forward-barf (comp ->js* html-barf/forward-barf))
 (def html-forward-move (comp ->js* html-move/forward-move))
 (def html-forward-slurp (comp ->js* html-slurp/forward-slurp))

@@ -42,3 +42,48 @@
   ▌The name is Zabip!
 </div>
 ```
+
+# HTML Backward Move
+## Superfluous Whitespace
+```html
+<div>
+  Hello, World!
+  <p>The name is Zabip!</p>
+  ▌
+</div>
+```
+```html
+<div>
+  Hello, World!
+  ▌<p>The name is Zabip!</p>
+  
+</div>
+```
+
+## Text to Element
+```html
+<div>
+  <p>The Name is Zabip!</p>
+  ▌Hello, World!
+</div>
+```
+```html
+<div>
+  ▌<p>The Name is Zabip!</p>
+  Hello, World!
+</div>
+```
+
+## Element to Text
+```html
+<div>
+  The name is Zabip!
+  ▌<h1>Hello, World!</h1>
+</div>
+```
+```html
+<div>
+  ▌The name is Zabip!
+  <h1>Hello, World!</h1>
+</div>
+```

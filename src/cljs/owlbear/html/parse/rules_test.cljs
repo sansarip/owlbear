@@ -129,7 +129,7 @@
   (prop/for-all [children (gen/let [tree (obgt-html/tree {:hiccup-gen-opts {:vector-gen-args [2 6]}})]
                             (obpr/node->descendants (noget+ tree :?rootNode)))]
     (let [[slurp-anchor-node
-           forward-object-node] (some #(when-let [fsn (html-rules/next-forward-object-node %)]
+           forward-object-node] (some #(when-let [fsn (html-rules/node->forward-object-node %)]
                                          [% fsn])
                                       children)]
       (testing "when forward-object node is found"
@@ -142,9 +142,9 @@
 
 (deftest next-forward-object-node-test
   (testing "when next node is not objectifiable"
-    (is (nil? (html-rules/next-forward-object-node #js {:nextSibling #js {:type (str (random-uuid))}}))
+    (is (nil? (html-rules/node->forward-object-node #js {:nextSibling #js {:type (str (random-uuid))}}))
         "invalid sibling node type")
-    (is (nil? (html-rules/next-forward-object-node #js {}))
+    (is (nil? (html-rules/node->forward-object-node #js {}))
         "no siblings")))
 
 (defspec node->current-forward-object-ctx-spec 10
