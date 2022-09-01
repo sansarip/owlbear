@@ -23,7 +23,13 @@ type Edit = (
   obOp: OwlbearOperation
 ) => Promise<EditCtx | undefined> | undefined;
 
-type OwlbearOperation = "ForwardSlurp" | "ForwardBarf" | "ForwardMove" | "Kill" | "Raise";
+type OwlbearOperation =
+  | "BackwardMove"
+  | "ForwardSlurp"
+  | "ForwardBarf"
+  | "ForwardMove"
+  | "Kill"
+  | "Raise";
 
 const getOwlbearFunction = (
   operation: OwlbearOperation
@@ -67,21 +73,15 @@ const doEditOp: Edit = (obOp: OwlbearOperation) => {
   return edit(editor, editCtx);
 };
 
-const forwardSlurp: Handler = () => {
-  return doEditOp("ForwardSlurp");
-};
+const backwardMove: Handler = () => doEditOp("BackwardMove");
 
-const forwardBarf: Handler = () => {
-  return doEditOp("ForwardBarf");
-};
+const forwardSlurp: Handler = () => doEditOp("ForwardSlurp");
 
-const forwardMove: Handler = () => {
-  return doEditOp("ForwardMove");
-}
+const forwardBarf: Handler = () => doEditOp("ForwardBarf");
 
-const kill: Handler = () => {
-  return doEditOp("Kill");
-};
+const forwardMove: Handler = () => doEditOp("ForwardMove");
+
+const kill: Handler = () => doEditOp("Kill");
 
 const copy: Handler = async (editCtx = undefined) => {
   const ctx = editCtx ?? getEditCtx("Kill");
@@ -103,6 +103,7 @@ const raise: Handler = () => {
 };
 
 const commands: Command[] = [
+  { id: "owlbear.backwardMove", handler: backwardMove },
   { id: "owlbear.copy", handler: copy },
   { id: "owlbear.cut", handler: cut },
   { id: "owlbear.forwardBarf", handler: forwardBarf },

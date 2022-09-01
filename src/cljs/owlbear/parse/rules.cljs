@@ -77,7 +77,14 @@
   {:pre [(fn? pred)]}
   (some pred (node->forward-sibling-nodes node)))
 
-(defn some-child-node 
+(defn some-backward-sibling-node
+  "Given a predicate function, `pred`, and a `node`, 
+   returns the first backward sibling node that fulfills the predicate function"
+  [pred node]
+  {:pre [(fn? pred)]}
+  (some pred (node->backward-sibling-nodes node)))
+
+(defn some-child-node
   "Given a predicate function, `pred`, and a `node`, 
    returns the first child node that fulfills the predicate function"
   [pred node]
@@ -87,10 +94,18 @@
 (defn some-descendant-node
   "Given a predicate function, `pred`, and a `node`, 
    returns the first truthy value of the predicate function 
-   applied to the node's descendants" 
+   applied to the node's descendants"
   [pred node]
   {:pre [(fn? pred)]}
   (some pred (rest (node->descendants node))))
+
+(defn filter-children
+  "Given a predicate function, `pred`, and a `node`, 
+   returns a lazy seq of all the child nodes 
+   that fulfill the predicate function"
+  [pred node]
+  {:pre [(fn? pred)]}
+  (filter pred (obu/noget+ node :?children)))
 
 (defn filter-descendants
   "Given a predicate function, `pred`, and a `node`, 
@@ -124,10 +139,10 @@
                 (->> (re-matches #"\s+")))
     node))
 
-(defn distinct-by-start-index 
+(defn distinct-by-start-index
   "Given a sequence of nodes, 
    returns a sequence of the nodes 
-   deduped by their start indices"  
+   deduped by their start indices"
   [nodes]
   (vals
    (reduce
@@ -135,3 +150,15 @@
       (assoc coll (obu/noget+ node :?startIndex) node))
     {}
     nodes)))
+
+(defn node->same-start-ancestors
+  "Given a `node`, 
+   returns a lazy sequence of the `node`'s ancestors 
+   that have the same start index"
+  [node]
+  (let [start-index (obu/noget+ node :?startIndex)]
+    (->> node
+         (iterate #(obu/noget+ (or % #js {}) :?parent))
+         (take-while
+          #(= (obu/noget+ % :?startIndex) start-index))
+         rest)))

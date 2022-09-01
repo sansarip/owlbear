@@ -86,7 +86,7 @@
                                      {:nodes (obpr/node->descendants root-node)
                                       :src (noget+ root-node :?text)}))]
     (let [[slurp-anchor-node
-           forward-object-node] (some #(when-let [fsn (ts-rules/next-forward-object-node %)]
+           forward-object-node] (some #(when-let [fsn (ts-rules/node->forward-object-node %)]
                                          [% fsn])
                                       nodes)]
       (&testing "when forward-object node is found"
@@ -99,9 +99,9 @@
 
 (deftest next-forward-object-node-test
   (&testing "when next node is not objectifiable"
-    (is (nil? (ts-rules/next-forward-object-node #js {:nextSibling #js {:type (str (random-uuid))}}))
+    (is (nil? (ts-rules/node->forward-object-node #js {:nextSibling #js {:type (str (random-uuid))}}))
         "invalid sibling node type")
-    (is (nil? (ts-rules/next-forward-object-node #js {}))
+    (is (nil? (ts-rules/node->forward-object-node #js {}))
         "no siblings")))
 
 (defspec node->current-forward-object-ctx-spec 10

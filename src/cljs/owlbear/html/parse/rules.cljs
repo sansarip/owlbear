@@ -1,7 +1,9 @@
 (ns owlbear.html.parse.rules
   "Tree-sitter rule (type) definitions"
-  (:require [oops.core :refer [oget]]
-            [owlbear.parse.rules :as obpr]))
+  (:require [clojure.string :as str]
+            [oops.core :refer [oget]]
+            [owlbear.parse.rules :as obpr]
+            [owlbear.utilities :as obu]))
 
 (def html-comment "comment")
 (def html-comment-start-tag "comment_start_tag")
@@ -121,24 +123,55 @@
           (->> (filter object-node))
           (obpr/filter-current-nodes offset)))
 
-(defn next-forward-object-node 
+(defn node->forward-object-node
   "Given a `node`, 
-   returns the next object node in the forward direction"  
+   returns the first sibling node in the forward direction 
+   that is an object node"
   [node]
   (obpr/some-forward-sibling-node object-node node))
+
+(defn node->backward-object-node
+  "Given a `node`, 
+   returns the first sibling node in the backward direction 
+   that is an object node"
+  [node]
+  (obpr/some-backward-sibling-node object-node node))
 
 (defn node->current-forward-object-ctx
   "Given a `node` and character `offset`, 
    returns a map of the deepest node (containing the `offset`)
    with a forward sibling object context"
-  [node offset]
-  {:pre [(<= 0 offset)]}
-  (some->> (node->current-subject-nodes node offset)
-           (keep (fn [current-node]
-                   (when-let [forward-object-node (next-forward-object-node current-node)]
-                     {:forward-object-node forward-object-node
-                      :current-node current-node})))
-           last))
+  ([node offset]
+   (node->current-forward-object-ctx node offset {}))
+  ([node offset {:keys [object-nodes?]}]
+   {:pre [(<= 0 offset)]}
+   (let [current-nodes-fn (if object-nodes?
+                            node->current-object-nodes
+                            node->current-subject-nodes)]
+     (some->> (current-nodes-fn node offset)
+              (keep (fn [current-node]
+                      (when-let [forward-object-node (node->forward-object-node current-node)]
+                        {:forward-object-node forward-object-node
+                         :current-node current-node})))
+              last))))
+
+(defn node->current-backward-object-ctx
+  "Given a `node` and character `offset`, 
+   returns a map of the deepest node (containing the `offset`)
+   with a forward sibling object context"
+  ([node offset]
+   (node->current-forward-object-ctx node offset {}))
+  ([node offset {:keys [object-nodes?]}]
+   {:pre [(<= 0 offset)]}
+   (let [current-nodes-fn (if object-nodes?
+                            node->current-object-nodes
+                            node->current-subject-nodes)]
+     (some->> (current-nodes-fn node offset)
+              (keep (fn [current-node]
+                      (when-let [backward-object-node (node->backward-object-node current-node)]
+                        {:backward-object-node backward-object-node
+                         :current-node current-node})))
+              last))))
 
 (defn node->child-object-nodes [node]
   (when node
@@ -157,3 +190,29 @@
                      {:last-child-object-node last-child-object-node
                       :current-node current-node})))
            last))
+
+(defn content-range
+  "Given a `node`, 
+   returns the start and end indices
+   of the content area within a node"
+  [node]
+  (let [node-start (obu/noget+ node :?startIndex)
+        node-end (obu/noget+ node :?endIndex)
+        start-node (node->start-tag-node node)
+        end-node (node->end-tag-node node)]
+    (if (and start-node end-node)
+      [(obu/noget+ start-node :?endIndex)
+       (obu/noget+ end-node :?startIndex)]
+      [node-start node-end])))
+
+(defn insignicantly-in-node?
+  "Returns true of the `offset` is 
+   an insignificant area of the given `node`"
+  [node offset]
+  (let [node-start (obu/noget+ node :?startIndex)
+        [content-start content-end] (content-range node)]
+    (and (<= content-start offset content-end)
+         (boolean (some-> node
+                          (obu/noget+ :?text)
+                          (get (- offset node-start))
+                          str/blank?)))))
