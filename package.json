@@ -62,6 +62,48 @@
         "title": "Owlbear: Raise",
         "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       }
+    ],
+    "keybindings": [
+      {
+        "command": "owlbear.backwardMove",
+        "key": "alt+left",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
+        "command": "owlbear.copy",
+        "key": "ctrl+alt+c",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
+        "command": "owlbear.cut",
+        "key": "ctrl+alt+x",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
+        "command": "owlbear.forwardBarf",
+        "key": "ctrl+alt+left",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
+        "command": "owlbear.forwardMove",
+        "key": "alt+right",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
+        "command": "owlbear.forwardSlurp",
+        "key": "ctrl+alt+right",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
+        "command": "owlbear.kill",
+        "key": "ctrl+k",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
+        "command": "owlbear.raise",
+        "key": "ctrl+alt+p ctrl+alt+r",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      }
     ]
   },
   "repository": {
