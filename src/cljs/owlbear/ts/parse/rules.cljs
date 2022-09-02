@@ -384,7 +384,6 @@
                        ts-function-declaration
                        ts-function-type
                        ts-generator-function-declaration
-                       ts-identifier
                        ts-if-statement
                        ts-import-statement
                        ts-incomplete-pair
@@ -424,6 +423,10 @@
                        ts-while-statement
                        ts-yield-expression}
                      node-type) node
+          (= node-type ts-identifier) (when-not (contains? #{jsx-closing-element
+                                                             jsx-opening-element}
+                                                           (obu/noget+ node :?parent.?type))
+                                        node)
           (= node-type jsx-text) (when-not (obpr/all-white-space-chars node)
                                    node)
           :else nil))
