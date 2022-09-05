@@ -53,7 +53,7 @@
         (is (>= result-offset 0)
             "resulting offset is non-negative")
         (is (= (-> result-src
-                   (obp/src->tree obp/html-lang-id)
+                   (obp/src->tree! obp/html-lang-id)
                    (noget+ :?rootNode)
                    (html-rules/node->current-object-nodes parent-node-start-offset)
                    last

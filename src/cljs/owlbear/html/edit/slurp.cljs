@@ -23,29 +23,37 @@
    and a new `offset` containing where the cursor position 
    should be after the slurp
 
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used
+
    e.g.
    ```html
      <div>📍</div><h1></h1> => <div>📍<h1></h1></div>
    ```"
-  [src offset]
-  {:pre [(string? src) (<= 0 offset)]}
-  (when-let [{:keys [forward-object-node
-                     current-node]} (html-rules/node->current-forward-object-ctx
-                                     (obu/noget+ (obp/src->tree src obp/html-lang-id) :?rootNode)
-                                     offset)]
-    (when-let [current-node-end-tag (html-rules/node->end-tag-node current-node)]
-      (let [current-node-end-tag-start-index (oget current-node-end-tag :?startIndex)
-            current-node-end-tag-end-index (oget current-node-end-tag :?endIndex)
-            current-node-end-tag-text (oget current-node-end-tag :?text)
-            forward-object-node-end-index (oget forward-object-node :?endIndex)
-            end-tag-insert-offset (- forward-object-node-end-index (count current-node-end-tag-text))]
-        {:src (-> src
-                  (obu/str-remove current-node-end-tag-start-index current-node-end-tag-end-index)
-                  (obu/str-insert current-node-end-tag-text end-tag-insert-offset))
-         :offset (if (obpr/range-in-node? current-node-end-tag offset)
-                   (+ (- offset current-node-end-tag-start-index)
-                      end-tag-insert-offset)
-                   offset)}))))
+  ([src offset]
+   (forward-slurp src offset nil))
+  ([src offset tree-id]
+   {:pre [(string? src) (<= 0 offset)]}
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src obp/html-lang-id))]
+     (when-let [{:keys [forward-object-node
+                        current-node]} (html-rules/node->current-forward-object-ctx
+                                        (obu/noget+ tree :?rootNode)
+                                        offset)]
+       (when-let [current-node-end-tag (html-rules/node->end-tag-node current-node)]
+         (let [current-node-end-tag-start-index (oget current-node-end-tag :?startIndex)
+               current-node-end-tag-end-index (oget current-node-end-tag :?endIndex)
+               current-node-end-tag-text (oget current-node-end-tag :?text)
+               forward-object-node-end-index (oget forward-object-node :?endIndex)
+               end-tag-insert-offset (- forward-object-node-end-index (count current-node-end-tag-text))]
+           {:src (-> src
+                     (obu/str-remove current-node-end-tag-start-index current-node-end-tag-end-index)
+                     (obu/str-insert current-node-end-tag-text end-tag-insert-offset))
+            :offset (if (obpr/range-in-node? current-node-end-tag offset)
+                      (+ (- offset current-node-end-tag-start-index)
+                         end-tag-insert-offset)
+                      offset)}))))))
 
 (comment
   ;; Examples

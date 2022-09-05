@@ -41,7 +41,7 @@
             "barfed src is different")
         (is (> (count current-node-text)
                (-> result-src
-                   (obp/src->tree obp/html-lang-id)
+                   (obp/src->tree! obp/html-lang-id)
                    (noget+ :?rootNode)
                    (html-rules/node->current-subject-nodes result-offset)
                    last
@@ -61,7 +61,7 @@
             "barfed src is different")
         (is (> (count current-node-text)
                (-> result-src
-                   (obp/src->tree obp/html-lang-id)
+                   (obp/src->tree! obp/html-lang-id)
                    (noget+ :?rootNode)
                    (html-rules/node->current-subject-nodes result-offset)
                    last

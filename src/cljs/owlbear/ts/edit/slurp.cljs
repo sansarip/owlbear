@@ -54,7 +54,7 @@
       ;; type foo = {a: ▌} b => type = {a: b;▌}
       (object-type-needs-semicolon?)
       ";"
-      
+
       ;; {▌} // hello, world => {▌//hello, wordld\n}
       (ts-rules/ts-comment-node forward-node)
       "\n")))
@@ -302,7 +302,11 @@
    and a new `offset` containing where the cursor position 
    should be after the slurp
    
-   Accepts an optional third `tsx?` argument which specifies 
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used
+
+   Accepts an optional fourth `tsx?` argument which specifies 
    if the `src` should be parsed as TSX
 
    e.g.
@@ -312,23 +316,27 @@
    for (let i = 0; i < cars.length; i++) {📍 text += cars[i] + \"<br>\"};
    ```"
   ([src offset]
-   (forward-slurp src offset false))
-  ([src offset tsx?]
+   (forward-slurp src offset nil))
+  ([src offset tree-id]
+   (forward-slurp src offset tree-id false))
+  ([src offset tree-id tsx?]
    {:pre [(string? src) (<= 0 offset)]}
-   (when-let [{:keys [forward-object-node
-                      current-node]} (ts-rules/node->current-forward-object-ctx
-                                      (obu/noget+ (obp/src->tree src (if tsx? obp/tsx-lang-id obp/ts-lang-id)) :?rootNode)
-                                      offset)]
-     (some-> {:src src
-              :offset offset}
-             (move-end-nodes current-node forward-object-node)
-             (remove-item-separators current-node forward-object-node)
-             (insert-item-separator current-node)
-             (escape-string current-node forward-object-node)
-             (escape-comment-block current-node forward-object-node)
-             (insert-computed-property-brackets current-node forward-object-node)
-             (remove-statement-semicolon current-node forward-object-node)
-             (select-keys [:src :offset])))))
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src (if tsx? obp/tsx-lang-id obp/ts-lang-id)))]
+     (when-let [{:keys [forward-object-node
+                        current-node]} (ts-rules/node->current-forward-object-ctx
+                                        (obu/noget+ tree :?rootNode)
+                                        offset)]
+       (some-> {:src src
+                :offset offset}
+               (move-end-nodes current-node forward-object-node)
+               (remove-item-separators current-node forward-object-node)
+               (insert-item-separator current-node)
+               (escape-string current-node forward-object-node)
+               (escape-comment-block current-node forward-object-node)
+               (insert-computed-property-brackets current-node forward-object-node)
+               (remove-statement-semicolon current-node forward-object-node)
+               (select-keys [:src :offset]))))))
 
 (comment
   ;; Examples
@@ -337,7 +345,7 @@
         offset 1
         {:keys [current-node
                 forward-object-node]} (ts-rules/node->current-forward-object-ctx
-                                       (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
+                                       (obu/noget+ (obp/src->tree! src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
     (move-end-nodes ctx current-node forward-object-node))
@@ -345,7 +353,7 @@
         offset 1
         {:keys [current-node
                 forward-object-node]} (ts-rules/node->current-forward-object-ctx
-                                       (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
+                                       (obu/noget+ (obp/src->tree! src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
     (-> ctx
@@ -355,7 +363,7 @@
         offset 1
         {:keys [current-node
                 forward-object-node]} (ts-rules/node->current-forward-object-ctx
-                                       (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
+                                       (obu/noget+ (obp/src->tree! src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
     (-> ctx
@@ -365,7 +373,7 @@
         offset 13
         {:keys [current-node
                 forward-object-node]} (ts-rules/node->current-forward-object-ctx
-                                       (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
+                                       (obu/noget+ (obp/src->tree! src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
     (-> ctx
@@ -375,7 +383,7 @@
         offset 1
         {:keys [current-node
                 forward-object-node]} (ts-rules/node->current-forward-object-ctx
-                                       (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
+                                       (obu/noget+ (obp/src->tree! src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
     (-> ctx
@@ -385,7 +393,7 @@
         offset 1
         {:keys [current-node
                 forward-object-node]} (ts-rules/node->current-forward-object-ctx
-                                       (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
+                                       (obu/noget+ (obp/src->tree! src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
     (-> ctx
@@ -395,7 +403,7 @@
         offset 1
         {:keys [current-node
                 forward-object-node]} (ts-rules/node->current-forward-object-ctx
-                                       (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
+                                       (obu/noget+ (obp/src->tree! src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
     (-> ctx
@@ -405,7 +413,7 @@
         offset 11
         {:keys [current-node
                 forward-object-node]} (ts-rules/node->current-forward-object-ctx
-                                       (obu/noget+ (obp/src->tree src obp/ts-lang-id) :?rootNode)
+                                       (obu/noget+ (obp/src->tree! src obp/ts-lang-id) :?rootNode)
                                        offset)
         ctx {:src src :offset offset}]
     (-> ctx

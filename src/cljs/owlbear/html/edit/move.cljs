@@ -61,30 +61,46 @@
 (defn forward-move
   "Given a src string and an offset, 
    returns the offset of the next, sibling object node 
-   from the offset"
-  [src offset]
-  {:pre [(<= 0 offset)]}
-  (let [root-node (obu/noget+ (obp/src->tree src obp/html-lang-id) :?rootNode)
-        root-node-start (obu/noget+ root-node :?startIndex)]
-    (when-let [current-node (or (node->current-node root-node offset)
-                                (when (<= offset root-node-start) root-node))] ; The root-node (a fragment node) is not always the full document
-      (some->> (or (when (< offset root-node-start) root-node-start)
-                   (child-offset current-node offset :forward)
-                   (sibling-offset root-node offset :forward))
-               (hash-map :offset)))))
+   from the offset
+
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used"
+  ([src offset]
+   (forward-move src offset nil))
+  ([src offset tree-id]
+   {:pre [(<= 0 offset)]}
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src obp/html-lang-id))
+         root-node (obu/noget+ tree :?rootNode)
+         root-node-start (obu/noget+ root-node :?startIndex)]
+     (when-let [current-node (or (node->current-node root-node offset)
+                                 (when (<= offset root-node-start) root-node))] ; The root-node (a fragment node) is not always the full document
+       (some->> (or (when (< offset root-node-start) root-node-start)
+                    (child-offset current-node offset :forward)
+                    (sibling-offset root-node offset :forward))
+                (hash-map :offset))))))
 
 (defn backward-move
   "Given a src string and an offset, 
    returns the offset of the previous, sibling object node 
-   from the offset"
-  [src offset]
-  {:pre [(<= 0 offset)]}
-  (let [root-node (obu/noget+ (obp/src->tree src obp/html-lang-id) :?rootNode)]
-    (when-let [current-node (or (node->current-node root-node offset)
-                                (when (= offset (obu/noget+ root-node :?endIndex)) root-node))] ; The root-node (a fragment node) is not always the full document
-      (some->> (or (child-offset current-node offset :backward)
-                   (sibling-offset root-node offset :backward))
-               (hash-map :offset)))))
+   from the offset
+
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used"
+  ([src offset]
+   (backward-move src offset nil))
+  ([src offset tree-id]
+   {:pre [(<= 0 offset)]}
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src obp/html-lang-id))
+         root-node (obu/noget+ tree :?rootNode)]
+     (when-let [current-node (or (node->current-node root-node offset)
+                                 (when (= offset (obu/noget+ root-node :?endIndex)) root-node))] ; The root-node (a fragment node) is not always the full document
+       (some->> (or (child-offset current-node offset :backward)
+                    (sibling-offset root-node offset :backward))
+                (hash-map :offset))))))
 
 (comment
   ;; Examples

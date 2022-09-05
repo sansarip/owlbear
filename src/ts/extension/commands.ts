@@ -7,6 +7,7 @@ import {
 import { EditCtx, OwlbearFunction } from "./types";
 import { getDocCtx, getFileExtension, edit } from "./utilities";
 import clipboard from "clipboardy";
+import { docUriToTreeIdMap, setNewTreeIdForDocUri } from "./tree";
 
 const ob = require("../../../out/cljs/owlbear");
 
@@ -56,18 +57,19 @@ export const getEditCtx = (obOp: OwlbearOperation): EditCtx | undefined => {
   if (!editor) {
     return;
   }
-  const { src, offset } = getDocCtx(editor);
+  const { src, offset, docUri } = getDocCtx(editor);
   const obFn = getOwlbearFunction(obOp);
   if (!obFn) {
     return;
   }
-  return obFn(src, offset);
+  const treeId = docUriToTreeIdMap[docUri] || setNewTreeIdForDocUri(docUri);
+  return obFn(src, offset, treeId);
 };
 
 const doEditOp: Edit = (obOp: OwlbearOperation) => {
   const editor = window.activeTextEditor;
   const editCtx = getEditCtx(obOp);
-  if (!editor || !editCtx) {
+  if (!editor || !editCtx || Object.keys(editCtx).length === 0) {
     return;
   }
   return edit(editor, editCtx);

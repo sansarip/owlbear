@@ -79,5 +79,5 @@
        :or {language obp/tsx-lang-id
             tree->node #(obu/noget+ % :?rootNode.?children.?0)}}]
    (gen/fmap (comp tree->node
-                   #(obp/src->tree % language))
+                   #(obp/src->tree! % language))
              g)))

@@ -8,22 +8,29 @@
   "Given a `src` string and character `offset`, 
    returns a new src string with the kill operation applied at the `offset`
 
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used
+
    e.g.
    ```html
      <div><📍h1></h1></div> => <div></div> 
    ```"
-  [src offset]
-  {:pre [(string? src) (>= offset 0)]}
-  (when-let [current-node (some-> src
-                                  (obp/src->tree obp/html-lang-id)
-                                  (obu/noget+ :?rootNode)
-                                  (html-rules/node->current-object-nodes offset)
-                                  last)]
-    (let [current-node-start (oget current-node :?startIndex)
-          current-node-end (oget current-node :?endIndex)]
-      {:src (obu/str-remove src current-node-start current-node-end)
-       :offset current-node-start
-       :removed-text (obu/noget+ current-node :?text)})))
+  ([src offset]
+   (kill src offset nil))
+  ([src offset tree-id]
+   {:pre [(string? src) (>= offset 0)]}
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src obp/html-lang-id))]
+     (when-let [current-node (some-> tree
+                                     (obu/noget+ :?rootNode)
+                                     (html-rules/node->current-object-nodes offset)
+                                     last)]
+       (let [current-node-start (oget current-node :?startIndex)
+             current-node-end (oget current-node :?endIndex)]
+         {:src (obu/str-remove src current-node-start current-node-end)
+          :offset current-node-start
+          :removed-text (obu/noget+ current-node :?text)})))))
 
 (comment
   ;; Kill example

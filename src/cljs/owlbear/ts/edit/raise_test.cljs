@@ -35,11 +35,11 @@
                                                          :current-node-end-index (noget+ current-node :?endIndex)})))]
     (&testing ""
       (&testing "when cursor out of bounds"
-        (is (nil? (ts-raise/raise src out-of-bounds-offset :tsx))
+        (is (nil? (ts-raise/raise src out-of-bounds-offset nil :tsx))
             "no result"))
       (let [{result-src :src
              result-offset :offset
-             :as result} (ts-raise/raise src in-bounds-offset :tsx)]
+             :as result} (ts-raise/raise src in-bounds-offset nil :tsx)]
         (&testing "when cursor in bounds"
           (is (map? result)
               "raise performed")
@@ -59,5 +59,5 @@
     (is (nil? (ts-raise/raise "" 0))
         "no result"))
   (testing "when root node"
-    (is (nil? (ts-raise/raise "<div>hello</div>" 0))
+    (is (nil? (ts-raise/raise "<div>hello</div>" 0 nil :tsx))
         "no result")))

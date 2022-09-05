@@ -1,8 +1,6 @@
 (ns owlbear.ts.parse.rules
   (:require [clojure.string :as str]
-            [oops.core :refer [oget ocall]]
-            [owlbear.parse.rules :as obpr]
-            [owlbear.utilities :as obu]))
+            [owlbear.parse.rules :as obpr]))
 
 (def jsx-closing-element "jsx_closing_element")
 (def jsx-element "jsx_element")
@@ -91,88 +89,88 @@
   "Given a `node`, 
    returns the `node` 
    if it is a arguments node"
-  [node]
-  (when (= ts-arguments (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-arguments (.-type node)))
     node))
 
 (defn ts-array-node
   "Given a `node`, 
    returns the `node` 
    if it is an array"
-  [node]
-  (when (= ts-array (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-array (.-type node)))
     node))
 
 (defn ts-await-expression-node
   "Given a `node`, 
    returns the `node` 
    if it is an await expression"
-  [node]
-  (when (= ts-await-expression (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-await-expression (.-type node)))
     node))
 
 (defn ts-escape-sequence-node
   "Given a `node`, 
    returns the `node` 
    if it is an escape sequence"
-  [node]
-  (when (= ts-escape-sequence (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-escape-sequence (.-type node)))
     node))
 
 (defn ts-member-expression-node
   "Given a `node`, 
    returns the `node` 
    if it is a member-expression node"
-  [node]
-  (when (= ts-member-expression (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-member-expression (.-type node)))
     node))
 
 (defn ts-spread-element-node
   "Given a `node`, 
    returns the `node` 
    if it is a spread-element node"
-  [node]
-  (when (= ts-spread-element (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-spread-element (.-type node)))
     node))
 
 (defn ts-object-node
   "Given a `node`, 
    returns the `node` 
    if it is a TS object"
-  [node]
-  (when (= ts-object (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-object (.-type node)))
     node))
 
 (defn ts-object-type-node
   "Given a `node`, 
    returns the `node` 
    if it is a TS object type"
-  [node]
-  (when (= ts-object-type (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-object-type (.-type node)))
     node))
 
 (defn ts-type-annotation-node
   "Given a `node`, 
    returns the `node` 
    if it is a TS type annotation"
-  [node]
-  (when (= ts-type-annotation (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-type-annotation (.-type node)))
     node))
 
 (defn ts-computed-property-name-node
   "Given a `node`, 
    returns the `node` 
    if it is a computed property name"
-  [node]
-  (when (= ts-computed-property-name (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-computed-property-name (.-type node)))
     node))
 
 (defn ts-literal-type-node
   "Given a `node`, 
    returns the `node` 
    if it is a literal type"
-  [node]
-  (when (= ts-literal-type (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-literal-type (.-type node)))
     node))
 
 (defn ts-collection-node
@@ -180,16 +178,16 @@
    returns the `node` 
    if it is a collection 
    i.e. array or TS object"
-  [node]
-  (when (#{ts-array ts-object} (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (#{ts-array ts-object} (.-type node)))
     node))
 
 (defn ts-statement-block-node
   "Given a `node`, 
    returns the `node` 
    if it is a statement block"
-  [node]
-  (when (= ts-statement-block (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-statement-block (.-type node)))
     node))
 
 (defn syntax-str?
@@ -203,140 +201,132 @@
   "Given a `node`, 
    returns the `node` 
    if it is a syntax node"
-  [node]
-  (when (syntax-str? (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (syntax-str? (.-type node)))
     node))
 
 (defn jsx-closing-element-node
   "given a `node`, 
    returns the `node` 
    if it is an end tag node"
-  [node]
-  (when (= jsx-closing-element (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= jsx-closing-element (.-type node)))
     node))
 
 (defn jsx-fragment-end-tag-node
   "given a `node`, 
    returns the `node` 
    if it is a fragment end tag node"
-  [node]
-  (when (= jsx-fragment-end-tag (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= jsx-fragment-end-tag (.-type node)))
     node))
 
 (defn ts-comment-node
   "given a `node`, 
    returns the `node` 
    if it is a comment node"
-  [node]
-  (when (= ts-comment (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-comment (.-type node)))
     node))
 
 (defn ts-comment-block-node
   "given a `node`, 
    returns the `node` 
    if it is a comment-block node"
-  [node]
-  (when (= ts-comment-block (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-comment-block (.-type node)))
     node))
 
 (defn ts-comment-block-end-node
   "given a `node`, 
    returns the `node` 
    if it is a comment-block end node"
-  [node]
-  (when (= ts-comment-block-end (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-comment-block-end (.-type node)))
     node))
 
 (defn ts-expression-statement-node
   "given a `node`, 
    returns the `node` 
    if it is an expression statement node"
-  [node]
-  (when (= ts-expression-statement (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-expression-statement (.-type node)))
     node))
 
 (defn ts-string-node
   "given a `node`, 
    returns the `node` 
    if it is a string node"
-  [node]
-  (when (= ts-string (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-string (.-type node)))
     node))
 
 (defn ts-template-string-node
   "given a `node`, 
    returns the `node` 
    if it is a template string node"
-  [node]
-  (when (= ts-template-string (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-template-string (.-type node)))
     node))
 
 (defn ts-identifier-node
   "given a `node`, 
    returns the `node` 
    if it is an identifier node"
-  [node]
-  (when (= ts-identifier (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-identifier (.-type node)))
     node))
 
 (defn ts-program-node
   "given a `node`, 
    returns the `node` 
    if it is a program node"
-  [node]
-  (when (= ts-program (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-program (.-type node)))
     node))
 
 (defn ts-property-signature-node
   "given a `node`, 
    returns the `node` 
    if it is a property signature node"
-  [node]
-  (when (= ts-property-signature (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-property-signature (.-type node)))
     node))
 
 (defn ts-pair-node
   "given a `node`, 
    returns the `node` 
    if it is a pair node"
-  [node]
-  (when (= ts-pair (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-pair (.-type node)))
     node))
 
 (defn ts-call-expression-node
   "given a `node`, 
    returns the `node` 
    if it is a call expression node"
-  [node]
-  (when (= ts-call-expression (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-call-expression (.-type node)))
     node))
 
 (defn ts-required-parameter-node
   "given a `node`, 
    returns the `node` 
    if it is a required parameter node"
-  [node]
-  (when (= ts-required-parameter (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-required-parameter (.-type node)))
     node))
 
 (defn ts-formal-parameters-node
   "given a `node`, 
    returns the `node` 
    if it is a formal parameters node"
-  [node]
-  (when (= ts-formal-parameters (obu/noget+ node :?type))
+  [^js node]
+  (when (and node (= ts-formal-parameters (.-type node)))
     node))
 
-(defn subject-node
-  "Returns the given `node`
-   if edit operations can be run from within the node 
-   i.e. the node doing the slurping or barfing"
-  [node]
-  (let [node-type (obu/noget+ node :?type)]
-    (cond
-      ;; FIXME: predefined TS types have the same grammar type as other nodes 👎
-      (= ts-predefined-type (obu/noget+ node :?parent.?type)) nil
-      (contains? #{jsx-element
+;; *1
+(let [green-list #{jsx-element
                    jsx-expression
                    jsx-fragment
                    ts-arguments
@@ -350,87 +340,104 @@
                    ts-structural-body
                    ts-switch-body
                    ts-template-string
-                   ts-template-substitution}
-                 node-type) node
-      :else nil)))
-
-(defn object-node
-  "Returns the given `node` 
-   if edit operations can be run against the node 
-   i.e. the node being slurped or barfed"
-  [node]
-  (or (let [node-type (obu/noget+ node :?type)]
+                   ts-template-substitution}]
+  (defn subject-node
+    "Returns the given `node`
+   if edit operations can be run from within the node 
+   i.e. the node doing the slurping or barfing"
+    [^js node]
+    (when node
+      (let [node-type (.-type node)
+            parent (.-parent node)
+            parent-type (when parent (.-type parent))]
         (cond
-          (contains? #{ts-literal-type ts-predefined-type} (obu/noget+ node :?parent.?type))
-          nil
-          (contains? #{jsx-self-closing-element
-                       ts-abstract-class-declaration
-                       ts-arrow-function
-                       ts-assignment-expression
-                       ts-await-expression
-                       ts-binary-expression
-                       ts-call-expression
-                       ts-class-declaration
-                       ts-comment
-                       ts-comment-block-content
-                       ts-computed-property-name
-                       ts-error
-                       ts-escape-sequence
-                       ts-export-statement
-                       ts-expression-statement
-                       ts-for-statement
-                       ts-for-in-statement
-                       ts-formal-parameters
-                       ts-function-declaration
-                       ts-function-type
-                       ts-generator-function-declaration
-                       ts-if-statement
-                       ts-import-statement
-                       ts-incomplete-pair
-                       ts-incomplete-property-signature
-                       ts-interface-declaration
-                       ts-intersection-type
-                       ts-labeled-statement
-                       ts-lexical-declaration
-                       ts-literal-type
-                       ts-member-expression
-                       ts-new-expression
-                       ts-null
-                       ts-number
-                       ts-object
-                       ts-pair
-                       ts-parenthesized-expression
-                       ts-predefined-type
-                       ts-property-identifier
-                       ts-property-signature
-                       ts-public-field-definition
-                       ts-regex
-                       ts-required-parameter
-                       ts-return-statement
-                       ts-spread-element
-                       ts-shorthand-property-identifier
-                       ts-string
-                       ts-string-fragment
-                       ts-switch-statement
-                       ts-template-fragment
-                       ts-template-string
-                       ts-type-alias-declaration
-                       ts-type-annotation
-                       ts-type-identifier
-                       ts-update-expression
-                       ts-union-type
-                       ts-variable-declaration
-                       ts-while-statement
-                       ts-yield-expression}
-                     node-type) node
-          (= node-type ts-identifier) (when-not (contains? #{jsx-closing-element
-                                                             jsx-opening-element}
-                                                           (obu/noget+ node :?parent.?type))
-                                        node)
-          (= node-type jsx-text) (when-not (obpr/all-white-space-chars node)
-                                   node)
-          :else nil))
-      (subject-node node)))
+          ;; FIXME: predefined TS types have the same grammar type as other nodes 👎
+          (= ts-predefined-type parent-type) nil
+          (contains? green-list node-type) node
+          :else nil)))))
+
+;; *1
+(let [green-list #{jsx-self-closing-element
+                   ts-abstract-class-declaration
+                   ts-arrow-function
+                   ts-assignment-expression
+                   ts-await-expression
+                   ts-binary-expression
+                   ts-call-expression
+                   ts-class-declaration
+                   ts-comment
+                   ts-comment-block-content
+                   ts-computed-property-name
+                   ts-error
+                   ts-escape-sequence
+                   ts-export-statement
+                   ts-expression-statement
+                   ts-for-statement
+                   ts-for-in-statement
+                   ts-formal-parameters
+                   ts-function-declaration
+                   ts-function-type
+                   ts-generator-function-declaration
+                   ts-if-statement
+                   ts-import-statement
+                   ts-incomplete-pair
+                   ts-incomplete-property-signature
+                   ts-interface-declaration
+                   ts-intersection-type
+                   ts-labeled-statement
+                   ts-lexical-declaration
+                   ts-literal-type
+                   ts-member-expression
+                   ts-new-expression
+                   ts-null
+                   ts-number
+                   ts-object
+                   ts-pair
+                   ts-parenthesized-expression
+                   ts-predefined-type
+                   ts-property-identifier
+                   ts-property-signature
+                   ts-public-field-definition
+                   ts-regex
+                   ts-required-parameter
+                   ts-return-statement
+                   ts-spread-element
+                   ts-shorthand-property-identifier
+                   ts-string
+                   ts-string-fragment
+                   ts-switch-statement
+                   ts-template-fragment
+                   ts-template-string
+                   ts-type-alias-declaration
+                   ts-type-annotation
+                   ts-type-identifier
+                   ts-update-expression
+                   ts-union-type
+                   ts-variable-declaration
+                   ts-while-statement
+                   ts-yield-expression}
+      redlist #{ts-literal-type ts-predefined-type}]
+  (defn object-node
+    "Returns the given `node` 
+     if edit operations can be run against the node 
+     i.e. the node being slurped or barfed"
+    [^js node]
+    (when node
+      (or (let [node-type (.-type node)
+                parent (.-parent node)
+                parent-type (when parent (.-type parent))]
+            (cond
+              (contains? redlist parent-type)
+              nil
+              (contains? green-list node-type) node
+              (= node-type ts-identifier) (when-not (contains? #{jsx-closing-element
+                                                                 jsx-opening-element}
+                                                               parent-type)
+                                            node)
+              (= node-type jsx-text) (when-not (obpr/all-white-space-chars node)
+                                       node)
+              :else nil))
+          (subject-node node)))))
 
 (defn empty-ts-collection-node
   "Given a `node`, 
@@ -489,8 +496,9 @@
 (defn expression-node
   "Returns the given `node` 
    if it is an expression node"
-  [node]
-  (when (some-> (obu/noget+ node :?type)
+  [^js node]
+  (when (some-> node
+                .-type
                 (str/ends-with? "expression"))
     node))
 
@@ -498,7 +506,8 @@
   "Returns the given `node` 
    if it is a statement node"
   [node]
-  (when (some-> (obu/noget+ node :?type)
+  (when (some-> node
+                .-type
                 (str/ends-with? "statement"))
     node))
 
@@ -516,42 +525,46 @@
    and an expression-node, `node`, 
    returns the given `node` if it is an 
    expression node of the given node types"
-  [node-types node]
-  (when (and (= ts-expression-statement (obu/noget+ node :?type))
-             (contains? node-types (obu/noget+ node :?children.?0.?type)))
+  [node-types ^js node]
+
+  (when (and node
+             (= ts-expression-statement (.-type node))
+             (contains? node-types (some-> node .-children (aget 0) .-type)))
     node))
 
-(defn top-level-node
-  "Given a `node`, 
+;; *1
+(let [greenlist #{ts-class-declaration
+                  ts-expression-statement
+                  ts-for-statement
+                  ts-for-in-statement
+                  ts-function-declaration
+                  ts-generator-function-declaration
+                  ts-if-statement
+                  ts-interface-declaration
+                  ts-lexical-declaration
+                  ts-member-expression
+                  ts-spread-element
+                  ts-switch-statement
+                  ts-type-alias-declaration
+                  ts-variable-declaration
+                  ts-while-statement}]
+  (defn top-level-node
+    "Given a `node`, 
    returns the `node` 
    if it is a top-level node i.e.
    statement or declaration"
-  [node]
-  (let [node-type (obu/noget+ node :?type)]
-    (when (or (contains? #{ts-class-declaration
-                           ts-expression-statement
-                           ts-for-statement
-                           ts-for-in-statement
-                           ts-function-declaration
-                           ts-generator-function-declaration
-                           ts-if-statement
-                           ts-interface-declaration
-                           ts-lexical-declaration
-                           ts-member-expression
-                           ts-spread-element
-                           ts-switch-statement
-                           ts-type-alias-declaration
-                           ts-variable-declaration
-                           ts-while-statement}
-                         node-type)
-              (and (contains? #{ts-arrow-function
-                                ts-await-expression
-                                ts-call-expression
-                                ts-function-declaration}
-                              node-type)
-                   (not= ts-expression-statement (obu/noget+ node :?parent.?type))
-                   (not= ts-variable-declarator (obu/noget+ node :?parent.?type))))
-      node)))
+    [^js node]
+    (when node
+      (let [node-type (.-type node)]
+        (when (or (contains? greenlist node-type)
+                  (and (contains? #{ts-arrow-function
+                                    ts-await-expression
+                                    ts-call-expression
+                                    ts-function-declaration}
+                                  node-type)
+                       (not= ts-expression-statement (some-> node .-parent .-type))
+                       (not= ts-variable-declarator (some-> node .-parent .-type))))
+          node)))))
 
 (defn subject-container-node
   "Given a [subject] `node`, 
@@ -572,47 +585,48 @@
                  default
                  for-any-node?]
           :or {default node}}]
-   (letfn [(top-level-node* [node]
-             (or (when (contains? container-type-greenlist
-                                  (obu/noget+ node :?type))
-                   node)
-                 (top-level-node node)))]
+   (letfn [(top-level-node* [^js node]
+             (when node
+               (or (when (contains? container-type-greenlist
+                                    (.-type node))
+                     node)
+                   (top-level-node node))))]
      (when ((if for-any-node? identity subject-node) node)
        (or (-> node
                obpr/node->ancestors
-               (->> (take-while (fn [ancestor]
-                                  (let [root-node? (= (obu/noget+ ancestor :?id)
-                                                      (obu/noget+ ancestor :?tree.?rootNode.?id))
-                                        ancestor-type (obu/noget+ ancestor :?type)]
+               (->> (take-while (fn [^js ancestor]
+                                  (let [root-node? (= (.-id node)
+                                                      (some-> ancestor .-tree .-rootNode .-id))
+                                        ancestor-type (.-type ancestor)]
                                     (or (contains? container-type-redlist ancestor-type)
                                         (and (not (contains? container-type-greenlist ancestor-type))
                                              (not (subject-node ancestor))
                                              (not (top-level-node* ancestor))
                                              (not root-node?)))))))
                (#(or (last %) node))
-               (obu/noget+ :?parent)
+               .-parent
                top-level-node*)
            default)))))
 
-(defn ts-comment-block-start-node [node]
-  (when (= ts-comment-block-start (obu/noget+ node :?type))
+(defn ts-comment-block-start-node [^js node]
+  (when (and node (= ts-comment-block-start (.-type node)))
     node))
 
-(defn jsx-opening-element-node [node]
-  (when (= jsx-opening-element (obu/noget+ node :?type))
+(defn jsx-opening-element-node [^js node]
+  (when (and node (= jsx-opening-element (.-type node)))
     node))
 
-(defn jsx-fragmant-start-tag-node [node]
-  (when (= jsx-fragment-start-tag (obu/noget+ node :?type))
+(defn jsx-fragmant-start-tag-node [^js node]
+  (when (and node (= jsx-fragment-start-tag (.-type node)))
     node))
 
 (defn start-nodes
   "Given a `node`, 
    returns the start-indicating nodes in that node 
    e.g. syntax nodes and opening-element nodes"
-  [node]
-  (when-let [first-child (obu/noget+ node :?firstChild)]
-    (when-let [last-child-id (obu/noget+ node :?lastChild.?id)]
+  [^js node]
+  (when-let [first-child (.-firstChild node)]
+    (when-let [last-child-id (some-> node .-lastChild .-id)]
       (if-let [start-node (or (ts-comment-block-start-node first-child)
                               (jsx-opening-element-node first-child)
                               (jsx-fragmant-start-tag-node first-child))]
@@ -621,7 +635,7 @@
                 ts-syntax-node
                 (->> (obpr/node->forward-sibling-nodes)
                      (take-while #(and (ts-syntax-node %)
-                                       (not (= last-child-id (obu/noget+ % :?id))))))
+                                       (not (= last-child-id (.-id ^js %))))))
                 (conj first-child)
                 reverse
                 vec
@@ -634,9 +648,9 @@
   "Given a `node`, 
    returns the end-indicating nodes in that node 
    e.g. syntax nodes and closing-element nodes"
-  [node]
-  (when-let [last-child (obu/noget+ node :?lastChild)]
-    (when-let [first-child-id (obu/noget+ node :?firstChild.?id)]
+  [^js node]
+  (when-let [last-child (.-lastChild node)]
+    (when-let [first-child-id (some-> node .-firstChild .-id)]
       (if-let [end-node (or (ts-comment-block-end-node last-child)
                             (jsx-closing-element-node last-child)
                             (jsx-fragment-end-tag-node last-child))]
@@ -645,7 +659,7 @@
                 ts-syntax-node
                 (->> (obpr/node->backward-sibling-nodes)
                      (take-while #(and (ts-syntax-node %)
-                                       (not (= first-child-id (obu/noget+ % :?id))))))
+                                       (not (= first-child-id (.-id ^js %))))))
                 (conj last-child)
                 reverse
                 vec
@@ -658,11 +672,11 @@
   "Given a `node`, 
    returns the `node` 
    if it is a TS object that ends with a pair"
-  [node]
+  [^js node]
   (when (and (ts-object-node node)
              (-> (end-nodes node)
                  first
-                 (obu/noget+ :?previousSibling.?type)
+                 (some-> .-previousSibling .-type)
                  (= ts-pair)))
     node))
 
@@ -670,11 +684,11 @@
   "Given a `node`, 
    returns the `node` 
    if it is a TS object type that ends with a pair"
-  [node]
+  [^js node]
   (when (and (ts-object-type-node node)
              (-> (end-nodes node)
                  first
-                 (obu/noget+ :?previousSibling.?type)
+                 (some-> .-previousSibling .-type)
                  (= ts-property-signature)))
     node))
 
@@ -682,11 +696,12 @@
   "Given a `node`, 
    returns the `node` 
    if it is a TS object that ends with an incomplete pair"
-  [node]
-  (when (and (= ts-object (obu/noget+ node :?type))
+  [^js node]
+  (when (and node 
+             (= ts-object (.-type node))
              (-> (end-nodes node)
                  first
-                 (obu/noget+ :?previousSibling.?type)
+                 (some-> .-previousSibling .-type)
                  (= ts-incomplete-pair)))
     node))
 
@@ -695,11 +710,12 @@
    returns the `node` 
    if it is an object-type that ends with an 
    incomplete property signature"
-  [node]
-  (when (and (= ts-object-type (obu/noget+ node :?type))
+  [^js node]
+  (when (and node 
+             (= ts-object-type (.-type node))
              (-> (end-nodes node)
                  first
-                 (obu/noget+ :?previousSibling.?type)
+                 (some-> .-previousSibling .-type)
                  (= ts-incomplete-property-signature)))
     node))
 
@@ -793,7 +809,7 @@
 
 (defn node->child-object-nodes [node]
   (when node
-    (keep object-node (oget node :?children))))
+    (keep object-node (.-children node))))
 
 (defn node->current-last-child-object-ctx
   "Given a `node` and character `offset`, 
@@ -824,7 +840,7 @@
    ```"
   [node]
   (obpr/filter-descendants (comp #{ts-template-substitution}
-                                 #(obu/noget+ % :?parent.?type)
+                                 #(some-> ^js % .-parent .-type)
                                  ts-template-string-node)
                            node))
 
@@ -832,14 +848,14 @@
   "Given a `node`, 
    returns the start and end indices
    of the content area within a node"
-  [node]
-  (let [node-start (obu/noget+ node :?startIndex)
-        node-end (obu/noget+ node :?endIndex)
+  [^js node]
+  (let [node-start (.-startIndex node)
+        node-end (.-endIndex node)
         start-node (last (start-nodes node))
         end-node (last (end-nodes node))]
     (if (and start-node end-node)
-      [(obu/noget+ start-node :?endIndex)
-       (obu/noget+ end-node :?startIndex)]
+      [(.-endIndex start-node)
+       (.-startIndex end-node)]
       [node-start node-end])))
 
 (defn insignificant-str?
@@ -852,12 +868,12 @@
 (defn insignicantly-in-node?
   "Returns true of the `offset` is 
    an insignificant area of the given `node`"
-  [node offset]
-  (let [node-start (obu/noget+ node :?startIndex)
+  [^js node offset]
+  (let [node-start (.-startIndex node)
         [content-start content-end] (content-range node)]
     (and (<= content-start offset content-end)
          (boolean (some-> node
-                          (obu/noget+ :?text)
+                          .-text
                           (get (- offset node-start))
                           insignificant-str?)))))
 
@@ -865,6 +881,9 @@
   "Given a `node`,
    returns the default value of the parameter 
    if the `node` is a required-parameter node"
-  [node]
+  [^js node]
   (when (ts-required-parameter-node node)
-    (ocall node :?childForFieldName "value")))
+    (.childForFieldName node "value")))
+
+;; Foot notes:
+;; *1 | The peculiar function-surrounding-let-binding code was added to improve performance -tested against playground/jquery.js:

@@ -32,12 +32,12 @@
                     "result offset is a number")))]
       (&testing "when TSX forward slurp"
         (&testing "and cursor out of bounds"
-          (is (nil? (ts-slurp/forward-slurp src out-of-bounds-offset :tsx))
+          (is (nil? (ts-slurp/forward-slurp src out-of-bounds-offset nil :tsx))
               "no result"))
         (&testing "and cursor at node start"
           (let [{result-src :src
                  result-offset :offset
-                 :as result} (ts-slurp/forward-slurp src current-node-start-index :tsx)]
+                 :as result} (ts-slurp/forward-slurp src current-node-start-index nil :tsx)]
             (common-assertions result result-src result-offset)
             (is (= current-node-start-index result-offset)
                 "cursor offset does not change")
@@ -48,12 +48,12 @@
           (let [cursor-offset (dec current-node-end-index)
                 {result-src :src
                  result-offset :offset
-                 :as result} (ts-slurp/forward-slurp src cursor-offset :tsx)]
+                 :as result} (ts-slurp/forward-slurp src cursor-offset nil :tsx)]
             (common-assertions result result-src result-offset)))))))
 
 (deftest forward-slurp-test
   (&testing "when src is empty"
     (is (nil? (ts-slurp/forward-slurp "" 0))
         "no result")
-    (is (nil? (ts-slurp/forward-slurp "" 0 :tsx))
+    (is (nil? (ts-slurp/forward-slurp "" 0 nil :tsx))
         "no result")))

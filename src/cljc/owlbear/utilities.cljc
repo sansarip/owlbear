@@ -137,7 +137,7 @@
       ```clojure
       [{:offset 0 :text \"abc\"}]
       ```"
-     [re s]
+     [^js re s]
      (let [re (js/RegExp. (.-source re) "g")]
        (loop [res []]
          (if-let [m (.exec re s)]
