@@ -36,18 +36,27 @@ const getOwlbearFunction = (
   operation: OwlbearOperation
 ): OwlbearFunction | undefined => {
   const editor = window.activeTextEditor;
-  const fileExtension = getFileExtension(editor?.document);
-  if (!editor || !fileExtension) {
+  const langId = editor?.document?.languageId;
+  if (!langId) {
     return;
   }
-  let langPrefix = fileExtension;
-  switch (fileExtension) {
-    case "jsx":
-      langPrefix = "tsx";
+  let langPrefix = langId;
+  switch (langPrefix) {
+    case "javascript":
+      langPrefix = "js";
       break;
-    case "js":
+    case "javascriptreact":
+      langPrefix = "jsx";
+      break;
+    case "typescript":
       langPrefix = "ts";
       break;
+    case "typescriptreact":
+      langPrefix = "tsx";
+      break;
+  }
+  if (!langPrefix) {
+    return;
   }
   return ob[langPrefix + operation];
 };
