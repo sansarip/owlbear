@@ -13,7 +13,7 @@
 
 (defn with-tsx [sym]
   (fn [& args]
-    (concat (list sym) args '(:tsx))))
+    (concat (list sym) args '(nil :tsx))))
 
 (def corpus-title-to-function-map
   "Map of corpus h1-header to higher-order functions that return 
@@ -235,7 +235,7 @@
        (some->> (corpus-file-paths dir-paths)
                 (map #(some-> %
                               (fs/readFileSync "utf8")
-                              (obp/src->tree :markdown)
+                              (obp/src->tree! :markdown)
                               (obu/noget+ :?rootNode)
                               obpr/node->descendants
                               (->> (filter test-node))

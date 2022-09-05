@@ -35,10 +35,10 @@
                                                      :out-of-bounds-offset (inc (noget+ root-node :?endIndex))}))]
     (&testing ""
       (&testing "when cursor out of bounds"
-        (is (nil? (ts-move/forward-move src out-of-bounds-offset :tsx))
+        (is (nil? (ts-move/forward-move src out-of-bounds-offset nil :tsx))
             "no result"))
       (let [{result-offset :offset
-             :as result} (ts-move/forward-move src current-node-start :tsx)]
+             :as result} (ts-move/forward-move src current-node-start nil :tsx)]
         (&testing "when cursor in bounds"
           (is (some? result)
               "move performed")
@@ -51,10 +51,10 @@
 
 (deftest forward-move-test
   (testing "when src is empty"
-    (is (nil? (ts-move/forward-move "" 0 :tsx))
+    (is (nil? (ts-move/forward-move "" 0 nil :tsx))
         "no result"))
   (testing "when root node"
-    (is (nil? (:offset (ts-move/forward-move "<div></div>" 0 :tsx))))))
+    (is (nil? (:offset (ts-move/forward-move "<div></div>" 0 nil :tsx))))))
 
 (defspec move-backward-spec 5
   (prop/for-all [{:keys [src
@@ -82,10 +82,10 @@
                                                      :out-of-bounds-offset (inc (noget+ root-node :?endIndex))}))]
     (&testing ""
       (&testing "when cursor out of bounds"
-        (is (nil? (ts-move/backward-move src out-of-bounds-offset :tsx))
+        (is (nil? (ts-move/backward-move src out-of-bounds-offset nil :tsx))
             "no result"))
       (let [{result-offset :offset
-             :as result} (ts-move/backward-move src current-node-start :tsx)]
+             :as result} (ts-move/backward-move src current-node-start nil :tsx)]
         (&testing "when cursor in bounds"
           (is (some? result)
               "move performed")
@@ -95,3 +95,10 @@
               "resulting offset is non-negative")
           (is (< result-offset current-node-start)
               "resulting offset is less than original"))))))
+
+(deftest backward-move-test
+  (testing "when src is empty"
+    (is (nil? (ts-move/backward-move "" 0 nil :tsx))
+        "no result"))
+  (testing "when root node"
+    (is (nil? (:offset (ts-move/backward-move "<div></div>" 0 nil :tsx))))))

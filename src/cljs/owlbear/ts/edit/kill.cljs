@@ -10,7 +10,11 @@
    and a new `offset` containing where the cursor 
    position should be after the raise 
    
-   Accepts an optional third `tsx?` argument which 
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used
+
+   Accepts an optional fourth `tsx?` argument which 
    specifies if the `src` should be parsed as TSX
    
    e.g.
@@ -19,68 +23,70 @@
    =>
    <></>
    ```"
-  ([src offset] (kill src offset false))
-  ([src offset tsx?]
+  ([src offset] (kill src offset nil))
+  ([src offset tree-id] (kill src offset tree-id false))
+  ([src offset tree-id tsx?]
    {:pre [(string? src) (>= offset 0)]}
-   (when-let [current-nodes (some-> src
-                                    (obp/src->tree (if tsx? obp/tsx-lang-id obp/ts-lang-id))
-                                    (obu/noget+ :?rootNode)
-                                    (ts-rules/node->current-object-nodes offset)
-                                    not-empty)]
-     (let [last-node-start-index (obu/noget+ (last current-nodes) :?startIndex)
-           current-node (->> current-nodes
-                             (filter (comp not ts-rules/ts-member-expression-node))
-                             reverse
-                             (take-while #(and (not (contains? #{ts-rules/ts-pair
-                                                                 ts-rules/ts-property-signature}
-                                                               (obu/noget+ % :?type)))
-                                               (= (obu/noget+ % :?startIndex)
-                                                  last-node-start-index)))
-                             last)
-           current-node-end-index (let [parent-node (obu/noget+ current-node :?parent)
-                                        next-sibling (obu/noget+ current-node :?nextSibling)
-                                        next-sibling-type (obu/noget+ next-sibling :?type)
-                                        next-sibling-end-index (obu/noget+ next-sibling :?endIndex)]
-                                    (cond
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src (if tsx? obp/tsx-lang-id obp/ts-lang-id)))]
+     (when-let [current-nodes (some-> tree
+                                      (obu/noget+ :?rootNode)
+                                      (ts-rules/node->current-object-nodes offset)
+                                      not-empty)]
+       (let [last-node-start-index (obu/noget+ (last current-nodes) :?startIndex)
+             current-node (->> current-nodes
+                               (filter (comp not ts-rules/ts-member-expression-node))
+                               reverse
+                               (take-while #(and (not (contains? #{ts-rules/ts-pair
+                                                                   ts-rules/ts-property-signature}
+                                                                 (obu/noget+ % :?type)))
+                                                 (= (obu/noget+ % :?startIndex)
+                                                    last-node-start-index)))
+                               last)
+             current-node-end-index (let [parent-node (obu/noget+ current-node :?parent)
+                                          next-sibling (obu/noget+ current-node :?nextSibling)
+                                          next-sibling-type (obu/noget+ next-sibling :?type)
+                                          next-sibling-end-index (obu/noget+ next-sibling :?endIndex)]
+                                      (cond
                                       ;; foo().▌bar() => foo().  
-                                      (ts-rules/ts-member-expression-node parent-node)
-                                      (obu/noget+ (obu/noget+ parent-node :?nextSibling) :?endIndex)
+                                        (ts-rules/ts-member-expression-node parent-node)
+                                        (obu/noget+ (obu/noget+ parent-node :?nextSibling) :?endIndex)
 
                                       ;; [▌1, 2] => [ 2]
-                                      (= "," next-sibling-type)
-                                      next-sibling-end-index
+                                        (= "," next-sibling-type)
+                                        next-sibling-end-index
 
                                       ;; {▌a:;} => {}
-                                      (and (contains? #{ts-rules/ts-property-signature
-                                                        ts-rules/ts-incomplete-property-signature}
-                                                      (obu/noget+ current-node :?type))
-                                           (= ";" next-sibling-type))
-                                      next-sibling-end-index
+                                        (and (contains? #{ts-rules/ts-property-signature
+                                                          ts-rules/ts-incomplete-property-signature}
+                                                        (obu/noget+ current-node :?type))
+                                             (= ";" next-sibling-type))
+                                        next-sibling-end-index
 
-                                      :else (obu/noget+ current-node :?endIndex)))
-           current-node-start-index (let [parent (obu/noget+ current-node :?parent)
-                                          prev-sibling (obu/noget+ current-node :?previousSibling)
-                                          prev-sibling-type (obu/noget+ prev-sibling :?type)
-                                          prev-sibling-start-index (obu/noget+ prev-sibling :?startIndex)]
-                                      (cond
+                                        :else (obu/noget+ current-node :?endIndex)))
+             current-node-start-index (let [parent (obu/noget+ current-node :?parent)
+                                            prev-sibling (obu/noget+ current-node :?previousSibling)
+                                            prev-sibling-type (obu/noget+ prev-sibling :?type)
+                                            prev-sibling-start-index (obu/noget+ prev-sibling :?startIndex)]
+                                        (cond
                                         ;; foo.▌bar() => foo
-                                        (and (ts-rules/ts-member-expression-node (obu/noget+ current-node :?parent))
-                                             (= "." prev-sibling-type))
-                                        prev-sibling-start-index
-                                        
+                                          (and (ts-rules/ts-member-expression-node (obu/noget+ current-node :?parent))
+                                               (= "." prev-sibling-type))
+                                          prev-sibling-start-index
+
                                         ;; [1, ▌2] => [1]
-                                        (and (= "," prev-sibling-type) 
-                                             (not= "," (obu/noget+ current-node :?nextSibling.?type)))
-                                        prev-sibling-start-index
+                                          (and (= "," prev-sibling-type)
+                                               (not= "," (obu/noget+ current-node :?nextSibling.?type)))
+                                          prev-sibling-start-index
 
                                         ;; [...▌foo] => []
-                                        (ts-rules/ts-spread-element-node parent)
-                                        (obu/noget+ parent :?startIndex)
+                                          (ts-rules/ts-spread-element-node parent)
+                                          (obu/noget+ parent :?startIndex)
 
-                                        :else  (obu/noget+ current-node :?startIndex)))]
-       {:src (obu/str-remove src current-node-start-index current-node-end-index)
-        :offset current-node-start-index
-        :removed-text (obu/noget+ current-node :?text)}))))
+                                          :else  (obu/noget+ current-node :?startIndex)))]
+         {:src (obu/str-remove src current-node-start-index current-node-end-index)
+          :offset current-node-start-index
+          :removed-text (obu/noget+ current-node :?text)})))))
 
 (comment
   (kill "<><h1></h1></>" 2 :tsx))

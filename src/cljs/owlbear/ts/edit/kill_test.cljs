@@ -31,11 +31,11 @@
                                                        :out-of-bounds-offset (inc (noget+ root-node :?endIndex))})))]
     (&testing ""
       (&testing "when cursor out of bounds"
-        (is (nil? (ts-kill/kill src out-of-bounds-offset))
+        (is (nil? (ts-kill/kill src out-of-bounds-offset nil :tsx))
             "no result"))
       (let [{result-offset :offset
              result-src :src
-             :as result} (ts-kill/kill src in-bounds-offset)]
+             :as result} (ts-kill/kill src in-bounds-offset nil :tsx)]
         (&testing "when cursor in bounds"
           (is (some? result)
               "kill performed")
@@ -59,4 +59,4 @@
   (testing "when root node"
     (let [src "<div></div>"]
       (is (= {:src "" :offset 0 :removed-text src}
-             (ts-kill/kill src 0))))))
+             (ts-kill/kill src 0 nil :tsx))))))

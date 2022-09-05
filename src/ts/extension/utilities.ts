@@ -7,7 +7,7 @@ import {
   TextEditor,
   TextEditorEdit,
 } from "vscode";
-import { DocCtx, EditCtx, OwlbearFunction } from "./types";
+import { DocCtx, EditCtx, OwlbearFunction, Point } from "./types";
 
 export const textRange = (document: TextDocument): Range => {
   const firstLine = document.lineAt(0);
@@ -19,7 +19,10 @@ export const getCurrentOffset = (editor: TextEditor): number => {
   return editor.document.offsetAt(editor.selection.active);
 };
 
-export const moveCursor = (editor: TextEditor, newCursorOffset: number): boolean => {
+export const moveCursor = (
+  editor: TextEditor,
+  newCursorOffset: number
+): boolean => {
   const currentOffset = getCurrentOffset(editor);
   if (isNaN(newCursorOffset) || newCursorOffset === currentOffset) {
     return false;
@@ -49,8 +52,11 @@ export const edit = async (
       didReplace = true;
     }
 
-    // Move the cursor to the new offset if applicable 
-    if (!didReplace && !moveCursor(editor, newCursorOffset)) {
+    if (newCursorOffset) {
+      moveCursor(editor, newCursorOffset);
+    }
+
+    if (!didReplace && !newCursorOffset) {
       return false;
     }
 
@@ -70,5 +76,11 @@ export const getDocCtx = (editor: TextEditor): DocCtx => {
   const document = editor.document;
   const cursorOffset = document.offsetAt(editor.selection.active);
   const source = document.getText();
-  return { src: source, offset: cursorOffset };
+  const docUri = document.uri.toString();
+  return { src: source, offset: cursorOffset, docUri };
 };
+
+export const asPoint = (pos: Position): Point => ({
+  row: pos.line,
+  column: pos.character,
+});

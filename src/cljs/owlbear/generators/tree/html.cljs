@@ -79,7 +79,7 @@
   "Converts a hiccup vector to an HTML tree"
   [h]
   (when (not-empty h)
-    (obp/src->tree (html h) obp/html-lang-id)))
+    (obp/src->tree! (html h) obp/html-lang-id)))
 
 (defn tree
   "Generates an HTML tree 
@@ -88,13 +88,13 @@
    HTML structure as `:hiccup-gen-opts`"
   ([] (tree {}))
   ([{:keys [hiccup-gen-opts]}]
-   (gen/fmap hiccup->tree (hiccup hiccup-gen-opts))))
+   (gen/no-shrink (gen/fmap hiccup->tree (hiccup hiccup-gen-opts)))))
 
 (defn element-node*
   ([] (element-node* {}))
   ([{:keys [hiccup-gen-opts]}]
    (gen/fmap (comp #(oget % :?rootNode.?children.?0)
-                   #(obp/src->tree % obp/html-lang-id)
+                   #(obp/src->tree! % obp/html-lang-id)
                    #(html %))
              (hiccup-base html-text hiccup-gen-opts))))
 
@@ -102,7 +102,7 @@
 
 (def comment-node
   (gen/fmap (comp #(oget % :?rootNode.?children.?0)
-                  #(obp/src->tree % obp/html-lang-id))
+                  #(obp/src->tree! % obp/html-lang-id))
             ;; Advanced compilation seems to have a problem with regex literals
             (sg/string-generator (re-pattern "<!--([\\w\\d]+\\s*)+-->"))))
 
@@ -111,7 +111,7 @@
   ([text-elements]
    {:pre [(seqable? text-elements)]}
    (gen/fmap (comp #(oget % :?rootNode.?children.?0)
-                   #(obp/src->tree % obp/html-lang-id))
+                   #(obp/src->tree! % obp/html-lang-id))
              (if text-elements
                (obgu/string-from-elements text-elements)
                html-text))))

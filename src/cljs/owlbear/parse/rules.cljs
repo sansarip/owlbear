@@ -1,35 +1,37 @@
 (ns owlbear.parse.rules
   "General utility tooling around any Tree-sitter tree"
-  (:require [oops.core :refer [oget]]
-            [owlbear.utilities :as obu]))
+  (:require [owlbear.utilities :as obu]))
 
 (defn range-in-node?
   "Given a node, a start offset, and a stop offset, 
    returns true if the range is within the given node (inclusive)"
-  ([node start]
+  ([^js node start]
    (range-in-node? node start start))
-  ([node start stop]
+  ([^js node start stop]
    {:pre [(<= start stop)]}
-   (<= (oget node :startIndex)
-       start
-       stop
-       (dec (oget node :endIndex)))))
+   (if node
+     (<= (.-startIndex node)
+         start
+         stop
+         (dec (.-endIndex node)))
+     false)))
 
 (defn node->descendants
   "Given a node, 
    returns a flattened, depth-first traversed, lazy sequence 
    of all of the node's descendants"
-  [node]
-  (tree-seq #(oget % :?children) #(oget % :?children) node))
+  [^js node]
+  (tree-seq #(.-children %) #(.-children %) node))
 
 (defn node->ancestors
   "Given a node, 
    returns a list of the node's ancestors 
    i.e. parents and parents of parents etc."
-  [node]
-  (some->> (obu/noget+ node :?parent) ; Start at parent
-           (iterate #(obu/noget+ (or % #js {}) :?parent))
-           (take-while some?)))
+  [^js node]
+  (when node
+    (some->> (.-parent node) ; Start at parent
+             (iterate #(.-parent (or % #js {})))
+             (take-while some?))))
 
 (defn nodes->current-nodes
   "Given a list of nodes and a character offset, 
@@ -55,19 +57,19 @@
 (defn node->backward-sibling-nodes
   "Given a node, 
    returns a lazy sequence of the node's backward sibling nodes"
-  [node]
+  [^js node]
   (when node
-    (some->> (obu/noget+ node :?previousSibling) ; Start at previous sibling
-             (iterate #(obu/noget+ (or % #js {}) :?previousSibling))
+    (some->> (.-previousSibling node) ; Start at previous sibling
+             (iterate #(.-previousSibling (or % #js {})))
              (take-while some?))))
 
 (defn node->forward-sibling-nodes
   "Given a node, 
    returns a lazy sequence of the node's forward sibling nodes"
-  [node]
+  [^js node]
   (when node
-    (some->> (obu/noget+ node :?nextSibling) ; Start at next sibling
-             (iterate #(obu/noget+ (or % #js {}) :?nextSibling))
+    (some->> (.-nextSibling node) ; Start at next sibling
+             (iterate #(.-nextSibling (or % #js {})))
              (take-while some?))))
 
 (defn some-forward-sibling-node
@@ -87,9 +89,10 @@
 (defn some-child-node
   "Given a predicate function, `pred`, and a `node`, 
    returns the first child node that fulfills the predicate function"
-  [pred node]
+  [pred ^js node]
   {:pre [(fn? pred)]}
-  (some pred (obu/noget+ node :?children)))
+  (when node
+    (some pred (.-children node))))
 
 (defn some-descendant-node
   "Given a predicate function, `pred`, and a `node`, 
@@ -103,9 +106,10 @@
   "Given a predicate function, `pred`, and a `node`, 
    returns a lazy seq of all the child nodes 
    that fulfill the predicate function"
-  [pred node]
+  [pred ^js node]
   {:pre [(fn? pred)]}
-  (filter pred (obu/noget+ node :?children)))
+  (when node
+    (filter pred (.-children node))))
 
 (defn filter-descendants
   "Given a predicate function, `pred`, and a `node`, 
@@ -133,9 +137,9 @@
 (defn all-white-space-chars
   "Given a `node`, 
    returns the `node` if the node contains only whitespace chars"
-  [node]
+  [^js node]
   (when (some-> node
-                (obu/noget+ :?text)
+                .-text
                 (->> (re-matches #"\s+")))
     node))
 
@@ -146,8 +150,10 @@
   [nodes]
   (vals
    (reduce
-    (fn [coll node]
-      (assoc coll (obu/noget+ node :?startIndex) node))
+    (fn [coll ^js node]
+      (if node
+        (assoc coll (.-startIndex node) node)
+        node))
     {}
     nodes)))
 
@@ -155,10 +161,10 @@
   "Given a `node`, 
    returns a lazy sequence of the `node`'s ancestors 
    that have the same start index"
-  [node]
-  (let [start-index (obu/noget+ node :?startIndex)]
+  [^js node]
+  (let [start-index (.-startIndex node)]
     (->> node
-         (iterate #(obu/noget+ (or % #js {}) :?parent))
+         (iterate #(.-parent (or % #js {})))
          (take-while
-          #(= (obu/noget+ % :?startIndex) start-index))
+          #(= (.-startIndex ^js %) start-index))
          rest)))

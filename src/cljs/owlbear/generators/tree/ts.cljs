@@ -529,7 +529,8 @@
   []
   (->> (typescript*)
        ((:tree/transform-src *generator-context*))
-       (gen/fmap #(obp/src->tree % obp/tsx-lang-id))))
+       (gen/fmap #(obp/src->tree! % obp/tsx-lang-id))
+       (gen/no-shrink)))
 (def tree (tree*))
 
 (defn tree-with-t-subject*

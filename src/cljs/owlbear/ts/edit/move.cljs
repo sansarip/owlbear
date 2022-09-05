@@ -95,14 +95,22 @@
    returns the a map containing the 
    offset of the next, movable 
    object node from the offset
+
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used
    
-   Accepts an optional third `tsx?` argument which specifies 
+   Accepts an optional fourth `tsx?` argument which specifies 
    if the `src` should be parsed as TSX"
   ([src offset]
-   (forward-move src offset false))
-  ([src offset tsx?]
+   (forward-move src offset nil))
+  ([src offset tree-id]
+   (forward-move src offset tree-id false))
+  ([src offset tree-id tsx?]
    {:pre [(<= 0 offset)]}
-   (let [root-node (obu/noget+ (obp/src->tree src (if tsx? obp/tsx-lang-id obp/ts-lang-id)) :?rootNode)
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src (if tsx? obp/tsx-lang-id obp/ts-lang-id) tree-id))
+         root-node (obu/noget+ tree :?rootNode)
          root-node-start (obu/noget+ root-node :?startIndex)]
      (when-let [current-node (or (node->current-node root-node offset) ; The root-node (a program node) is not always the full text
                                  (when (<= offset root-node-start) root-node))]
@@ -117,13 +125,21 @@
    offset of the previous, movable
    object node from the offset
    
-   Accepts an optional third `tsx?` argument which specifies 
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used
+
+   Accepts an optional fourth `tsx?` argument which specifies 
    if the `src` should be parsed as TSX"
   ([src offset]
-   (backward-move src offset false))
-  ([src offset tsx?]
+   (backward-move src offset nil))
+  ([src offset tree-id]
+   (backward-move src offset tree-id false))
+  ([src offset tree-id tsx?]
    {:pre [(<= 0 offset)]}
-   (let [root-node (obu/noget+ (obp/src->tree src (if tsx? obp/tsx-lang-id obp/ts-lang-id)) :?rootNode)]
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src (if tsx? obp/tsx-lang-id obp/ts-lang-id)))
+         root-node (obu/noget+ tree :?rootNode)]
      (when-let [current-node (or (node->current-node root-node offset)
                                  (when (= offset (obu/noget+ root-node :?endIndex)) root-node))]
        (some->> (or (child-offset current-node offset :backward)

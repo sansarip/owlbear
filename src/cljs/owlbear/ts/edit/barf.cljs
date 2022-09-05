@@ -249,7 +249,11 @@
    and a new `offset` containing where the cursor position 
    should be after the barf
 
-   Accepts an optional third `tsx?` argument which specifies 
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used
+
+   Accepts an optional fourth `tsx?` argument which specifies 
    if the `src` should be parsed as TSX
   
    e.g.
@@ -258,50 +262,52 @@
    =>
    <><div>📍</div>Hello, World!</>
    ```"
-  ([src offset] (forward-barf src offset false))
-  ([src offset tsx?]
+  ([src offset] (forward-barf src offset nil))
+  ([src offset tree-id] (forward-barf src offset tree-id false))
+  ([src offset tree-id tsx?]
    {:pre [(string? src) (>= offset 0)]}
-   (when-let [{:keys [last-child-object-node
-                      current-node]} (some-> src
-                                             (obp/src->tree (if tsx? obp/tsx-lang-id obp/ts-lang-id))
-                                             (obu/noget+ :?rootNode)
-                                             (ts-rules/node->current-last-child-object-ctx offset)
-                                             (update :last-child-object-node
-                                                     #(cond
-                                                        (ts-rules/ts-pair-node %)
-                                                        (ocall % :?childForFieldName "value")
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src (if tsx? obp/tsx-lang-id obp/ts-lang-id)))]
+     (when-let [{:keys [last-child-object-node
+                        current-node]} (some-> tree
+                                               (obu/noget+ :?rootNode)
+                                               (ts-rules/node->current-last-child-object-ctx offset)
+                                               (update :last-child-object-node
+                                                       #(cond
+                                                          (ts-rules/ts-pair-node %)
+                                                          (ocall % :?childForFieldName "value")
 
-                                                        (ts-rules/ts-property-signature-node %)
-                                                        (obu/noget+ (ocall % :?childForFieldName "type") :?children.?1)
+                                                          (ts-rules/ts-property-signature-node %)
+                                                          (obu/noget+ (ocall % :?childForFieldName "type") :?children.?1)
 
-                                                        :else %)))]
-     (-> {:src src
-          :offset offset
-          :ancestor-node current-node
-          :child-node last-child-object-node
-          :target-node last-child-object-node}
-         move-end-nodes
-         remove-superfluous-syntax
-         ts-clean/unescape-comments
-         ts-clean/escape-template-string
-         ts-clean/unescape-escape-sequence
-         remove-computed-property
-         remove-pair-separator
-         remove-item-separators
-         insert-item-separator
-         (select-keys [:src :offset])))))
+                                                          :else %)))]
+       (-> {:src src
+            :offset offset
+            :ancestor-node current-node
+            :child-node last-child-object-node
+            :target-node last-child-object-node}
+           move-end-nodes
+           remove-superfluous-syntax
+           ts-clean/unescape-comments
+           ts-clean/escape-template-string
+           ts-clean/unescape-escape-sequence
+           remove-computed-property
+           remove-pair-separator
+           remove-item-separators
+           insert-item-separator
+           (select-keys [:src :offset]))))))
 
 (comment
   ;; Examples
   (-> "<div><></></div>"
-      (obp/src->tree obp/tsx-lang-id)
+      (obp/src->tree! obp/tsx-lang-id)
       (obu/noget+ :?rootNode)
       (ts-rules/node->current-last-child-object-ctx 1))
   (let [src "<><div><input/></div></>"
         offset 0
         {:keys [last-child-object-node
                 current-node]} (-> src
-                                   (obp/src->tree obp/tsx-lang-id)
+                                   (obp/src->tree! obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
                                    (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
@@ -313,7 +319,7 @@
         offset 5
         {:keys [last-child-object-node
                 current-node]} (-> src
-                                   (obp/src->tree obp/tsx-lang-id)
+                                   (obp/src->tree! obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
                                    (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
@@ -327,7 +333,7 @@
         offset 2
         {:keys [last-child-object-node
                 current-node]} (-> src
-                                   (obp/src->tree obp/tsx-lang-id)
+                                   (obp/src->tree! obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
                                    (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
@@ -341,7 +347,7 @@
         offset 2
         {:keys [last-child-object-node
                 current-node]} (-> src
-                                   (obp/src->tree obp/tsx-lang-id)
+                                   (obp/src->tree! obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
                                    (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
@@ -355,7 +361,7 @@
         offset 2
         {:keys [last-child-object-node
                 current-node]} (-> src
-                                   (obp/src->tree obp/tsx-lang-id)
+                                   (obp/src->tree! obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
                                    (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
@@ -369,7 +375,7 @@
         offset 1
         {:keys [last-child-object-node
                 current-node]} (-> src
-                                   (obp/src->tree obp/tsx-lang-id)
+                                   (obp/src->tree! obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
                                    (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
@@ -383,7 +389,7 @@
         offset 1
         {:keys [last-child-object-node
                 current-node]} (-> src
-                                   (obp/src->tree obp/tsx-lang-id)
+                                   (obp/src->tree! obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
                                    (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
@@ -398,7 +404,7 @@
         offset 1
         {:keys [last-child-object-node
                 current-node]} (-> src
-                                   (obp/src->tree obp/tsx-lang-id)
+                                   (obp/src->tree! obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
                                    (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src
@@ -412,7 +418,7 @@
         offset 25
         {:keys [last-child-object-node
                 current-node]} (-> src
-                                   (obp/src->tree obp/tsx-lang-id)
+                                   (obp/src->tree! obp/tsx-lang-id)
                                    (obu/noget+ :?rootNode)
                                    (ts-rules/node->current-last-child-object-ctx offset))
         ctx {:src src

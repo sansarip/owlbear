@@ -50,7 +50,7 @@
     (and current-node
          current-ancestor-node
          {:current-node current-node
-          :current-ancestor-node current-ancestor-node}))) 
+          :current-ancestor-node current-ancestor-node})))
 
 (defn raise-node
   "Given a context, `ctx` containing
@@ -103,24 +103,27 @@
    <>📍Hello, World!</>
    ```"
   ([src offset]
-   (raise src offset false))
-  ([src offset tsx?]
+   (raise src offset nil))
+  ([src offset tree-id]
+   (raise src offset tree-id false))
+  ([src offset tree-id tsx?]
    {:pre [(string? src) (>= offset 0)]}
-   (when-let [{:keys [current-node
-                      current-ancestor-node]} (some-> src
-                                                      (obp/src->tree (if tsx? obp/tsx-lang-id obp/ts-lang-id))
-                                                      (obu/noget+ :?rootNode)
-                                                      (raise-ctx offset))]
-     (-> {:src src
-          :offset offset
-          :target-node current-node
-          :child-node current-node
-          :ancestor-node current-ancestor-node}
-         raise-node
-         ts-clean/escape-template-string
-         ts-clean/unescape-comments
-         ts-clean/unescape-escape-sequence
-         (select-keys [:src :offset])))))
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src (if tsx? obp/tsx-lang-id obp/ts-lang-id)))]
+     (when-let [{:keys [current-node
+                        current-ancestor-node]} (some-> tree
+                                                        (obu/noget+ :?rootNode)
+                                                        (raise-ctx offset))]
+       (-> {:src src
+            :offset offset
+            :target-node current-node
+            :child-node current-node
+            :ancestor-node current-ancestor-node}
+           raise-node
+           ts-clean/escape-template-string
+           ts-clean/unescape-comments
+           ts-clean/unescape-escape-sequence
+           (select-keys [:src :offset]))))))
 
 (comment
   ;; Examples  
@@ -129,7 +132,7 @@
         offset 5
         {:keys [current-node
                 current-ancestor-node]} (some-> src
-                                                (obp/src->tree obp/tsx-lang-id)
+                                                (obp/src->tree! obp/tsx-lang-id)
                                                 (obu/noget+ :?rootNode)
                                                 (raise-ctx offset))
         ctx {:src src
