@@ -22,7 +22,7 @@
                                                                                            (filter ts-rules/object-node)
                                                                                            shuffle
                                                                                            ;; Ensures nodes are move-eligible
-                                                                                           (some #(when-let [fon (some->> (ts-move/forward-sibling-offset root-node (obu/noget+ % :?startIndex)) 
+                                                                                           (some #(when-let [fon (some->> (ts-move/forward-sibling-offset root-node (obu/noget+ % :?startIndex))
                                                                                                                           (ts-rules/node->current-object-nodes root-node)
                                                                                                                           last)]
                                                                                                     {:current-node %
@@ -64,16 +64,16 @@
                                                   (let [root-node (noget+ tree :?rootNode)
                                                         {:keys [current-node
                                                                 backward-object-node]} (->> root-node
-                                                                                           obpr/node->descendants
-                                                                                           rest
-                                                                                           (filter ts-rules/object-node)
-                                                                                           shuffle
+                                                                                            obpr/node->descendants
+                                                                                            rest
+                                                                                            (filter ts-rules/object-node)
+                                                                                            shuffle
                                                                                            ;; Ensures nodes are move-eligible
-                                                                                           (some #(when-let [bon (some->> (ts-move/backward-sibling-offset root-node (obu/noget+ % :?startIndex))
-                                                                                                                          (ts-rules/node->current-object-nodes root-node)
-                                                                                                                          last)]
-                                                                                                    {:current-node %
-                                                                                                     :backward-object-node bon})))]
+                                                                                            (some #(when-let [bon (some->> (ts-move/backward-sibling-offset root-node (obu/noget+ % :?startIndex))
+                                                                                                                           (ts-rules/node->current-object-nodes root-node)
+                                                                                                                           last)]
+                                                                                                     {:current-node %
+                                                                                                      :backward-object-node bon})))]
                                                     {:src (noget+ root-node :?text)
                                                      :current-node-start (noget+ current-node :?startIndex)
                                                      :current-node-text (noget+ current-node :?text)
@@ -102,3 +102,52 @@
         "no result"))
   (testing "when root node"
     (is (nil? (:offset (ts-move/backward-move "<div></div>" 0 nil :tsx))))))
+
+(defspec move-downward-spec 5
+  (prop/for-all [{:keys [src
+                         current-node-text
+                         current-node-start
+                         out-of-bounds-offset]} (gen/let [tree obgt-ts/tree-with-t-subject]
+                                                  (let [root-node (noget+ tree :?rootNode)
+                                                        {:keys [current-node
+                                                                downward-object-node]} (->> root-node
+                                                                                            obpr/node->descendants
+                                                                                            rest
+                                                                                            (filter ts-rules/object-node)
+                                                                                            shuffle
+                                                                                           ;; Ensures nodes are move-eligible
+                                                                                            (some #(when-let [don (some->> (ts-rules/node->child-object-nodes %)
+                                                                                                                           not-empty
+                                                                                                                           first)]
+                                                                                                     (when (not= (noget+ % :?startIndex) 
+                                                                                                                 (noget+ don :?startIndex))
+                                                                                                       {:current-node %
+                                                                                                        :downward-object-node don}))))]
+                                                    {:src (noget+ root-node :?text)
+                                                     :current-node-start (noget+ current-node :?startIndex)
+                                                     :current-node-text (noget+ current-node :?text)
+                                                     :downward-object-node-start (noget+ downward-object-node :?startIndex)
+                                                     :downward-object-node-text (noget+ downward-object-node :?text)
+                                                     :out-of-bounds-offset (inc (noget+ root-node :?endIndex))}))]
+    (&testing ""
+      (&testing "when cursor out of bounds"
+        (is (nil? (ts-move/downward-move src out-of-bounds-offset nil :tsx))
+            "no result"))
+      (let [{result-offset :offset
+             :as result} (ts-move/downward-move src current-node-start nil :tsx)]
+        (&testing "when cursor in bounds"
+          (is (some? result)
+              "move performed")
+          (is (number? result-offset)
+              "resulting offset is a number")
+          (is (>= result-offset 0)
+              "resulting offset is non-negative")
+          (is (> result-offset current-node-start)
+              "resulting offset is greater than original"))))))
+
+(deftest downward-move-test
+  (testing "when src is empty"
+    (is (nil? (ts-move/downward-move "" 0 nil :tsx))
+        "no result"))
+  (testing "when root node without children"
+    (is (nil? (:offset (ts-move/downward-move "<div></div>" 0 nil :tsx))))))

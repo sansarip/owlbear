@@ -274,3 +274,121 @@ foo().▌bar().baz();
 ```typescript
 ▌foo().bar().baz();
 ```
+
+# TypeScript Downward Move
+## Async Expressions
+```typescript
+const foo = ▌await bar();
+```
+```typescript
+const foo = await ▌bar();
+```
+
+## Binary Expressions
+```typescript
+▌1 + 1;
+```
+```typescript
+❎
+```
+
+```typescript
+1 + ▌1;
+```
+```typescript
+❎
+```
+
+## Call Expressions
+```typescript
+foo▌(1);
+```
+```typescript
+foo(▌1);
+```
+
+## Lexical Declarations
+```typescript
+▌const foo = 1 + 1;
+```
+```typescript
+const ▌foo = 1 + 1;
+```
+
+## Arrow Functions
+```typescript
+▌() => {}
+```
+```typescript
+❎
+```
+
+```typescript
+▌(a) => {}
+```
+```typescript
+(▌a) => {}
+```
+
+```typescript
+() => ▌{
+  return foo;
+}
+```
+```typescript
+() => {
+  ▌return foo;
+}
+```
+
+## Function Declarations
+```typescript
+▌function foo () {}
+```
+```typescript
+function ▌foo () {}
+```
+
+```typescript
+function foo ▌() {}
+```
+```typescript
+❎
+```
+
+```typescript
+function foo ▌(a) {}
+```
+```typescript
+function foo (▌a) {}
+```
+
+```typescript
+function foo () ▌{
+  return 1;
+}
+```
+```typescript
+function foo () {
+  ▌return 1;
+}
+```
+
+## Generator Function Declarations
+```typescript
+▌function* foo () {}
+```
+```typescript
+function* ▌foo () {}
+```
+
+```typescript
+function* foo () {
+  ▌yield 1 + 1;
+}
+```
+```typescript
+function* foo () {
+  yield ▌1 + 1;
+}
+```

@@ -87,3 +87,14 @@
   <h1>Hello, World!</h1>
 </div>
 ```
+
+# HTML Downward Move
+## No Children
+```html
+<div>
+  ▌The name is Zabip!
+</div>
+```
+```html
+❎
+```

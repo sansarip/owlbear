@@ -26,6 +26,7 @@ type Edit = (
 
 type OwlbearOperation =
   | "BackwardMove"
+  | "DownwardMove"
   | "ForwardSlurp"
   | "ForwardBarf"
   | "ForwardMove"
@@ -86,6 +87,8 @@ const doEditOp: Edit = (obOp: OwlbearOperation) => {
 
 const backwardMove: Handler = () => doEditOp("BackwardMove");
 
+const downwardMove: Handler = () => doEditOp("DownwardMove");
+
 const forwardSlurp: Handler = () => doEditOp("ForwardSlurp");
 
 const forwardBarf: Handler = () => doEditOp("ForwardBarf");
@@ -117,6 +120,7 @@ const commands: Command[] = [
   { id: "owlbear.backwardMove", handler: backwardMove },
   { id: "owlbear.copy", handler: copy },
   { id: "owlbear.cut", handler: cut },
+  { id: "owlbear.downwardMove", handler: downwardMove },
   { id: "owlbear.forwardBarf", handler: forwardBarf },
   { id: "owlbear.forwardMove", handler: forwardMove },
   { id: "owlbear.forwardSlurp", handler: forwardSlurp },

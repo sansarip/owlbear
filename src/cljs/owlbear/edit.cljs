@@ -17,6 +17,7 @@
   (->js (update-keys m (comp obu/kabob->camel name))))
 
 (def html-backward-move (comp ->js* html-move/backward-move))
+(def html-downward-move (comp ->js* html-move/downward-move))
 (def html-forward-barf (comp ->js* html-barf/forward-barf))
 (def html-forward-move (comp ->js* html-move/forward-move))
 (def html-forward-slurp (comp ->js* html-slurp/forward-slurp))
@@ -24,6 +25,8 @@
 (def html-raise (comp ->js* html-raise/raise))
 (def ts-backward-move (comp ->js* ts-move/backward-move))
 (def tsx-backward-move (comp ->js* #(ts-move/backward-move % %2 %3 :tsx)))
+(def ts-downward-move (comp ->js* ts-move/downward-move))
+(def tsx-downward-move (comp ->js* #(ts-move/downward-move % %2 %3 :tsx)))
 (def ts-forward-barf (comp ->js* ts-barf/forward-barf))
 (def tsx-forward-barf (comp ->js* #(ts-barf/forward-barf % %2 %3 :tsx)))
 (def ts-forward-move (comp ->js* ts-move/forward-move))

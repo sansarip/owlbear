@@ -222,3 +222,68 @@ function foo (a: string, ▌b, c) {}
 ```typescript
 function foo (a: ▌string, b, c) {}
 ```
+
+# TypeScript Downward Move
+## No Arguments
+```typescript
+foo▌();
+```
+```typescript
+❎
+```
+
+## Chained Arguments
+```typescript
+foo().bar▌(a, b, c)
+```
+```typescript
+foo().bar(▌a, b, c)
+```
+
+## Default Arguments
+```typescript
+function foo ▌(a = bar(), b, c) {}
+```
+```typescript
+function foo (▌a = bar(), b, c) {}
+```
+
+## Nested Arguments
+```typescript
+foo(bar(baz▌(a), b, c));
+```
+```typescript
+foo(bar(baz(▌a), b, c));
+```
+
+## Parameters
+```typescript
+function foo ▌(a, b, c) {}
+```
+```typescript
+function foo (▌a, b, c) {}
+```
+
+## Superfluous Argument Whitespace
+```typescript
+foo(a, ▌ b, c);
+```
+```typescript
+foo(▌a,  b, c);
+```
+
+## Superfluous Commas
+```typescript
+foo(a, b,▌,,)
+```
+```typescript
+foo(▌a, b,,,)
+```
+
+## Superfluous Parameter Whitespace
+```typescript
+function foo (a, ▌ b, c) {}
+```
+```typescript
+function foo (▌a,  b, c) {}
+```

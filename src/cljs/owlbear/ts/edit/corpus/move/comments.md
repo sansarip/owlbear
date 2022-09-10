@@ -57,3 +57,27 @@ foo();
 ▌foo();
 // Quo usque tandem abutere, Catilina, patientia nostra?
 ```
+
+# TypeScript Downward Move
+## Comment Blocks
+```typescript
+▌/* Ullamco laboris nisi ut aliquid ex ea commodi consequat. */
+```
+```typescript
+/*▌ Ullamco laboris nisi ut aliquid ex ea commodi consequat. */
+```
+
+```typescript
+/*▌Ullamco laboris nisi ut aliquid ex ea commodi consequat.*/
+```
+```typescript
+❎
+```
+
+## Comments
+```typescript
+▌// Quo usque tandem abutere, Catilina, patientia nostra?
+```
+```typescript
+❎
+```

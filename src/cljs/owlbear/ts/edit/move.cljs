@@ -146,15 +146,43 @@
                     (backward-sibling-offset root-node offset))
                 (hash-map :offset))))))
 
+(defn downward-move
+  "Given a `src` string and an `offset`, 
+   returns the a map containing the 
+   offset of the first descendant
+   object node from the offset
+
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used
+
+   Accepts an optional fourth `tsx?` argument which specifies 
+   if the `src` should be parsed as TSX"
+  ([src offset]
+   (downward-move src offset nil))
+  ([src offset tree-id]
+   (downward-move src offset tree-id false))
+  ([src offset tree-id tsx?]
+   {:pre [(<= 0 offset)]}
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src (if tsx? obp/tsx-lang-id obp/ts-lang-id)))
+         root-node (obu/noget+ tree :?rootNode)]
+     (when-let [current-node (node->current-node root-node offset)]
+       (some-> (obpr/some-descendant-node ts-rules/object-node current-node)
+               (obu/noget+ :?startIndex)
+               (->> (hash-map :offset)))))))
+
 (comment
-  (forward-move "<div><h1></h1><h2></h2></div>" 5 :tsx)
-  (forward-move "type foo = {a: number; b: string;}" 15 :tsx)
-  (forward-move "const foo = await bar();\nbaz();" 12 :tsx)
-  (forward-move "const foo = {a, b: 2}" 13 :tsx)
-  (forward-move "function foo (a= foo(), b, c) {}" 17 :tsx)
-  (forward-move "type foo = \"hello\" | \"world\" | \"!\"" 11 :tsx)
-  (forward-move "function foo (a = bar(), b, c) {}" 14 :tsx)
-  (backward-move "function foo (a = bar(), b, c) {}" 18 :tsx)
-  (backward-move "() => {};\n(a) => {};\n{H: \"\", aB:};\nimport O3 from \"M/O3\";" 10 :tsx)
-  (backward-move "type D = any;\nimport a from \"a\";\n{interface U {A: object; D: any;}}\n() => {return [];};" 58 :tsx)
-  (backward-move "<h1>Hello, World!</h1>\n\n" 24 :tsx))
+  (forward-move "<div><h1></h1><h2></h2></div>" 5 nil :tsx)
+  (forward-move "type foo = {a: number; b: string;}" 15 nil :tsx)
+  (forward-move "const foo = await bar();\nbaz();" 12 nil :tsx)
+  (forward-move "const foo = {a, b: 2}" 13 nil :tsx)
+  (forward-move "function foo (a= foo(), b, c) {}" 17 nil :tsx)
+  (forward-move "type foo = \"hello\" | \"world\" | \"!\"" 11 nil :tsx)
+  (forward-move "function foo (a = bar(), b, c) {}" 14 nil :tsx)
+  (backward-move "function foo (a = bar(), b, c) {}" 18 nil :tsx)
+  (backward-move "() => {};\n(a) => {};\n{H: \"\", aB:};\nimport O3 from \"M/O3\";" 10 nil :tsx)
+  (backward-move "type D = any;\nimport a from \"a\";\n{interface U {A: object; D: any;}}\n() => {return [];};" 58 nil :tsx)
+  (backward-move "<h1>Hello, World!</h1>\n\n" 24 nil :tsx)
+  (downward-move "<h1>Hello, World!</h1>" 0 nil :tsx)
+  (downward-move "1 + 2;" 0 nil :tsx))
