@@ -123,3 +123,29 @@
   
 </body>
 ```
+
+# HTML Downward Move
+## Root Level
+```html
+▌<!-- Hello, World! -->
+```
+```html
+<!-- ▌Hello, World! -->
+```
+
+## Superfluous Whitespace
+```html
+▌
+
+<!-- Beep, boop! -->
+```
+```html
+❎
+```
+
+```html
+<!-- ▌Zip, zoop! -->
+```
+```html
+❎
+```

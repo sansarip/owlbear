@@ -102,9 +102,31 @@
                     (sibling-offset root-node offset :backward))
                 (hash-map :offset))))))
 
+(defn downward-move
+  "Given a `src` string and an `offset`, 
+   returns the a map containing the 
+   offset of the first descendant
+   object node from the offset
+
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used"
+  ([src offset]
+   (downward-move src offset nil))
+  ([src offset tree-id]
+   {:pre [(<= 0 offset)]}
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src obp/html-lang-id))
+         root-node (obu/noget+ tree :?rootNode)]
+     (when-let [current-node (node->current-node root-node offset)]
+       (some-> (obpr/some-descendant-node html-rules/object-node current-node)
+               (obu/noget+ :?startIndex)
+               (->> (hash-map :offset)))))))
+
 (comment
   ;; Examples
   (forward-move "\n\n<!-- Beep, boop! -->" 0)
   (forward-move "<header></header>\n \n<body></body>" 18)
   (forward-move "<header></header><body></body>" 0)
-  (backward-move "<header></header><body></body>" 17))
+  (backward-move "<header></header><body></body>" 17)
+  (downward-move "<header><body></body></header>" 0))

@@ -20,8 +20,10 @@
    s-expressions of the Owlbear functions to be tested; 
    update this whenever a new test-suite (h1-header) is added"
   {"HTML Backward Move" (partial list 'owlbear.html.edit.move/backward-move)
+   "HTML Downward Move" (partial list 'owlbear.html.edit.move/downward-move)
    "HTML Forward Move" (partial list 'owlbear.html.edit.move/forward-move)
    "TypeScript Backward Move" (with-tsx 'owlbear.ts.edit.move/backward-move)
+   "TypeScript Downward Move" (with-tsx 'owlbear.ts.edit.move/downward-move)
    "TypeScript Forward Slurp" (with-tsx 'owlbear.ts.edit.slurp/forward-slurp)
    "TypeScript Forward Barf" (with-tsx 'owlbear.ts.edit.barf/forward-barf)
    "TypeScript Kill" (with-tsx 'owlbear.ts.edit.kill/kill)

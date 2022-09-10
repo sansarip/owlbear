@@ -38,6 +38,11 @@
         "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       },
       {
+        "command": "owlbear.downwardMove",
+        "title": "Owlbear: Move Cursor Downward",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
         "command": "owlbear.forwardBarf",
         "title": "Owlbear: Barf Forward",
         "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
@@ -77,6 +82,11 @@
       {
         "command": "owlbear.cut",
         "key": "ctrl+alt+x",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
+        "command": "owlbear.downwardMove",
+        "key": "ctrl+down",
         "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       },
       {

@@ -63,13 +63,13 @@
                                                   (let [root-node (noget+ tree :?rootNode)
                                                         {:keys [current-node
                                                                 backward-object-node]} (->> root-node
-                                                                                           obpr/node->descendants
-                                                                                           rest
-                                                                                           (filter html-rules/object-node)
-                                                                                           shuffle
-                                                                                           (some #(when-let [fon (html-rules/node->backward-object-node %)]
-                                                                                                    {:current-node %
-                                                                                                     :backward-object-node fon})))]
+                                                                                            obpr/node->descendants
+                                                                                            rest
+                                                                                            (filter html-rules/object-node)
+                                                                                            shuffle
+                                                                                            (some #(when-let [bon (html-rules/node->backward-object-node %)]
+                                                                                                     {:current-node %
+                                                                                                      :backward-object-node bon})))]
                                                     {:src (noget+ root-node :?text)
                                                      :current-node-start (noget+ current-node :?startIndex)
                                                      :current-node-text (noget+ current-node :?text)
@@ -98,3 +98,48 @@
         "no result"))
   (testing "when root node"
     (is (nil? (:offset (html-move/backward-move "<div></div>" 0))))))
+
+(defspec move-downward-spec 5
+  (prop/for-all [{:keys [src
+                         current-node-text
+                         current-node-start
+                         out-of-bounds-offset]} (gen/let [tree (obgt-html/tree {:hiccup-gen-opts
+                                                                                {:vector-gen-args [2 6]}})]
+                                                  (let [root-node (noget+ tree :?rootNode)
+                                                        {:keys [current-node
+                                                                downward-object-node]} (->> root-node
+                                                                                            obpr/node->descendants
+                                                                                            rest
+                                                                                            (filter html-rules/object-node)
+                                                                                            shuffle
+                                                                                            (some #(when-let [[don] (not-empty (html-rules/node->child-object-nodes %))]
+                                                                                                     {:current-node %
+                                                                                                      :downward-object-node don})))]
+                                                    {:src (noget+ root-node :?text)
+                                                     :current-node-start (noget+ current-node :?startIndex)
+                                                     :current-node-text (noget+ current-node :?text)
+                                                     :downward-object-node (noget+ downward-object-node :?startIndex)
+                                                     :downward-object-node-text (noget+ downward-object-node :?text)
+                                                     :out-of-bounds-offset (inc (noget+ root-node :?endIndex))}))]
+    (&testing ""
+      (&testing "when cursor out of bounds"
+        (is (nil? (html-move/downward-move src out-of-bounds-offset))
+            "no result"))
+      (let [{result-offset :offset
+             :as result} (html-move/downward-move src current-node-start)]
+        (&testing "when cursor in bounds"
+          (is (some? result)
+              "move performed")
+          (is (number? result-offset)
+              "resulting offset is a number")
+          (is (>= result-offset 0)
+              "resulting offset is non-negative")
+          (is (> result-offset current-node-start)
+              "resulting offset is greater than original"))))))
+
+(deftest downward-move-test
+  (testing "when src is empty"
+    (is (nil? (html-move/downward-move "" 0))
+        "no result"))
+  (testing "when root node with no children"
+    (is (nil? (:offset (html-move/downward-move "<div></div>" 0))))))

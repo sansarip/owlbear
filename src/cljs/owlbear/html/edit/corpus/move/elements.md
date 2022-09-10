@@ -141,3 +141,46 @@
   <p>The name is Zabip!</p>
 </body>
 ```
+
+# HTML Downward Move
+## No Children
+```typescript
+<h1>▌</h1>
+```
+```typescript
+❎
+```
+
+## Superfluous Whitespace
+```html
+▌
+
+<header></header>
+<body></body>
+```
+```html
+❎
+```
+
+## Child Elements
+```html
+<▌body>
+  <h1>Hello, World!</h1>
+</body>
+```
+```html
+<body>
+  ▌<h1>Hello, World!</h1>
+</body>
+```
+
+```html
+<body>
+  ▌<h1>Hello, World!</h1>
+</body>
+```
+```html
+<body>
+  <h1>▌Hello, World!</h1>
+</body>
+```
