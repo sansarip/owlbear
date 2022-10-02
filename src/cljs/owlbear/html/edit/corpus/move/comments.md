@@ -149,3 +149,24 @@
 ```html
 ❎
 ```
+
+# HTML Upward Move
+## Root Level
+```html
+<!-- ▌Hello, World! -->
+```
+```html
+▌<!-- Hello, World! -->
+```
+
+## Child Comment
+```html
+<div>
+  ▌<!-- Hello, World! -->
+</div>
+```
+```html
+▌<div>
+  <!-- Hello, World! -->
+</div>
+```

@@ -25,6 +25,7 @@
                      :htmlKill owlbear.edit/html-kill
                      :htmlLangId owlbear.parse/html-lang-id
                      :htmlRaise owlbear.edit/html-raise
+                     :htmlUpwardMove owlbear.edit/html-upward-move
                      :loadLanguageWasm owlbear.parse/load-language-wasm!
                      :tsBackwardMove owlbear.edit/ts-backward-move
                      :tsDownwardMove owlbear.edit/ts-downward-move
@@ -34,6 +35,7 @@
                      :tsKill owlbear.edit/ts-kill
                      :tsLangId owlbear.parse/ts-lang-id
                      :tsRaise owlbear.edit/ts-raise
+                     :tsUpwardMove owlbear.edit/ts-upward-move
                      :tsxBackwardMove owlbear.edit/tsx-backward-move
                      :tsxDownwardMove owlbear.edit/tsx-downward-move
                      :tsxForwardBarf owlbear.edit/tsx-forward-barf
@@ -42,6 +44,7 @@
                      :tsxKill owlbear.edit/tsx-kill
                      :tsxLangId owlbear.parse/tsx-lang-id
                      :tsxRaise owlbear.edit/tsx-raise
+                     :tsxUpwardMove owlbear.edit/tsx-upward-move
                      :setTree owlbear.parse/set-tree!}
            :output-to "out/cljs/owlbear.js"}
           :test

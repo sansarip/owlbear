@@ -66,6 +66,11 @@
         "command": "owlbear.raise",
         "title": "Owlbear: Raise",
         "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
+        "command": "owlbear.upwardMove",
+        "title": "Owlbear: Move Cursor Upward",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       }
     ],
     "keybindings": [
@@ -112,6 +117,11 @@
       {
         "command": "owlbear.raise",
         "key": "ctrl+alt+p ctrl+alt+r",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
+        "command": "owlbear.upwardMove",
+        "key": "ctrl+up",
         "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
       }
     ]

@@ -807,7 +807,7 @@
                          :current-node current-node})))
               last))))
 
-(defn node->child-object-nodes [node]
+(defn node->child-object-nodes [^js node]
   (when node
     (keep object-node (.-children node))))
 

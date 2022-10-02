@@ -31,7 +31,8 @@ type OwlbearOperation =
   | "ForwardBarf"
   | "ForwardMove"
   | "Kill"
-  | "Raise";
+  | "Raise"
+  | "UpwardMove";
 
 const getOwlbearFunction = (
   operation: OwlbearOperation
@@ -89,6 +90,8 @@ const backwardMove: Handler = () => doEditOp("BackwardMove");
 
 const downwardMove: Handler = () => doEditOp("DownwardMove");
 
+const upwardMove: Handler = () => doEditOp("UpwardMove");
+
 const forwardSlurp: Handler = () => doEditOp("ForwardSlurp");
 
 const forwardBarf: Handler = () => doEditOp("ForwardBarf");
@@ -126,6 +129,7 @@ const commands: Command[] = [
   { id: "owlbear.forwardSlurp", handler: forwardSlurp },
   { id: "owlbear.kill", handler: kill },
   { id: "owlbear.raise", handler: raise },
+  { id: "owlbear.upwardMove", handler: upwardMove },
 ];
 
 export const registerCommands = (context: ExtensionContext) => {
