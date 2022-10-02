@@ -23,6 +23,7 @@
 (def html-forward-slurp (comp ->js* html-slurp/forward-slurp))
 (def html-kill (comp ->js* html-kill/kill))
 (def html-raise (comp ->js* html-raise/raise))
+(def html-upward-move (comp ->js* html-move/upward-move))
 (def ts-backward-move (comp ->js* ts-move/backward-move))
 (def tsx-backward-move (comp ->js* #(ts-move/backward-move % %2 %3 :tsx)))
 (def ts-downward-move (comp ->js* ts-move/downward-move))
@@ -37,3 +38,5 @@
 (def tsx-kill (comp ->js* #(ts-kill/kill % %2 %3 :tsx)))
 (def ts-raise (comp ->js* ts-raise/raise))
 (def tsx-raise (comp ->js* #(ts-raise/raise % %2 %3 :tsx)))
+(def ts-upward-move (comp ->js* ts-move/upward-move))
+(def tsx-upward-move (comp ->js* #(ts-move/upward-move % %2 %3 :tsx)))

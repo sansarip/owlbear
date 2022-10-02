@@ -291,3 +291,105 @@ const foo = (
   </>
 );
 ```
+
+# TypeScript Upward Move
+## Root JSX
+```tsx
+▌
+
+<h1>Hello, World!</h1>
+```
+```tsx
+❎
+```
+
+## Element With Parent
+```tsx
+const foo = (
+  <section>
+    ▌<h1>Hello, World!</h1>
+  </section>
+);
+```
+```tsx
+const foo = (
+  ▌<section>
+    <h1>Hello, World!</h1>
+  </section>
+);
+```
+
+```tsx
+const foo = (
+  <section>
+    <h1>▌Hello, World!</h1>
+  </section>
+);
+```
+```tsx
+const foo = (
+  <section>
+    ▌<h1>Hello, World!</h1>
+  </section>
+);
+```
+
+## Superfluous Whitespace
+```tsx
+const foo = (
+  ▌
+  <section>
+    <h1>Hello, World!</h1>
+  </section>
+);
+```
+```tsx
+▌const foo = (
+  
+  <section>
+    <h1>Hello, World!</h1>
+  </section>
+);
+```
+
+```tsx
+const foo = (
+  <section>
+    ▌
+    <h1>Hello, World!</h1>
+  </section>
+);
+```
+```tsx
+const foo = ▌(
+  <section>
+    
+    <h1>Hello, World!</h1>
+  </section>
+);
+```
+
+```tsx
+const foo = (
+  <>
+    <section>
+	    ▌
+	    <h1>Hello, World!</h1>
+	    <h2>The name is Zabip!</h2>
+    </section>
+    <div></div>
+  </>
+);
+```
+```tsx
+const foo = (
+  ▌<>
+    <section>
+	    
+	    <h1>Hello, World!</h1>
+	    <h2>The name is Zabip!</h2>
+    </section>
+    <div></div>
+  </>
+);
+```

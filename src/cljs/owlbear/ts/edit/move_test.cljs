@@ -119,7 +119,7 @@
                                                                                             (some #(when-let [don (some->> (ts-rules/node->child-object-nodes %)
                                                                                                                            not-empty
                                                                                                                            first)]
-                                                                                                     (when (not= (noget+ % :?startIndex) 
+                                                                                                     (when (not= (noget+ % :?startIndex)
                                                                                                                  (noget+ don :?startIndex))
                                                                                                        {:current-node %
                                                                                                         :downward-object-node don}))))]
@@ -151,3 +151,51 @@
         "no result"))
   (testing "when root node without children"
     (is (nil? (:offset (ts-move/downward-move "<div></div>" 0 nil :tsx))))))
+
+(defspec move-upward-spec 5
+  (prop/for-all [{:keys [src
+                         current-node-text
+                         current-node-start
+                         out-of-bounds-offset]} (gen/let [tree obgt-ts/tree-with-t-subject]
+                                                  (let [root-node (noget+ tree :?rootNode)
+                                                        {:keys [current-node
+                                                                upward-object-node]} (->> root-node
+                                                                                            obpr/node->descendants
+                                                                                            rest
+                                                                                            (filter ts-rules/object-node)
+                                                                                            shuffle
+                                                                                           ;; Ensures nodes are move-eligible
+                                                                                            (some #(when-let [uon (some-> (.-parent %)
+                                                                                                                          ts-rules/object-node)]
+                                                                                                     (when (not= (noget+ % :?startIndex)
+                                                                                                                 (noget+ uon :?startIndex))
+                                                                                                       {:current-node %
+                                                                                                        :upward-object-node uon}))))]
+                                                    {:src (noget+ root-node :?text)
+                                                     :current-node-start (noget+ current-node :?startIndex)
+                                                     :current-node-text (noget+ current-node :?text)
+                                                     :upward-object-node-start (noget+ upward-object-node :?startIndex)
+                                                     :upward-object-node-text (noget+ upward-object-node :?text)
+                                                     :out-of-bounds-offset (inc (noget+ root-node :?endIndex))}))]
+    (&testing ""
+      (&testing "when cursor out of bounds"
+        (is (nil? (ts-move/upward-move src out-of-bounds-offset nil :tsx))
+            "no result"))
+      (let [{result-offset :offset
+             :as result} (ts-move/upward-move src current-node-start nil :tsx)]
+        (&testing "when cursor in bounds"
+          (is (some? result)
+              "move performed")
+          (is (number? result-offset)
+              "resulting offset is a number")
+          (is (>= result-offset 0)
+              "resulting offset is non-negative")
+          (is (< result-offset current-node-start)
+              "resulting offset is less than original"))))))
+
+(deftest upward-move-test
+  (testing "when src is empty"
+    (is (nil? (ts-move/upward-move "" 0 nil :tsx))
+        "no result"))
+  (testing "when root node without parent"
+    (is (nil? (:offset (ts-move/upward-move "<div></div>" 0 nil :tsx))))))

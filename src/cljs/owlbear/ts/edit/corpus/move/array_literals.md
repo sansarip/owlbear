@@ -194,3 +194,72 @@ foo();
 ```typescript
 [▌1, 2,,,]
 ```
+
+# TypeScript Upward Move
+## 1-3 Items
+```typescript
+[▌1, 2, 3]
+```
+```typescript
+▌[1, 2, 3]
+```
+
+## No Items
+```typescript
+▌[]
+```
+```typescript
+❎
+```
+
+## Separators
+```typescript
+[1▌, 2, 3]
+```
+```typescript
+❎
+```
+
+```typescript
+[[1▌, 2, 3]]
+```
+```typescript
+▌[[1, 2, 3]]
+```
+
+## Superfluous Whitespace
+```typescript
+[▌
+ 1, 2, 3]
+```
+```typescript
+❎
+```
+
+```typescript
+[[
+ 1,
+ ▌ 
+ 2, 3]]
+```
+```typescript
+▌[[
+ 1,
+  
+ 2, 3]]
+```
+
+## Superfluous Commas
+```typescript
+[1, 2,,▌,]
+```
+```typescript
+❎
+```
+
+```typescript
+[[1, 2,,▌,]]
+```
+```typescript
+▌[[1, 2,,,]]
+```

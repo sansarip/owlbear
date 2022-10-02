@@ -172,6 +172,35 @@
                (obu/noget+ :?startIndex)
                (->> (hash-map :offset)))))))
 
+(defn upward-move
+  "Given a `src` string and an `offset`, 
+   returns the a map containing the 
+   offset of the first ancestor
+   object node from the offset
+
+   Accepts an optional third `tree-id` argument which 
+   specifies the ID of an existing Tree-sitter tree that 
+   should be used
+
+   Accepts an optional fourth `tsx?` argument which specifies 
+   if the `src` should be parsed as TSX"
+  ([src offset]
+   (upward-move src offset nil))
+  ([src offset tree-id]
+   (upward-move src offset tree-id false))
+  ([src offset tree-id tsx?]
+   {:pre [(<= 0 offset)]}
+   (let [tree (or (obp/get-tree tree-id)
+                  (obp/src->tree! src (if tsx? obp/tsx-lang-id obp/ts-lang-id)))
+         root-node (obu/noget+ tree :?rootNode)]
+     (when-let [current-node (node->current-node root-node offset)]
+       (let [current-node-start (obu/noget+ current-node :?startIndex)]
+         (some-> (obpr/some-ancestor-node #(and (not= (.-startIndex ^js %) current-node-start)
+                                                (ts-rules/object-node %))
+                                          current-node)
+                 (obu/noget+ :?startIndex)
+                 (->> (hash-map :offset))))))))
+
 (comment
   (forward-move "<div><h1></h1><h2></h2></div>" 5 nil :tsx)
   (forward-move "type foo = {a: number; b: string;}" 15 nil :tsx)
@@ -185,4 +214,5 @@
   (backward-move "type D = any;\nimport a from \"a\";\n{interface U {A: object; D: any;}}\n() => {return [];};" 58 nil :tsx)
   (backward-move "<h1>Hello, World!</h1>\n\n" 24 nil :tsx)
   (downward-move "<h1>Hello, World!</h1>" 0 nil :tsx)
-  (downward-move "1 + 2;" 0 nil :tsx))
+  (downward-move "1 + 2;" 0 nil :tsx)
+  (upward-move "<h1>Hello, World!</h1>" 5 nil :tsx))
