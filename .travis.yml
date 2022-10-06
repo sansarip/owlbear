@@ -14,7 +14,7 @@ branches:
   only:
     - main
 before_install:
-  - 'sudo add-apt-repository ppa:deadsnakes/ppa'
+  - 'sudo add-apt-repository -y ppa:deadsnakes/ppa'
   - 'sudo apt-get update'
   - 'sudo apt-get -y install python3.9'
   - 'nvm install $NODE_VERSION'
