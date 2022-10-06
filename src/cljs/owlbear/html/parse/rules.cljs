@@ -18,6 +18,7 @@
 (def html-self-closing-tag "self_closing_tag")
 (def html-style "style_element")
 (def html-start-tag "start_tag")
+(def html-tag-name "tag_name")
 (def html-text "text")
 (def rule-types #{html-comment html-element html-text html-end-tag html-erroneous-end-tag})
 
@@ -51,6 +52,20 @@
   [node]
   (when (= html-comment (oget node :?type))
     node))
+
+(defn self-closing-tag-node 
+  "Given a node, 
+   returns the node if it is a self-closing tag node"
+  [node]
+  (when (= html-self-closing-tag (oget node :?type))
+    node))
+
+(defn tag-name-node
+  "Given a node, 
+   returns the node if it is a tag-name node"
+  [node]
+  (when (= html-tag-name (oget node :?type))
+    node)) 
 
 (defn doctype
   "Given a node, 
