@@ -132,7 +132,7 @@
   },
   "scripts": {
     "clean": "rimraf ./out && rimraf ./tsconfig.tsbuildinfo && rimraf ./cljs-out && rimraf ./dist",
-    "cljs-test": "node ./out/cljs/owlbear-tests.js",
+    "cljs-test": "npx shadow-cljs release :test",
     "compile": "echo 'Compiling Owlbear extension 🦉🐻' && npm run compile-cljs && npm run compile-ts",
     "compile-cljs": "npx shadow-cljs release :lib/prod :test :corpus-parser",
     "compile-corpus-parser": "npx shadow-cljs release :corpus-parser",
