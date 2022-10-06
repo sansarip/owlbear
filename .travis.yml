@@ -14,6 +14,7 @@ branches:
   only:
     - main
 before_install:
+  - 'pyenv install 3.6'
   - 'pyenv global 3.6'
   - 'nvm install $NODE_VERSION'
   - 'curl -O https://download.clojure.org/install/linux-install-1.10.1.466.sh'
