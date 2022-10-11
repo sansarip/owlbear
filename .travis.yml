@@ -1,4 +1,5 @@
 
+# Lint/tests configuration to run on PRs and branch pushes
 sudo: required
 git:
   submodules: false
@@ -10,9 +11,6 @@ env:
 cache:
   directories:
     - "node_modules" # This will tell Travis CI to cache the dependencies
-branches:
-  only:
-    - main
 before_install:
   - 'pyenv install 3.6.15'
   - 'pyenv global 3.6.15'
