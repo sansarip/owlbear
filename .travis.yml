@@ -25,3 +25,5 @@ install: npm install
 script:
   - 'clj-kondo --lint src'
   - 'npm run compile-cljs-test && npm run cljs-test'
+  # TODO: Build and release here
+  - if [ "$TRAVIS_BRANCH" = "main" ]; then npm run compile-vsix; fi
