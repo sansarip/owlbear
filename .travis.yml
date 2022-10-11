@@ -1,12 +1,29 @@
+
 sudo: required
-import: .travis-ci/shared.yml
+git:
+  submodules: false
+language: java
+jdk:
+  - openjdk8
+env:
+  - NODE_VERSION="16"
+cache:
+  directories:
+    - "node_modules" # This will tell Travis CI to cache the dependencies
+branches:
+  only:
+    - main
 before_install:
+  - 'pyenv install 3.6.15'
+  - 'pyenv global 3.6.15'
+  - 'nvm install $NODE_VERSION'
   - 'curl -O https://download.clojure.org/install/linux-install-1.10.1.466.sh'
   - 'chmod +x linux-install-1.10.1.466.sh'
   - 'sudo ./linux-install-1.10.1.466.sh'
   - 'curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo'
   - 'chmod +x install-clj-kondo'
   - 'sudo ./install-clj-kondo'
+install: npm install
 script:
-  - 'npm run lint'
+  - 'clj-kondo --lint src'
   - 'npm run compile-cljs-test && npm run cljs-test'
