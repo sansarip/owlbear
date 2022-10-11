@@ -5,7 +5,7 @@ import {
   window,
 } from "vscode";
 import { EditCtx, OwlbearFunction } from "./types";
-import { getDocCtx, getFileExtension, edit } from "./utilities";
+import { getDocCtx, edit } from "./utilities";
 import clipboard from "clipboardy";
 import { docUriToTreeIdMap, setNewTreeIdForDocUri } from "./tree";
 

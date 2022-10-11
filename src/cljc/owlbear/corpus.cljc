@@ -1,3 +1,4 @@
+#_{:clj-kondo/ignore [:unused-namespace]}
 (ns owlbear.corpus
   "The place where the CLJS tests for the project's corpus files are manufactured 🏭"
   (:require #?@(:cljs [[directory-tree :as dirt]

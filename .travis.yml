@@ -26,4 +26,4 @@ before_install:
 install: npm install
 script:
   - 'clj-kondo --lint src'
-  - 'npm run cljs-test'
+  - 'npm run compile-cljs-test && npm run cljs-test'

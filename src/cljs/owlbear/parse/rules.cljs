@@ -1,6 +1,5 @@
 (ns owlbear.parse.rules
-  "General utility tooling around any Tree-sitter tree"
-  (:require [owlbear.utilities :as obu]))
+  "General utility tooling around any Tree-sitter tree")
 
 (defn range-in-node?
   "Given a node, a start offset, and a stop offset, 

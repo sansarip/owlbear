@@ -1,5 +1,5 @@
 (ns owlbear.parse.rules-test
-  (:require [cljs.test :refer [deftest is testing]]
+  (:require [cljs.test :refer [is testing]]
             [cljs-bean.core :refer [->clj]]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.generators :as gen]

@@ -1,3 +1,4 @@
+#_{:clj-kondo/ignore [:unused-namespace]}
 (ns owlbear.utilities
   "Universal utilities"
   (:require #?@(:cljs [[diff :as Diff]

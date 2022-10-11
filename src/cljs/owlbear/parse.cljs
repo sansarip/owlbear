@@ -1,3 +1,4 @@
+#_{:clj-kondo/ignore [:unused-namespace]}
 (ns owlbear.parse
   "Tree-sitter parsing"
   (:require [cljs-bean.core :refer [->js]]

@@ -7,7 +7,7 @@ import {
   TextEditor,
   TextEditorEdit,
 } from "vscode";
-import { DocCtx, EditCtx, OwlbearFunction, Point } from "./types";
+import { DocCtx, EditCtx, Point } from "./types";
 
 export const textRange = (document: TextDocument): Range => {
   const firstLine = document.lineAt(0);

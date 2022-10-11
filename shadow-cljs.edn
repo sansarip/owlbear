@@ -52,6 +52,10 @@
            :main owlbear.test-runner/init
            :output-to "out/cljs/owlbear-test.js"
            :autorun true}
+          :test/compile
+          {:target    :node-test
+           :main owlbear.test-runner/init
+           :output-to "out/cljs/owlbear-test.js"}
           :corpus-parser
           {:target :node-script
            :main owlbear.corpus/parse-corpus-files-cli
