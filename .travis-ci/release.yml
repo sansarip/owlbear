@@ -1,0 +1,8 @@
+
+sudo: required
+import: .travis-ci/shared.yml
+branches:
+  only:
+    - main
+script:
+  - 'npm run compile-vsix'
