@@ -5,6 +5,7 @@
             [owlbear.parse.rules :as obpr]
             [owlbear.utilities :as obu]))
 
+(def html-attribute "attribute")
 (def html-comment "comment")
 (def html-comment-start-tag "comment_start_tag")
 (def html-comment-end-tag "comment_end_tag")
@@ -21,6 +22,13 @@
 (def html-tag-name "tag_name")
 (def html-text "text")
 (def rule-types #{html-comment html-element html-text html-end-tag html-erroneous-end-tag})
+
+(defn attribute-node
+  "Given a node, 
+   returns the node if it is an attribute node"
+  [node]
+  (when (= html-attribute (oget node :?type))
+    node))
 
 (defn fragment-node
   "Given a node, 
@@ -53,7 +61,7 @@
   (when (= html-comment (oget node :?type))
     node))
 
-(defn self-closing-tag-node 
+(defn self-closing-tag-node
   "Given a node, 
    returns the node if it is a self-closing tag node"
   [node]
@@ -65,13 +73,22 @@
    returns the node if it is a tag-name node"
   [node]
   (when (= html-tag-name (oget node :?type))
-    node)) 
+    node))
 
 (defn doctype
   "Given a node, 
    return the node if it is a doctype node"
   [node]
   (when (= html-doctype (oget node :?type))
+    node))
+
+(defn tag-node
+  "Given a node, 
+   returns the node if it is any kind of tag node"
+  [node]
+  (when (or (start-tag-node node)
+            (end-tag-node node)
+            (self-closing-tag-node node))
     node))
 
 (defn node->end-tag-node

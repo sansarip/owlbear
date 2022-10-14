@@ -49,13 +49,13 @@
    and a generator for the tag names, `tag-name-gen`"
   ([] (hiccup-base html-text))
   ([child-g] (hiccup-base child-g {}))
-  ([child-g {:keys [vector-gen-args tag-name-gen]
-             :or {tag-name-gen tag-name}}]
+  ([child-g {:keys [vector-gen-args tag-name-gen props-gen]
+             :or {tag-name-gen tag-name
+                  props-gen (gen/map obgu/string-alphanumeric-starts-with-alpha gen/string-alphanumeric)}}]
    {:pre [(or (gen/generator? child-g) (fn? child-g)) (gen/generator? tag-name-gen) (seqable? vector-gen-args)]}
-   (let [props-gen (gen/map obgu/string-alphanumeric-starts-with-alpha gen/string-alphanumeric)]
-     (gen/let [tag-name-and-props (gen/tuple tag-name-gen props-gen)
-               children (apply gen/vector child-g vector-gen-args)]
-       (into tag-name-and-props children)))))
+   (gen/let [tag-name-and-props (gen/tuple tag-name-gen props-gen)
+             children (apply gen/vector child-g vector-gen-args)]
+     (into tag-name-and-props children))))
 
 (defn hiccup
   "Generates hiccup vectors recursively
