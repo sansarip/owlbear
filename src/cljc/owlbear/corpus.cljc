@@ -20,7 +20,8 @@
   "Map of corpus h1-header to higher-order functions that return 
    s-expressions of the Owlbear functions to be tested; 
    update this whenever a new test-suite (h1-header) is added"
-  {"HTML Backward Move" (partial list 'owlbear.html.edit.move/backward-move)
+  {"HTML Backward Delete" (partial list 'owlbear.html.edit.delete/backward-delete)
+   "HTML Backward Move" (partial list 'owlbear.html.edit.move/backward-move)
    "HTML Downward Move" (partial list 'owlbear.html.edit.move/downward-move)
    "HTML Forward Move" (partial list 'owlbear.html.edit.move/forward-move)
    "HTML Upward Move" (partial list 'owlbear.html.edit.move/upward-move)

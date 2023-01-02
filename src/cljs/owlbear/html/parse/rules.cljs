@@ -1,7 +1,7 @@
 (ns owlbear.html.parse.rules
   "Tree-sitter rule (type) definitions"
   (:require [clojure.string :as str]
-            [oops.core :refer [oget]]
+            [oops.core :refer [oget ocall]]
             [owlbear.parse.rules :as obpr]
             [owlbear.utilities :as obu]))
 
@@ -11,10 +11,12 @@
 (def html-comment-end-tag "comment_end_tag")
 (def html-doctype "doctype")
 (def html-element "element")
-(def html-error "ERROR")
 (def html-end-tag "end_tag")
-(def html-fragment "fragment")
+(def html-error "ERROR")
 (def html-erroneous-end-tag "erroneous_end_tag")
+(def html-fragment "fragment")
+(def html-quoted-attribute-value "quoted_attribute_value")
+(def html-missing "MISSING")
 (def html-script "script_element")
 (def html-self-closing-tag "self_closing_tag")
 (def html-style "style_element")
@@ -46,12 +48,57 @@
                    (oget node :?type))
     node))
 
+(defn quoted-attribute-value-node
+  "Given a node, 
+   returns the node if it is an quoted attribute value"
+  [node]
+  (when (= html-quoted-attribute-value (oget node :?type))
+    node))
+
+(defn missing-node
+  "Given a node, 
+   returns the node if it is a missing node"
+  [node]
+  (when (or (= html-missing (oget node :?type)) (ocall node :?isMissing))
+    node))
+
 (defn start-tag-node
   "Given a node, 
    returns the node if it is a start-tag node"
   [node]
   (when (contains? #{html-comment-start-tag html-start-tag}
                    (oget node :?type))
+    node))
+
+(defn text-node
+  "Given a node, 
+   returns the node if it is a text node"
+  [node]
+  (when (= html-text (oget node :?type))
+    node))
+
+(defn element-node
+  "Given a node, 
+   returns the node if it is an element node"
+  [node]
+  (when (= html-element (oget node :?type))
+    node))
+
+(defn implicit-nameless-element-node
+  "Given a node, 
+   returns the node if it is an implicit nameless element node
+   
+   This implementation is more of a hack; ideally these nodes would be identified via the grammar"
+  [node]
+  (when (and (element-node node)
+             (some-> (oget node :?firstChild)
+                     start-tag-node
+                     (oget :?text)
+                     (= "<>"))
+             (some-> (oget node :?lastChild)
+                     end-tag-node
+                     (oget :?text)
+                     (not= "</>")))
     node))
 
 (defn comment-node
@@ -248,3 +295,16 @@
                           (obu/noget+ :?text)
                           (get (- offset node-start))
                           str/blank?)))))
+
+(defn at-tag-node-bounds?
+  "Returns true if the `offset` is 
+   at the start or end of the given `tag-node`"
+  [tag-node offset]
+  (let [self-closing-node? (self-closing-tag-node tag-node)
+        has-forward-slash? (or self-closing-node? (end-tag-node tag-node))
+        tag-node-start (obu/noget+ tag-node :?startIndex)
+        tag-node-end (obu/noget+ tag-node :?endIndex)]
+    (contains? #{tag-node-start
+                 (dec tag-node-end)
+                 (when has-forward-slash? (inc tag-node-start))}
+               offset)))

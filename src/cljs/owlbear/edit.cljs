@@ -2,6 +2,7 @@
   "Public-facing JS API for Owlbear's paredit-like operations"
   (:require [cljs-bean.core :refer [->js]]
             [owlbear.html.edit.barf :as html-barf]
+            [owlbear.html.edit.delete :as html-delete]
             [owlbear.html.edit.kill :as html-kill]
             [owlbear.html.edit.move :as html-move]
             [owlbear.html.edit.raise :as html-raise]
@@ -16,6 +17,7 @@
 (defn ->js* [m]
   (->js (update-keys m (comp obu/kabob->camel name))))
 
+(def html-backward-delete (comp ->js* html-delete/backward-delete))
 (def html-backward-move (comp ->js* html-move/backward-move))
 (def html-downward-move (comp ->js* html-move/downward-move))
 (def html-forward-barf (comp ->js* html-barf/forward-barf))

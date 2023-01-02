@@ -17,7 +17,8 @@
                      :editTree owlbear.parse/edit-tree!
                      :getTree owlbear.parse/get-tree
                      :getTrees owlbear.parse/trees->js
-                     :htmlBackwardMove owlbear.edit/html-backward-move
+                     :htmlBackwardDelete owlbear.edit/html-backward-delete
+                     :htmlBackwardMove owlbear.edit/html-backward-move 
                      :htmlDownwardMove owlbear.edit/html-downward-move
                      :htmlForwardBarf owlbear.edit/html-forward-barf
                      :htmlForwardMove owlbear.edit/html-forward-move

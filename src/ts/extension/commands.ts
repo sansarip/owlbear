@@ -5,7 +5,7 @@ import {
   window,
 } from "vscode";
 import { EditCtx, OwlbearFunction } from "./types";
-import { getDocCtx, edit } from "./utilities";
+import { getDocCtx, edit, isEmptyObj } from "./utilities";
 import clipboard from "clipboardy";
 import { docUriToTreeIdMap, setNewTreeIdForDocUri } from "./tree";
 
@@ -25,6 +25,7 @@ type Edit = (
 ) => Promise<EditCtx | undefined> | undefined;
 
 type OwlbearOperation =
+  | "BackwardDelete"
   | "BackwardMove"
   | "DownwardMove"
   | "ForwardSlurp"
@@ -80,11 +81,36 @@ export const getEditCtx = (obOp: OwlbearOperation): EditCtx | undefined => {
 const doEditOp: Edit = (obOp: OwlbearOperation) => {
   const editor = window.activeTextEditor;
   const editCtx = getEditCtx(obOp);
-  if (!editor || !editCtx || Object.keys(editCtx).length === 0) {
+  if (!editor || !editCtx || isEmptyObj(editCtx)) {
     return;
   }
   return edit(editor, editCtx);
 };
+
+const deleteLeft = (): void => {
+  vscodeCommands.executeCommand('deleteLeft');
+}
+
+const backwardDelete: Handler = async () => {
+  const editCtx = getEditCtx("BackwardDelete");
+  if (!editCtx || isEmptyObj(editCtx)) {
+    deleteLeft();
+    return;
+  }
+  
+  const {deleteStartOffset, deleteEndOffset} = editCtx;
+  const numCharsToDelete = deleteEndOffset - deleteStartOffset;
+  if (numCharsToDelete === 1) {
+    deleteLeft();
+    return;
+  }
+
+  const editor = window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
+  return edit(editor, editCtx);
+}
 
 const backwardMove: Handler = () => doEditOp("BackwardMove");
 
@@ -120,6 +146,7 @@ const raise: Handler = () => {
 };
 
 const commands: Command[] = [
+  { id: "owlbear.backwardDelete", handler: backwardDelete },
   { id: "owlbear.backwardMove", handler: backwardMove },
   { id: "owlbear.copy", handler: copy },
   { id: "owlbear.cut", handler: cut },
