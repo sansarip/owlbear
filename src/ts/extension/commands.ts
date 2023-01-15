@@ -46,10 +46,10 @@ const getOwlbearFunction = (
   let langPrefix = langId;
   switch (langPrefix) {
     case "javascript":
-      langPrefix = "js";
+      langPrefix = "ts";
       break;
     case "javascriptreact":
-      langPrefix = "jsx";
+      langPrefix = "tsx";
       break;
     case "typescript":
       langPrefix = "ts";
