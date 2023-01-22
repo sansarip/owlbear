@@ -42,16 +42,25 @@
         self-closing-node?
         (empty-implicit-nameless-element-node? element-node))))
 
+(defn no-attributes? [element-node]
+  (let [start-tag-children (some-> element-node
+                                   (obu/noget+ :?firstChild)
+                                   html-rules/start-tag-node
+                                   (obu/noget+ :?children)
+                                   seq)]
+    (if (seq? start-tag-children)
+      (not (some html-rules/attribute-node start-tag-children))
+      true)))
+
 (defn delete-element [src tag-node offset]
   (when (html-rules/tag-node tag-node)
     (let [delete-offset (dec offset)
           element-node (obu/noget+ tag-node :?parent)
-          no-attributes? (not (obpr/some-child-node html-rules/attribute-node tag-node))
           at-bounds? (html-rules/at-tag-node-bounds? tag-node delete-offset)]
       (cond
         (and at-bounds?
              (empty-element? tag-node)
-             no-attributes?) (delete src element-node)
+             (no-attributes? element-node)) (delete src element-node)
         at-bounds? {:offset delete-offset}
         :else (backspace src offset)))))
 
@@ -62,7 +71,7 @@
         (let [delete-offset (dec offset)
               no-attributes? (not (obpr/some-child-node html-rules/attribute-node tag-node))
               at-bounds? (html-rules/at-tag-node-bounds? tag-node delete-offset)]
-          (cond 
+          (cond
             (and at-bounds?
                  (empty-element? tag-node)
                  no-attributes?) (delete src tag-node)
@@ -102,4 +111,5 @@
   (backward-delete "<V a=\"adasd\"/>" 8)
   (backward-delete "<V a=\"\"/>" 6)
   (backward-delete "<p><p>Hello</p>" 1)
-  (backward-delete "<mm />" 6))
+  (backward-delete "<mm />" 6)
+  (backward-delete "<p id=\"foo\"></p>" 14))

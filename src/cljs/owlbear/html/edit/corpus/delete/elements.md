@@ -135,3 +135,25 @@
 ```html
 <▌>Hello, <p>World!</p>
 ```
+
+## Attributes
+```tsx
+<p id="foo"></▌p>
+```
+```tsx
+<p id="foo"><▌/p>
+```
+
+```tsx
+<p id="▌foo"></p>
+```
+```tsx
+<p id=▌"foo"></p>
+```
+
+```tsx
+<p id="▌"></p>
+```
+```tsx
+<p id=▌></p>
+```
