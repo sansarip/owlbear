@@ -137,23 +137,23 @@
 ```
 
 ## Attributes
-```tsx
+```html
 <p id="foo"></▌p>
 ```
-```tsx
+```html
 <p id="foo"><▌/p>
 ```
 
-```tsx
+```html
 <p id="▌foo"></p>
 ```
-```tsx
+```html
 <p id=▌"foo"></p>
 ```
 
-```tsx
+```html
 <p id="▌"></p>
 ```
-```tsx
+```html
 <p id=▌></p>
 ```

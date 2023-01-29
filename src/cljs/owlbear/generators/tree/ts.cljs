@@ -28,34 +28,25 @@
    * `:hiccup/options`: options map passed to the hiccup generator function
    * `:pair-block/vector-gen-args`: vector-generator args for the statements in the pair-block generator 
    * `:statements/greenlist`: set of generators to greenlist from the statements generator
-   * `:statements/redlist`: set of generators to redlist from the statements generator 
+   * `:statements/redlist`: set of generators to redlist from the statements generator
    * `:statement-block/statements-gen`: generator with which to generate the statements in the statement block
+   * `:subject/greenlist`: set of generators to greenlist from the subject generator
+   * `:subject/redlist`: set of generators to redlist from the subject generator
    * `:tree/transform-src`: function that, given the source generator in the tree generator, should return a generator that returns a new source string
    * `:type-alias/only-pair-blocks?`: determines whether type alias values should only be pair blocks
    * `:typescript/vector-gen-args`: vector-generator args for the statements in the typescript generator"
   {:array/vector-gen-args []
    :fn/return-statement-gen (obgu/with-function-gen (fn [] (*expression*)))
    :hiccup/options {}
-   :pair-block/vector-gen-args [1 vector-gen-upper-limit]
+   :pair-block/vector-gen-args []
    :statements/greenlist #{}
    :statements/redlist #{}
    :statement-block/statements-gen (gen/vector (obgu/with-function-gen (fn [] (*statement*))))
+   :subject/greenlist #{}
+   :subject/redlist #{}
    :tree/transform-src identity
    :type-alias/only-pair-blocks? false
    :typescript/vector-gen-args [1 vector-gen-upper-limit]})
-
-(defn with-children
-  "Given a function, `f`,  
-   calls the function with the `*generator-context*` bindings set in a way 
-   where all eligible parent nodes will have at least one child"
-  [f]
-  {:pre [(fn? f)]}
-  (binding [*generator-context* (assoc *generator-context*
-                                       :statement-block/statements-gen (gen/vector (*statement*) 1 vector-gen-upper-limit)
-                                       :array/vector-gen-args [1 vector-gen-upper-limit]
-                                       :hiccup/options {:vector-gen-args [1 vector-gen-upper-limit]}
-                                       :type-alias/only-pair-blocks? true)]
-    (f)))
 
 ;;================================================================================
 ;; Expressions
@@ -132,12 +123,15 @@
   ([key-gen value-gen]
    (pair-block key-gen value-gen \,))
   ([key-gen value-gen end-of-pair-symbol]
-   (let [pairs-gen (apply gen/vector
+   (let [no-children? (= 0 (first (:pair-block/vector-gen-args *generator-context*)))
+         pairs-gen (apply gen/vector
                           (gen/tuple key-gen value-gen)
                           (:pair-block/vector-gen-args *generator-context*))]
      (gen/let [pairs pairs-gen
-               solo-key (gen/fmap #(cond-> % (not-empty %) (str ":"))
-                                  (gen/one-of [key-gen (gen/return "")]))]
+               solo-key (if no-children?
+                          (gen/return nil)
+                          (gen/fmap #(cond-> % (not-empty %) (str ":"))
+                                    (gen/one-of [key-gen (gen/return "")])))]
        (let [pairs-str (-> pairs
                            (->> (map #(str/join ": " %))
                                 (str/join (str end-of-pair-symbol " ")))
@@ -234,11 +228,12 @@
   "Returns a generator that generates a TS interface declaration string 
    e.g. `interface Foo {a: string}`"
   []
-  (gen/let [i-name obgu/string-alphanumeric-starts-with-alpha
-            pb (pair-block obgu/string-alphanumeric-starts-with-alpha
-                           basic-types
-                           \;)]
-    (str "interface " i-name " " pb)))
+  (let [pair-block-gen (pair-block obgu/string-alphanumeric-starts-with-alpha
+                                   basic-types
+                                   \;)]
+    (gen/let [i-name obgu/string-alphanumeric-starts-with-alpha
+              pb pair-block-gen]
+      (str "interface " i-name " " pb))))
 (def interface (interface*))
 
 (defn type-alias*
@@ -458,6 +453,38 @@
 ;; Tree-sitter
 ;;================================================================================
 
+(defn with-children
+  "Given a function, `f`,  
+   calls the function with the `*generator-context*` bindings set in a way 
+   where all eligible parent nodes will have at least one child"
+  [f]
+  {:pre [(fn? f)]}
+  (binding [*generator-context* (assoc *generator-context*
+                                       :array/vector-gen-args [1 vector-gen-upper-limit]
+                                       :hiccup/options {:vector-gen-args [1 vector-gen-upper-limit]}
+                                       :pair-block/vector-gen-args [1 vector-gen-upper-limit]
+                                       :statement-block/statements-gen (gen/vector (*statement*) 1 vector-gen-upper-limit)
+                                       :type-alias/only-pair-blocks? true)]
+    (f)))
+
+(defn without-children
+  "Given a function, `f`,  
+   calls the function with the `*generator-context*` bindings set in a way 
+   where all eligible parent nodes will have no children"
+  [f]
+  {:pre [(fn? f)]}
+  (binding [*generator-context* (assoc *generator-context*
+                                       :array/vector-gen-args [0]
+                                       :pair-block/vector-gen-args [0]
+                                       :fn/return-statement-gen (gen/return nil)
+                                       :hiccup/options {:vector-gen-args [0]}
+                                       :statements/redlist #{jsx-component-function*}
+                                       :statement-block/statements-gen (gen/return [])
+                                       :subject/redlist #{jsx-component-function*}
+                                       :type-alias/only-pair-blocks? true
+                                       :type-alias/vector-gen-args [0])]
+    (f)))
+
 (defn jsx-element-node*
   "Returns a generator that generates a JSX element as a string"
   []
@@ -467,16 +494,21 @@
 (defn subject*
   "Returns a generator that generates a TSX subject as a string"
   []
-  (gen/one-of [(array-literal-statement*)
-               (arrow-function-statement*)
-               (jsx-component-function*)
-               (for-loop*)
-               (named-function-statement*)
-               (object-literal-statement*)
-               (statement-block*)
-               (while-loop*)
-               (interface*)
-               (type-alias*)]))
+  (let [{:statements/keys [greenlist redlist]} *generator-context*
+        statement-generators (->> [array-literal-statement*
+                                   arrow-function-statement*
+                                   jsx-component-function*
+                                   for-loop*
+                                   named-function-statement*
+                                   object-literal-statement*
+                                   statement-block*
+                                   while-loop*
+                                   interface*
+                                   type-alias*]
+                                  (filter (or (not-empty greenlist) identity))
+                                  (remove redlist)
+                                  (map obu/call-fn))]
+    (gen/one-of statement-generators)))
 (def subject (subject*))
 
 (defn object*
@@ -495,6 +527,12 @@
               (gen/tuple (object*) subject-gen (object*)))))
 (def t-subject (t-subject*))
 
+(defn empty-subject*
+  "An empty subject is a subject that has no child objects"
+  []
+  (without-children subject*))
+(def empty-subject (empty-subject*))
+
 (defn with-t-subject
   "Given a source generator, `src-gen`, 
    returns a generator that generates a source string with at least 
@@ -505,6 +543,17 @@
     (gen/let [src src-gen
               t-subject-src t-subject-gen]
       (str src "\n" t-subject-src))))
+
+(defn with-empty-subject
+  "Given a source generator, `src-gen`, 
+   returns a generator that generates a source string with at least 
+   one empty subject node"
+  [src-gen]
+  {:pre [(gen/generator? src-gen)]}
+  (let [empty-subject-gen (empty-subject*)]
+    (gen/let [src src-gen
+              empty-subject-src empty-subject-gen]
+      (str src "\n" empty-subject-src))))
 
 (defn subject-node*
   "Returns a generator that generates a subject node"
@@ -541,6 +590,15 @@
                                        :tree/transform-src with-t-subject)]
     (tree*)))
 (def tree-with-t-subject (tree-with-t-subject*))
+
+(defn tree-with-empty-subject*
+  "Returns a generator that generates a Tree-sitter, TSX tree that has 
+   at least one empty subject node"
+  []
+  (binding [*generator-context* (assoc *generator-context*
+                                       :tree/transform-src with-empty-subject)]
+    (tree*)))
+(def tree-with-empty-subject (tree-with-empty-subject*))
 
 ;;================================================================================
 ;; Playground 
@@ -592,5 +650,4 @@
 
   ;; with > 0 children
   (gen/sample (with-children jsx*))
-  (map #(obu/noget+ % :?text) (gen/sample (with-children subject-node*)))
-  )
+  (map #(obu/noget+ % :?text) (gen/sample (with-children subject-node*))))

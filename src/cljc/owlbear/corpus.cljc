@@ -25,6 +25,7 @@
    "HTML Downward Move" (partial list 'owlbear.html.edit.move/downward-move)
    "HTML Forward Move" (partial list 'owlbear.html.edit.move/forward-move)
    "HTML Upward Move" (partial list 'owlbear.html.edit.move/upward-move)
+   "TypeScript Backward Delete" (with-tsx 'owlbear.ts.edit.delete/backward-delete)
    "TypeScript Backward Move" (with-tsx 'owlbear.ts.edit.move/backward-move)
    "TypeScript Downward Move" (with-tsx 'owlbear.ts.edit.move/downward-move)
    "TypeScript Forward Slurp" (with-tsx 'owlbear.ts.edit.slurp/forward-slurp)

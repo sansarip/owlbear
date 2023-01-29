@@ -167,3 +167,16 @@
          (take-while
           #(= (.-startIndex ^js %) start-index))
          rest)))
+
+(defn node->boundary-offsets
+  "Given a `node`, 
+   return a vector of the node's start and end offsets"
+  [^js node]
+  (when node
+    [(.-startIndex node) (.-endIndex node)]))
+
+(defn in-nodes?
+  "Given a `node` and a sequence of `nodes`, 
+   returns true if the `node` is in the `nodes`"
+  [^js node nodes]
+  (boolean (some #(.equals node %) nodes)))

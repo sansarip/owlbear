@@ -15,6 +15,7 @@
              'owlbear.html.parse.rules-test
              'owlbear.parse.rules-test
              'owlbear.ts.edit.barf-test
+             'owlbear.ts.edit.delete-test
              'owlbear.ts.edit.kill-test
              'owlbear.ts.edit.move-test
              'owlbear.ts.edit.raise-test

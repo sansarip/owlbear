@@ -2,9 +2,9 @@
   (:require [clojure.string :as str]
             [owlbear.parse.rules :as obpr]))
 
+(def jsx-attribute "jsx_attribute")
 (def jsx-closing-element "jsx_closing_element")
 (def jsx-element "jsx_element")
-(def ts-export-statement "export_statement")
 (def jsx-expression "jsx_expression")
 (def jsx-fragment "jsx_fragment")
 (def jsx-fragment-end-tag "jsx_fragment_end_tag")
@@ -30,6 +30,7 @@
 (def ts-computed-property-name "computed_property_name")
 (def ts-error "ERROR")
 (def ts-escape-sequence "escape_sequence")
+(def ts-export-statement "export_statement")
 (def ts-expression-statement "expression_statement")
 (def ts-for-statement "for_statement")
 (def ts-for-in-statement "for_in_statement")
@@ -70,6 +71,7 @@
 (def ts-string-fragment "string_fragment")
 (def ts-structural-body "structural_body")
 (def ts-switch-body "switch_body")
+(def ts-switch-case "switch_case")
 (def ts-switch-statement "switch_statement")
 (def ts-syntax "syntax")
 (def ts-template-fragment "template_fragment")
@@ -205,12 +207,36 @@
   (when (and node (syntax-str? (.-type node)))
     node))
 
+(defn jsx-element-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a jsx element node"
+  [^js node]
+  (when (and node (= jsx-element (.-type node)))
+    node))
+
+(defn jsx-attribute-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a jsx attribute node"
+  [^js node]
+  (when (and node (= jsx-attribute (.-type node)))
+    node))
+
 (defn jsx-closing-element-node
   "given a `node`, 
    returns the `node` 
    if it is an end tag node"
   [^js node]
   (when (and node (= jsx-closing-element (.-type node)))
+    node))
+
+(defn jsx-self-closing-element-node
+  "given a `node`, 
+   returns the `node` 
+   if it is a self-closing tag node"
+  [^js node]
+  (when (and node (= jsx-self-closing-element (.-type node)))
     node))
 
 (defn jsx-fragment-end-tag-node
@@ -325,7 +351,6 @@
   (when (and node (= ts-formal-parameters (.-type node)))
     node))
 
-;; *1
 (let [green-list #{jsx-element
                    jsx-expression
                    jsx-fragment
@@ -342,9 +367,9 @@
                    ts-template-string
                    ts-template-substitution}]
   (defn subject-node
-    "Returns the given `node`
-   if edit operations can be run from within the node 
-   i.e. the node doing the slurping or barfing"
+    "Returns the given `node` 
+     if edit operations can be run from within the node 
+     i.e. the node doing the slurping or barfing"
     [^js node]
     (when node
       (let [node-type (.-type node)
@@ -406,6 +431,7 @@
                    ts-string
                    ts-string-fragment
                    ts-switch-statement
+                   ts-switch-case
                    ts-template-fragment
                    ts-template-string
                    ts-type-alias-declaration
@@ -620,53 +646,73 @@
   (when (and node (= jsx-fragment-start-tag (.-type node)))
     node))
 
+(defn start-node [node]
+  "Given a `node`, 
+   returns the node if it is a start-indicating node 
+   e.g. syntax nodes and opening-element nodes"
+  (or (ts-comment-block-start-node node)
+      (jsx-opening-element-node node)
+      (jsx-fragmant-start-tag-node node)))
+
 (defn start-nodes
   "Given a `node`, 
-   returns the start-indicating nodes in that node 
-   e.g. syntax nodes and opening-element nodes"
+   returns a vector of start-indicating nodes 
+   identified by the the given `pred` function
+   
+   The `pred` function defaults to identifying 
+   start nodes (e.g. opening elements) and syntax nodes"
+  ([^js node pred]
+   (when-let [first-child (.-firstChild node)]
+     (when-let [last-child-id (some-> node .-lastChild .-id)]
+       (some-> first-child
+               pred
+               (->> (obpr/node->forward-sibling-nodes)
+                    (take-while #(and (pred %)
+                                      (not (= last-child-id (.-id ^js %))))))
+               (conj first-child)
+               reverse
+               vec
+               (as-> $
+                     (if-let [container-node (subject-container-node node {:default nil})]
+                       (into $ (start-nodes container-node pred))
+                       $))))))
+  ([^js node]
+   (start-nodes
+    node
+    #(or (ts-syntax-node %) (start-node %)))))
+
+(defn end-node
+  "Given a `node`, 
+   returns the node if it is an end-indicating node 
+   e.g. syntax nodes and closing-element nodes"
   [^js node]
-  (when-let [first-child (.-firstChild node)]
-    (when-let [last-child-id (some-> node .-lastChild .-id)]
-      (if-let [start-node (or (ts-comment-block-start-node first-child)
-                              (jsx-opening-element-node first-child)
-                              (jsx-fragmant-start-tag-node first-child))]
-        [start-node]
-        (some-> first-child
-                ts-syntax-node
-                (->> (obpr/node->forward-sibling-nodes)
-                     (take-while #(and (ts-syntax-node %)
-                                       (not (= last-child-id (.-id ^js %))))))
-                (conj first-child)
-                reverse
-                vec
-                (as-> $
-                      (if-let [container-node (subject-container-node node {:default nil})]
-                        (into $ (start-nodes container-node))
-                        $)))))))
+  (or (ts-comment-block-end-node node)
+      (jsx-closing-element-node node)
+      (jsx-fragment-end-tag-node node)))
 
 (defn end-nodes
   "Given a `node`, 
    returns the end-indicating nodes in that node 
    e.g. syntax nodes and closing-element nodes"
-  [^js node]
-  (when-let [last-child (.-lastChild node)]
-    (when-let [first-child-id (some-> node .-firstChild .-id)]
-      (if-let [end-node (or (ts-comment-block-end-node last-child)
-                            (jsx-closing-element-node last-child)
-                            (jsx-fragment-end-tag-node last-child))]
-        [end-node]
-        (some-> last-child
-                ts-syntax-node
-                (->> (obpr/node->backward-sibling-nodes)
-                     (take-while #(and (ts-syntax-node %)
-                                       (not (= first-child-id (.-id ^js %))))))
-                (conj last-child)
-                reverse
-                vec
-                (as-> $
-                      (if-let [container-node (subject-container-node node {:default nil})]
-                        (into $ (end-nodes container-node))
-                        $)))))))
+  ([^js node pred]
+   (when-let [last-child (.-lastChild node)]
+     (when-let [first-child-id (some-> node .-firstChild .-id)]
+       (some-> last-child
+               pred
+               (->> (obpr/node->backward-sibling-nodes)
+                    (take-while #(and (pred %)
+                                      (not (= first-child-id (.-id ^js %))))))
+               (conj last-child)
+               reverse
+               vec
+               (as-> $
+                     (if-let [container-node (subject-container-node node {:default nil})]
+                       (into $ (end-nodes container-node))
+                       $))))))
+  ([^js node]
+   (end-nodes
+    node
+    #(or (ts-syntax-node %) (end-node %)))))
 
 (defn ts-object-ends-with-pair
   "Given a `node`, 
@@ -697,7 +743,7 @@
    returns the `node` 
    if it is a TS object that ends with an incomplete pair"
   [^js node]
-  (when (and node 
+  (when (and node
              (= ts-object (.-type node))
              (-> (end-nodes node)
                  first
@@ -711,7 +757,7 @@
    if it is an object-type that ends with an 
    incomplete property signature"
   [^js node]
-  (when (and node 
+  (when (and node
              (= ts-object-type (.-type node))
              (-> (end-nodes node)
                  first
@@ -884,6 +930,18 @@
   [^js node]
   (when (ts-required-parameter-node node)
     (.childForFieldName node "value")))
+
+(defn node->boundary-offsets [^js node]
+  (if (or (jsx-fragment-end-tag-node node)
+          (jsx-closing-element-node node))
+    [(.-startIndex node) (inc (.-startIndex node)) (.-endIndex node)]
+    (obpr/node->boundary-offsets node)))
+
+(defn empty-node? [^js node]
+  (every? (comp not
+                #(or (object-node %)
+                     (obpr/all-white-space-chars node)))
+          (.-children node)))
 
 ;; Foot notes:
 ;; *1 | The peculiar function-surrounding-let-binding code was added to improve performance -tested against playground/jquery.js:
