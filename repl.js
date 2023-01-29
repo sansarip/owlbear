@@ -6,10 +6,12 @@ async function main() {
   const tsxWasm = await WasmParser.Language.load("./resources/tree-sitter-tsx.wasm"); 
   const Parser = new WasmParser();
 
-  Parser.setLanguage(htmlWasm);
+  Parser.setLanguage(tsxWasm);
 
-  const tree = Parser.parse("<><p>1</p>");
-  console.log(tree.rootNode.firstChild.firstChild.type);
+  const tree = Parser.parse(`function foo () {
+    return <div></div>
+  }`);
+  console.log(tree.rootNode.firstChild.tree.rootNode);
 }
 
 main();
