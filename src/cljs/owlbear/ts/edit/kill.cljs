@@ -8,7 +8,7 @@
    returns a map containing a new `src` string 
    with the kill operation applied at the offset 
    and a new `offset` containing where the cursor 
-   position should be after the raise 
+   position should be after the delete 
    
    Accepts an optional third `tree-id` argument which 
    specifies the ID of an existing Tree-sitter tree that 
