@@ -1,11 +1,11 @@
-name: Test CLJS
+name: Test
 
 on:
   push:
 
 jobs:
   test:
-    name: Test CLJS
+    name: CLJS
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch

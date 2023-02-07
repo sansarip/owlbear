@@ -1,11 +1,11 @@
-name: Lint CLJS
+name: Lint
 
 on:
   push:
 
 jobs:
   lint:
-    name: Lint CLJS
+    name: CLJS
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
