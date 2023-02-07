@@ -23,6 +23,11 @@
   "contributes": {
     "commands": [
       {
+        "command": "owlbear.backwardDelete",
+        "title": "Owlbear: Delete Backward",
+        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
+      {
         "command": "owlbear.backwardMove",
         "title": "Owlbear: Move Cursor Backward",
         "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
@@ -74,6 +79,11 @@
       }
     ],
     "keybindings": [
+      {
+        "command": "owlbear.backwardDelete",
+        "key": "backspace",
+        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+      },
       {
         "command": "owlbear.backwardMove",
         "key": "alt+left",

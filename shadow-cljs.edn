@@ -17,7 +17,8 @@
                      :editTree owlbear.parse/edit-tree!
                      :getTree owlbear.parse/get-tree
                      :getTrees owlbear.parse/trees->js
-                     :htmlBackwardMove owlbear.edit/html-backward-move
+                     :htmlBackwardDelete owlbear.edit/html-backward-delete
+                     :htmlBackwardMove owlbear.edit/html-backward-move 
                      :htmlDownwardMove owlbear.edit/html-downward-move
                      :htmlForwardBarf owlbear.edit/html-forward-barf
                      :htmlForwardMove owlbear.edit/html-forward-move
@@ -27,6 +28,7 @@
                      :htmlRaise owlbear.edit/html-raise
                      :htmlUpwardMove owlbear.edit/html-upward-move
                      :loadLanguageWasm owlbear.parse/load-language-wasm!
+                     :tsBackwardDelete owlbear.edit/ts-backward-delete
                      :tsBackwardMove owlbear.edit/ts-backward-move
                      :tsDownwardMove owlbear.edit/ts-downward-move
                      :tsForwardBarf owlbear.edit/ts-forward-barf
@@ -36,6 +38,7 @@
                      :tsLangId owlbear.parse/ts-lang-id
                      :tsRaise owlbear.edit/ts-raise
                      :tsUpwardMove owlbear.edit/ts-upward-move
+                     :tsxBackwardDelete owlbear.edit/tsx-backward-delete
                      :tsxBackwardMove owlbear.edit/tsx-backward-move
                      :tsxDownwardMove owlbear.edit/tsx-downward-move
                      :tsxForwardBarf owlbear.edit/tsx-forward-barf

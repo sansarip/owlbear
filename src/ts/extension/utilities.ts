@@ -84,3 +84,5 @@ export const asPoint = (pos: Position): Point => ({
   row: pos.line,
   column: pos.character,
 });
+
+export const isEmptyObj = (obj: object): boolean => Object.keys(obj).length === 0;

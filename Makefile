@@ -32,3 +32,9 @@ update-submodules:
 	git submodule update --init --recursive
 
 build-wasms: update-submodules build-html-wasm build-markdown-wasm build-tsx-wasm build-typescript-wasm
+
+cp-tsx-wasm:
+	cp languages/tree-sitter-typescript/tsx/tree-sitter-tsx.wasm resources
+
+cp-typescript-wasm:
+	cp languages/tree-sitter-typescript/typescript/tree-sitter-typescript.wasm resources

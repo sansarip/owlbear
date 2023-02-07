@@ -2,11 +2,13 @@
   "Public-facing JS API for Owlbear's paredit-like operations"
   (:require [cljs-bean.core :refer [->js]]
             [owlbear.html.edit.barf :as html-barf]
+            [owlbear.html.edit.delete :as html-delete]
             [owlbear.html.edit.kill :as html-kill]
             [owlbear.html.edit.move :as html-move]
             [owlbear.html.edit.raise :as html-raise]
             [owlbear.html.edit.slurp :as html-slurp]
             [owlbear.ts.edit.barf :as ts-barf]
+            [owlbear.ts.edit.delete :as ts-delete]
             [owlbear.ts.edit.kill :as ts-kill]
             [owlbear.ts.edit.move :as ts-move]
             [owlbear.ts.edit.raise :as ts-raise]
@@ -16,6 +18,7 @@
 (defn ->js* [m]
   (->js (update-keys m (comp obu/kabob->camel name))))
 
+(def html-backward-delete (comp ->js* html-delete/backward-delete))
 (def html-backward-move (comp ->js* html-move/backward-move))
 (def html-downward-move (comp ->js* html-move/downward-move))
 (def html-forward-barf (comp ->js* html-barf/forward-barf))
@@ -24,6 +27,8 @@
 (def html-kill (comp ->js* html-kill/kill))
 (def html-raise (comp ->js* html-raise/raise))
 (def html-upward-move (comp ->js* html-move/upward-move))
+(def ts-backward-delete (comp ->js* ts-delete/backward-delete))
+(def tsx-backward-delete (comp ->js* #(ts-delete/backward-delete % %2 %3 :tsx)))
 (def ts-backward-move (comp ->js* ts-move/backward-move))
 (def tsx-backward-move (comp ->js* #(ts-move/backward-move % %2 %3 :tsx)))
 (def ts-downward-move (comp ->js* ts-move/downward-move))
