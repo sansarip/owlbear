@@ -1,4 +1,4 @@
-<a href="https://gitmoji.dev">
+![Build Status](https://img.shields.io/github/actions/workflow/status/sansarip/owlbear/build.yaml?style=flat-square) <a href="https://gitmoji.dev">
   <img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square" alt="Gitmoji">
 </a>
 
