@@ -1,10 +1,11 @@
-name: Test PR
+name: Test CLJS
 
-on: [pull_request]
+on:
+  push:
 
 jobs:
-  compile-and-test:
-    name: Test code
+  test:
+    name: Test CLJS
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -14,9 +15,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: 'npm'
 
-      - name: Compile CLJS
-        run: npm i && npm run compile-cljs-test
+      - name: Install Node modules
+        run: npm ci
 
-      - name: Test CLJS code
-        run: test -n "$(npm run cljs-test | grep "0 failures, 0 errors.")"
+      - name: Compile CLJS 
+        run: npm run compile-cljs-test
+
+      - name: Run CLJS tests
+        run: npm run cljs-test
