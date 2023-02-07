@@ -1,5 +1,5 @@
 (ns owlbear.html.edit.delete-test
-  (:require [cljs.test :refer [deftest is testing]]
+  (:require [cljs.test :refer [is]]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]

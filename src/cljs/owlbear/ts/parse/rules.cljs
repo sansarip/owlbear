@@ -646,10 +646,11 @@
   (when (and node (= jsx-fragment-start-tag (.-type node)))
     node))
 
-(defn start-node [node]
+(defn start-node
   "Given a `node`, 
    returns the node if it is a start-indicating node 
    e.g. syntax nodes and opening-element nodes"
+  [node]
   (or (ts-comment-block-start-node node)
       (jsx-opening-element-node node)
       (jsx-fragmant-start-tag-node node)))
