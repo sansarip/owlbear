@@ -1,0 +1,19 @@
+name: Lint
+
+on:
+  push:
+
+jobs:
+  lint:
+    name: CLJS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+      
+      - uses: DeLaGuardo/setup-clj-kondo@master
+        with:
+          version: '2023.01.20'
+
+      - name: Run clj-kondo
+        run: clj-kondo --lint src

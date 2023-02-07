@@ -1,0 +1,27 @@
+name: Test
+
+on:
+  push:
+
+jobs:
+  test:
+    name: CLJS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install Node modules
+        run: npm ci
+
+      - name: Compile CLJS 
+        run: npm run compile-cljs-test
+
+      - name: Run CLJS tests
+        run: npm run cljs-test
