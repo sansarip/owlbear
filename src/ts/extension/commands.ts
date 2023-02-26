@@ -9,7 +9,7 @@ import { EditCtx, OwlbearFunction } from "./types";
 import { getDocCtx, edit, isEmptyObj } from "./utilities";
 import clipboard from "clipboardy";
 import { docUriToTreeIdMap, setNewTreeIdForDocUri } from "./tree";
-import { PAREDIT_NAMESPACE, setContextFromConfig } from "./config";
+import { AUTOFORMAT_NAMESPACE, PAREDIT_NAMESPACE, setContextFromConfig } from "./config";
 
 const ob = require("../../../out/cljs/owlbear");
 
@@ -86,7 +86,8 @@ const doEditOp: Edit = (obOp: OwlbearOperation) => {
   if (!editor || !editCtx || isEmptyObj(editCtx)) {
     return;
   }
-  return edit(editor, editCtx);
+  const shouldFormat = !!workspace.getConfiguration().get(`${AUTOFORMAT_NAMESPACE}.enabled`);
+  return edit(editor, editCtx, shouldFormat);
 };
 
 const deleteLeft = (): void => {
@@ -147,6 +148,12 @@ const raise: Handler = () => {
   return doEditOp("Raise");
 };
 
+const toggleAutoformat: Handler = async () => {
+  const autoFormatEnabled = workspace.getConfiguration().get(`${AUTOFORMAT_NAMESPACE}.enabled`);
+  await workspace.getConfiguration().update(`${AUTOFORMAT_NAMESPACE}.enabled`, !autoFormatEnabled);
+  return undefined;
+};
+
 const toggleParedit: Handler = async () => {
   const pareditEnabled = workspace.getConfiguration().get(`${PAREDIT_NAMESPACE}.enabled`);
   await workspace.getConfiguration().update(`${PAREDIT_NAMESPACE}.enabled`, !pareditEnabled);
@@ -165,6 +172,7 @@ const commands: Command[] = [
   { id: "owlbear.forwardSlurp", handler: forwardSlurp },
   { id: "owlbear.kill", handler: kill },
   { id: "owlbear.raise", handler: raise },
+  { id: "owlbear.toggleAutoformat", handler: toggleAutoformat},
   { id: "owlbear.toggleParedit", handler: toggleParedit},
   { id: "owlbear.upwardMove", handler: upwardMove },
 ];

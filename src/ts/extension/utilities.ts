@@ -41,7 +41,8 @@ export const moveCursor = (
 
 export const edit = async (
   editor: TextEditor,
-  editCtx: EditCtx
+  editCtx: EditCtx,
+  shouldFormat = true
 ): Promise<EditCtx | undefined> => {
   const { src: newSrc, offset: newCursorOffset } = editCtx;
   const didEdit = await editor.edit((editBuilder: TextEditorEdit) => {
@@ -61,7 +62,7 @@ export const edit = async (
     }
 
     // Format doc if src edits were made
-    if (didReplace) {
+    if (shouldFormat && didReplace) {
       commands.executeCommand("editor.action.formatDocument");
     }
     return true;

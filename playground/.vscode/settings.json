@@ -1,3 +1,4 @@
 {
     "owlbear.paredit.enabled": true,
+    "owlbear.autoformat.enabled": true,
 }
