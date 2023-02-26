@@ -21,11 +21,21 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Owlbear",
+      "properties": {
+        "owlbear.paredit.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enables paredit-strict mode, affecting backward/forward character deletion"
+        }
+      }
+    },
     "commands": [
       {
         "command": "owlbear.backwardDelete",
         "title": "Owlbear: Delete Backward",
-        "enablement": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "owlbear.paredit:enabled && !editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.backwardMove",
@@ -76,13 +86,18 @@
         "command": "owlbear.upwardMove",
         "title": "Owlbear: Move Cursor Upward",
         "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+      },
+      {
+        "command": "owlbear.toggleParedit",
+        "title": "Owlbear: Toggle Paredit Mode",
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       }
     ],
     "keybindings": [
       {
         "command": "owlbear.backwardDelete",
         "key": "backspace",
-        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "owlbear.paredit:enabled && !editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.backwardMove",
