@@ -24,6 +24,11 @@
     "configuration": {
       "title": "Owlbear",
       "properties": {
+        "owlbear.autoformat.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enables autoformatting of HTML/JSX after command execution"
+        },
         "owlbear.paredit.enabled": {
           "type": "boolean",
           "default": false,
@@ -86,6 +91,11 @@
         "command": "owlbear.upwardMove",
         "title": "Owlbear: Move Cursor Upward",
         "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+      },
+      {
+        "command": "owlbear.toggleAutoformat",
+        "title": "Owlbear: Toggle Autoformat",
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.toggleParedit",

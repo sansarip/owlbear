@@ -2,6 +2,7 @@ import { commands, workspace } from "vscode";
 
 export const PROJECT_NAMESPACE = "owlbear";
 export const PAREDIT_NAMESPACE = `${PROJECT_NAMESPACE}.paredit`;
+export const AUTOFORMAT_NAMESPACE = `${PROJECT_NAMESPACE}.autoformat`;
 
 export const setContextFromConfig = (
   key: string,
