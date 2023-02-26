@@ -25,114 +25,114 @@
       {
         "command": "owlbear.backwardDelete",
         "title": "Owlbear: Delete Backward",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.backwardMove",
         "title": "Owlbear: Move Cursor Backward",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.copy",
         "title": "Owlbear: Copy",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.cut",
         "title": "Owlbear: Cut",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.downwardMove",
         "title": "Owlbear: Move Cursor Downward",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardBarf",
         "title": "Owlbear: Barf Forward",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardMove",
         "title": "Owlbear: Move Cursor Forward",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardSlurp",
         "title": "Owlbear: Slurp Forward",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.kill",
         "title": "Owlbear: Kill",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.raise",
         "title": "Owlbear: Raise",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.upwardMove",
         "title": "Owlbear: Move Cursor Upward",
-        "enablement": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       }
     ],
     "keybindings": [
       {
         "command": "owlbear.backwardDelete",
         "key": "backspace",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.backwardMove",
         "key": "alt+left",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.copy",
         "key": "ctrl+alt+c",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.cut",
         "key": "ctrl+alt+x",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.downwardMove",
         "key": "ctrl+down",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardBarf",
         "key": "ctrl+alt+left",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardMove",
         "key": "alt+right",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardSlurp",
         "key": "ctrl+alt+right",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.kill",
         "key": "ctrl+k",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.raise",
         "key": "ctrl+alt+p ctrl+alt+r",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.upwardMove",
         "key": "ctrl+up",
-        "when": "editorLangId == html || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescript"
+        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
       }
     ]
   },
