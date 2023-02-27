@@ -42,3 +42,14 @@ interface foo {a:▌}
 ```typescript
 interface foo {▌}a
 ```
+
+
+## Namespace Declaration
+```ts
+declare namespace Foo {
+interface bar {a: string}▌};
+```
+```ts
+declare namespace Foo {
+▌}interface bar {a: string};
+```

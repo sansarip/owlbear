@@ -13,6 +13,7 @@
 (def jsx-self-closing-element "jsx_self_closing_element")
 (def jsx-text "jsx_text")
 (def ts-abstract-class-declaration "abstract_class_declaration")
+(def ts-ambient-declaration "ambient_declaration")
 (def ts-arguments "arguments")
 (def ts-array "array")
 (def ts-arrow-function "arrow_function")
@@ -385,6 +386,7 @@
 ;; *1
 (let [green-list #{jsx-self-closing-element
                    ts-abstract-class-declaration
+                   ts-ambient-declaration
                    ts-arrow-function
                    ts-assignment-expression
                    ts-await-expression
@@ -561,7 +563,8 @@
     node))
 
 ;; *1
-(let [greenlist #{ts-class-declaration
+(let [greenlist #{ts-ambient-declaration
+                  ts-class-declaration
                   ts-expression-statement
                   ts-for-statement
                   ts-for-in-statement

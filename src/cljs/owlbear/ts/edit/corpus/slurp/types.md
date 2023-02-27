@@ -92,3 +92,13 @@ string
 interface foo<S> {a:
 string▌;}
 ```
+
+## Namespace Declaration
+```ts
+declare namespace Foo {▌}
+interface bar {a: string};
+```
+```ts
+declare namespace Foo {
+interface bar {a: string}▌};
+```
