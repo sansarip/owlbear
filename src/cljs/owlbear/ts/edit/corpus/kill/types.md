@@ -103,3 +103,20 @@ type foo = ▌"hello" & "world"
 ```typescript
 type foo = ▌
 ```
+
+## Namespace Declaration
+```ts
+declare ▌namespace Foo {
+interface bar {a: string}}
+```
+```ts
+▌
+```
+
+```ts
+▌declare namespace Foo {
+interface bar {a: string}}
+```
+```ts
+▌
+```
