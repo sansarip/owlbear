@@ -72,7 +72,7 @@ const foo = ▌;
 const foo = {▌a: 1};
 ```
 ```typescript
-const foo = {▌: 1};
+const foo = {▌};
 ```
 
 ## Array Literals

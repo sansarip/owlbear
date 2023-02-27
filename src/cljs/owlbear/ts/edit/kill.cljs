@@ -32,31 +32,28 @@
      (when-let [current-nodes (some-> tree
                                       (obu/noget+ :?rootNode)
                                       (ts-rules/node->current-object-nodes offset)
+                                      (->> (filter (comp not ts-rules/ts-member-expression-node)))
                                       not-empty)]
        (let [last-node-start-index (obu/noget+ (last current-nodes) :?startIndex)
              current-node (->> current-nodes
-                               (filter (comp not ts-rules/ts-member-expression-node))
                                reverse
-                               (take-while #(and (not (contains? #{ts-rules/ts-pair
-                                                                   ts-rules/ts-property-signature}
-                                                                 (obu/noget+ % :?type)))
-                                                 (= (obu/noget+ % :?startIndex)
-                                                    last-node-start-index)))
+                               (take-while #(= (obu/noget+ % :?startIndex)
+                                               last-node-start-index))
                                last)
              current-node-end-index (let [parent-node (obu/noget+ current-node :?parent)
                                           next-sibling (obu/noget+ current-node :?nextSibling)
                                           next-sibling-type (obu/noget+ next-sibling :?type)
                                           next-sibling-end-index (obu/noget+ next-sibling :?endIndex)]
                                       (cond
-                                      ;; foo().▌bar() => foo().  
+                                        ;; foo().▌bar() => foo().  
                                         (ts-rules/ts-member-expression-node parent-node)
                                         (obu/noget+ (obu/noget+ parent-node :?nextSibling) :?endIndex)
-
-                                      ;; [▌1, 2] => [ 2]
+                                        
+                                        ;; [▌1, 2] => [ 2]
                                         (= "," next-sibling-type)
                                         next-sibling-end-index
 
-                                      ;; {▌a:;} => {}
+                                        ;; {▌a:;} => {}
                                         (and (contains? #{ts-rules/ts-property-signature
                                                           ts-rules/ts-incomplete-property-signature}
                                                         (obu/noget+ current-node :?type))
@@ -69,17 +66,17 @@
                                             prev-sibling-type (obu/noget+ prev-sibling :?type)
                                             prev-sibling-start-index (obu/noget+ prev-sibling :?startIndex)]
                                         (cond
-                                        ;; foo.▌bar() => foo
+                                          ;; foo.▌bar() => foo
                                           (and (ts-rules/ts-member-expression-node (obu/noget+ current-node :?parent))
                                                (= "." prev-sibling-type))
                                           prev-sibling-start-index
 
-                                        ;; [1, ▌2] => [1]
+                                          ;; [1, ▌2] => [1]
                                           (and (= "," prev-sibling-type)
                                                (not= "," (obu/noget+ current-node :?nextSibling.?type)))
                                           prev-sibling-start-index
 
-                                        ;; [...▌foo] => []
+                                          ;; [...▌foo] => []
                                           (ts-rules/ts-spread-element-node parent)
                                           (obu/noget+ parent :?startIndex)
 
@@ -89,4 +86,6 @@
           :removed-text (obu/noget+ current-node :?text)})))))
 
 (comment
-  (kill "<><h1></h1></>" 2 :tsx))
+  (kill "<><h1></h1></>" 2 :tsx)
+  (kill "type foo = {a: string;}" 12 :tsx)
+  (kill "type foo = {abc: string;}" 17 :tsx))

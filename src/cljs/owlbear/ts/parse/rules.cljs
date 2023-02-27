@@ -40,6 +40,7 @@
 (def ts-generator-function-declaration "generator_function_declaration")
 (def ts-identifier "identifier")
 (def ts-if-statement "if_statement")
+(def ts-import-specifier "import_specifier")
 (def ts-import-statement "import_statement")
 (def ts-incomplete-pair "incomplete_pair")
 (def ts-incomplete-property-signature "incomplete_property_signature")
@@ -404,6 +405,7 @@
                    ts-function-type
                    ts-generator-function-declaration
                    ts-if-statement
+                   ts-import-specifier
                    ts-import-statement
                    ts-incomplete-pair
                    ts-incomplete-property-signature
