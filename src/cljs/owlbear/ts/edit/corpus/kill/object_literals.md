@@ -11,7 +11,7 @@
 {▌a: 1}
 ```
 ```typescript
-{▌: 1}
+{▌}
 ```
 
 ## Incomplete Pair

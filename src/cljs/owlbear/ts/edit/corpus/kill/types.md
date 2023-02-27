@@ -26,7 +26,7 @@ type foo = {a: ▌;}
 type foo = {▌a: string}
 ```
 ```typescript
-type foo = {▌: string}
+type foo = {▌}
 ```
 
 ```typescript
@@ -77,7 +77,7 @@ type foo = {a: {b: ▌;};};
 type foo = {a: {▌b: string}};
 ```
 ```typescript
-type foo = {a: {▌: string}};
+type foo = {a: {▌}};
 ```
 
 ## Function Type

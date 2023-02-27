@@ -70,3 +70,11 @@ const foo = ▌;
 ```typescript
 1 + ▌;
 ```
+
+## Imports
+```tsx
+import {▌a, b, c} from '/foo'
+```
+```tsx
+import {▌ b, c} from '/foo'
+```
