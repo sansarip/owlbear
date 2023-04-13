@@ -40,57 +40,57 @@
       {
         "command": "owlbear.backwardDelete",
         "title": "Owlbear: Delete Backward",
-        "enablement": "owlbear.paredit:enabled && !editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.backwardMove",
         "title": "Owlbear: Move Cursor Backward",
-        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.copy",
         "title": "Owlbear: Copy",
-        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.cut",
         "title": "Owlbear: Cut",
-        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.downwardMove",
         "title": "Owlbear: Move Cursor Downward",
-        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardBarf",
         "title": "Owlbear: Barf Forward",
-        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardMove",
         "title": "Owlbear: Move Cursor Forward",
-        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardSlurp",
         "title": "Owlbear: Slurp Forward",
-        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.kill",
         "title": "Owlbear: Kill",
-        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.raise",
         "title": "Owlbear: Raise",
-        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.upwardMove",
         "title": "Owlbear: Move Cursor Upward",
-        "enablement": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.toggleAutoformat",
@@ -107,57 +107,57 @@
       {
         "command": "owlbear.backwardDelete",
         "key": "backspace",
-        "when": "owlbear.paredit:enabled && !editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.backwardMove",
         "key": "alt+left",
-        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.copy",
         "key": "ctrl+alt+c",
-        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.cut",
         "key": "ctrl+alt+x",
-        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.downwardMove",
         "key": "ctrl+down",
-        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardBarf",
         "key": "ctrl+alt+left",
-        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardMove",
         "key": "alt+right",
-        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardSlurp",
         "key": "ctrl+alt+right",
-        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.kill",
         "key": "ctrl+k",
-        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.raise",
         "key": "ctrl+alt+p ctrl+alt+r",
-        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.upwardMove",
         "key": "ctrl+up",
-        "when": "editorTextFocus && editorLangId in owlbear:supportedLanguages"
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       }
     ]
   },
