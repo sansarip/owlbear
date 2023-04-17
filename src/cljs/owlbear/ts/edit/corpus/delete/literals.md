@@ -4,7 +4,7 @@
 const foo = {}▌
 ```
 ```ts
-const foo = ▌
+const foo = {▌}
 ```
 
 ```ts
@@ -23,6 +23,13 @@ const foo = {▌}
 
 ```ts
 const foo = {,}▌
+```
+```ts
+const foo = {,▌}
+```
+
+```ts
+const foo = {▌,}
 ```
 ```ts
 const foo = ▌
@@ -55,6 +62,13 @@ const foo = {a: ▌}
 {[]▌: 1}
 ```
 ```ts
+{[▌]: 1}
+```
+
+```ts
+{[▌]: 1}
+```
+```ts
 {▌: 1}
 ```
 
@@ -78,7 +92,7 @@ const foo = {a: ▌}
 []▌
 ```
 ```ts
-▌
+[▌]
 ```
 
 ```ts
@@ -96,7 +110,7 @@ const foo = {a: ▌}
 ```
 
 ```ts
-[,]▌
+[▌,]
 ```
 ```ts
 ▌

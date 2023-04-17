@@ -4,12 +4,18 @@
             [owlbear.utilities :as obu]
             [owlbear.html.parse.rules :as html-rules]))
 
+(defn start-of-start-tag? [node offset]
+  (cond
+    (html-rules/comment-start-tag-node node) (obpr/range-in-node? node offset)
+    
+    (or (html-rules/start-tag-node node)
+        (html-rules/self-closing-tag-node node)) (= (obu/noget+ node :?startIndex) offset)))
+
 (defn backspace [src offset]
   {:src (obu/str-remove src (dec offset) offset)
    :offset (dec offset)
    :delete-start-offset (dec offset)
    :delete-end-offset offset})
-
 
 (defn delete [src node]
   (let [node-start (obu/noget+ node :?startIndex)
@@ -25,9 +31,10 @@
           empty-quotes? (= "\"\"" (obu/noget+ node :?text))
           at-bounds? (contains? #{(obu/noget+ node :?startIndex)
                                   (dec (obu/noget+ node :?endIndex))}
-                                delete-offset)]
+                                delete-offset)
+          at-start? (= (obu/noget+ node :?startIndex) delete-offset)]
       (cond
-        empty-quotes? (delete src node)
+        (and at-start? empty-quotes?) (delete src node)
         at-bounds? {:offset delete-offset}
         :else (backspace src offset)))))
 
@@ -58,7 +65,7 @@
           element-node (obu/noget+ tag-node :?parent)
           at-bounds? (html-rules/at-tag-node-bounds? tag-node delete-offset)]
       (cond
-        (and at-bounds?
+        (and (start-of-start-tag? tag-node delete-offset)
              (empty-element? tag-node)
              (no-attributes? element-node)) (delete src element-node)
         at-bounds? {:offset delete-offset}
@@ -72,7 +79,7 @@
               no-attributes? (not (obpr/some-child-node html-rules/attribute-node tag-node))
               at-bounds? (html-rules/at-tag-node-bounds? tag-node delete-offset)]
           (cond
-            (and at-bounds?
+            (and (start-of-start-tag? tag-node delete-offset)
                  (empty-element? tag-node)
                  no-attributes?) (delete src tag-node)
             at-bounds? {:offset delete-offset}
@@ -102,7 +109,11 @@
   (backward-delete "<div></div>" 1)
   (backward-delete "<div>5678</div>" 14)
   (backward-delete "<div></div>" 2)
-  (backward-delete "<!---->" 1)
+  (backward-delete "<></>" 1)
+  (backward-delete "<><p></p>" 1)
+  (backward-delete "<!-- -->" 4)
+  (backward-delete "<!---->" 6)
+  (backward-delete "<!-- adasd -->" 6)
   (backward-delete "<input/>" 1)
   (backward-delete "<input/>" 2)
   (backward-delete "<i/>" 2)
@@ -110,6 +121,7 @@
   (backward-delete "<V />" 3)
   (backward-delete "<V a=\"adasd\"/>" 8)
   (backward-delete "<V a=\"\"/>" 6)
+  (backward-delete "<V a=\"\"/>" 7)
   (backward-delete "<p><p>Hello</p>" 1)
   (backward-delete "<mm />" 6)
   (backward-delete "<p id=\"foo\"></p>" 14))

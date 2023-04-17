@@ -42,7 +42,7 @@
            result-offset :offset
            :as delete-result} (html-delete/backward-delete src current-node-end-index)]
       (&testing "when cursor offset is at node end"
-        (is (empty? result-src)
-            "node is deleted")
-        (is (= 0 result-offset)
-            "offset is moved to node start")))))
+        (is (nil? result-src)
+            "no source changes")
+        (is (= (dec current-node-end-index) result-offset)
+            "offset is decremented")))))

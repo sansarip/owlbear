@@ -4,6 +4,13 @@
 type foo = {}▌;
 ```
 ```ts
+type foo = {▌};
+```
+
+```ts
+type foo = {▌};
+```
+```ts
 type foo = ▌;
 ```
 

@@ -41,40 +41,51 @@
 
 (defn delete-node
   [{:keys [current-node delete-offset]
-    at-boundaries?* :at-boundaries?}]
+    at-boundaries?* :at-boundaries?
+    at-start?* :at-start?}]
   (when at-boundaries?*
     (when-let [src (obu/noget+ current-node :?tree.?rootNode.?text)]
-      (if (ts-rules/empty-node? current-node)
+      (if (and at-start?* (ts-rules/empty-node? current-node))
         (delete src current-node)
         {:offset delete-offset}))))
 
 (defn delete-element
   [{:keys [current-node delete-offset]
-    at-boundaries?* :at-boundaries?}]
+    at-boundaries?* :at-boundaries?
+    at-start?* :at-start?}]
   (when (and (ts-rules/jsx-element-node current-node) at-boundaries?*)
     (when-let [src (obu/noget+ current-node :?tree.?rootNode.?text)]
-      (if (and (no-attributes? current-node) (ts-rules/empty-node? current-node))
+      (if (and at-start?* (no-attributes? current-node) (ts-rules/empty-node? current-node))
         (delete src current-node)
         {:offset delete-offset}))))
 
 (defn delete-self-closing-element
   [{:keys [classification current-node delete-offset]
-    at-boundaries?* :at-boundaries?}]
+    at-boundaries?* :at-boundaries?
+    at-start?* :at-start?}]
   (when (and (= ts-rules/jsx-self-closing-element classification) at-boundaries?*)
     (when-let [src (obu/noget+ current-node :?tree.?rootNode.?text)]
-      (if (no-attributes? current-node classification)
+      (if (and at-start?* (no-attributes? current-node classification))
         (delete src current-node)
         {:offset delete-offset}))))
 
 (defn group-syntax-node [node]
-  (when (re-matches #"[`'/\"\(\)\{\}\[\]\<\>]" (obu/noget+ node :?type))
+  (when (re-matches #"[`'/\"]" (obu/noget+ node :?type))
+    node))
+
+(defn group-start-syntax-node [node]
+  (when (re-matches #"[\(\{\[\<]" (obu/noget+ node :?type))
+    node))
+
+(defn group-end-syntax-node [node]
+  (when (re-matches #"[`\)\}\]\>]" (obu/noget+ node :?type))
     node))
 
 (defn start-node [node]
-  (or (group-syntax-node node) (ts-rules/start-node node)))
+  (or (group-syntax-node node) (group-start-syntax-node node) (ts-rules/start-node node)))
 
 (defn end-node [node]
-  (or (group-syntax-node node) (ts-rules/end-node node)))
+  (or (group-syntax-node node) (group-end-syntax-node node) (ts-rules/end-node node)))
 
 (defn ->delete-ctx [root-node offset]
   (let [delete-offset (dec offset)
@@ -92,13 +103,22 @@
                                          last)]
     (when current-node
       (let [start-nodes (ts-rules/start-nodes current-node start-node)
+            ;; Below can be done in a recursive manner to get the deepest start nodes, 
+            ;; but this works for now
+            one-lvl-deeper-start-nodes (into []
+                                             (mapcat (fn [sn]
+                                                       (if-let [snodes (ts-rules/start-nodes sn start-node)]
+                                                         snodes
+                                                         [sn])))
+                                             start-nodes)
             end-nodes (ts-rules/end-nodes current-node end-node)
             boundary-nodes (into start-nodes end-nodes)]
         {:current-node current-node
          :boundary-nodes boundary-nodes
          :classification classification
          :delete-offset delete-offset
-         :at-boundaries? (at-boundaries? boundary-nodes delete-offset)}))))
+         :at-boundaries? (at-boundaries? boundary-nodes delete-offset)
+         :at-start? (at-boundaries? one-lvl-deeper-start-nodes delete-offset)}))))
 
 (defn backward-delete
   "Given a `src` string and a character `offset`, 
@@ -151,6 +171,7 @@
   (backward-delete "function foo () {}" 17)
   (backward-delete "function foo () {return <></>}" 26 nil :tsx)
   (backward-delete "function foo () {return <p></p>}" 27 nil :tsx)
+  (backward-delete "function foo () {return <p></p>}" 28 nil :tsx)
   (backward-delete "function foo () {return <p id=\"\"></p>}" 34 nil :tsx)
   (backward-delete "function foo () {return <></>}" 29 nil :tsx)
   (backward-delete "function foo () {return <>\n\n</>}" 26 nil :tsx)
@@ -158,4 +179,8 @@
   (backward-delete "/**/" 2)
   (backward-delete "function foo () {return <p/>}" 25 nil :tsx)
   (backward-delete "function foo () {return <p id=\"\"/>}" 33 nil :tsx)
-  (backward-delete "{[a]: 1}" 2 nil :tsx))
+  (backward-delete "{[a]: 1}" 2 nil :tsx)
+  (backward-delete  "`${sa}`" 3 nil :tsx)
+  (backward-delete  "interface K {}" 14 nil :tsx)
+  (backward-delete "const foo = \"\";" 14 nil :tsx)
+  (backward-delete "const foo = <></>;" 14 nil :tsx))

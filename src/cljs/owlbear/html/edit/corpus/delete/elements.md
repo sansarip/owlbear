@@ -5,14 +5,14 @@
 <h1>▌</h1>
 ```
 ```html
-▌
+<h1▌></h1>
 ```
 
 ```html
 <h1></h1>▌
 ```
 ```html
-▌
+<h1></h1▌>
 ```
 
 ```html
@@ -26,11 +26,18 @@
 <h1></▌h1>
 ```
 ```html
-▌
+<h1><▌/h1>
 ```
 
 ```html
 <>▌</>
+```
+```html
+<▌></>
+```
+
+```html
+<▌></>
 ```
 ```html
 ▌
@@ -40,11 +47,25 @@
 <p>▌<p>Hello, world!</p>
 ```
 ```html
-▌<p>Hello, world!</p>
+<p▌><p>Hello, world!</p>
 ```
 
 ```html
 <>▌<p>Hello, world!</p>
+```
+```html
+<▌><p>Hello, world!</p>
+```
+
+```html
+<▌p><p>Hello, world!</p>
+```
+```html
+▌<p>Hello, world!</p>
+```
+
+```html
+<▌><p>Hello, world!</p>
 ```
 ```html
 ▌<p>Hello, world!</p>

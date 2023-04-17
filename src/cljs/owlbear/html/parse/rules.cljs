@@ -62,6 +62,20 @@
   (when (or (= html-missing (oget node :?type)) (ocall node :?isMissing))
     node))
 
+(defn comment-start-tag-node 
+  "Given a node, 
+   returns the node if it is a comment start-tag node"
+  [node]
+  (when (= html-comment-start-tag (oget node :?type))
+    node))
+
+(defn element-start-tag-node 
+  "Given a node, 
+   returns the node if it is an element start-tag node"
+  [node]
+  (when (= html-start-tag (oget node :?type))
+    node))
+
 (defn start-tag-node
   "Given a node, 
    returns the node if it is a start-tag node"
@@ -298,13 +312,13 @@
 
 (defn at-tag-node-bounds?
   "Returns true if the `offset` is 
-   at the start or end of the given `tag-node`"
-  [tag-node offset]
-  (let [self-closing-node? (self-closing-tag-node tag-node)
-        has-forward-slash? (or self-closing-node? (end-tag-node tag-node))
-        tag-node-start (obu/noget+ tag-node :?startIndex)
-        tag-node-end (obu/noget+ tag-node :?endIndex)]
-    (contains? #{tag-node-start
-                 (dec tag-node-end)
-                 (when has-forward-slash? (inc tag-node-start))}
-               offset)))
+   at the boundaries of the given `tag-node`"
+  [^js tag-node* offset]
+  (when tag-node*
+    (let [current-node (->> offset
+                            (obpr/node->current-nodes tag-node*)
+                            (filter #(or (object-node %) 
+                                         (tag-node %)
+                                         (tag-name-node %)))
+                            last)]
+      (.equals tag-node* current-node))))
