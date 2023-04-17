@@ -4,6 +4,13 @@
 const foo = ()▌ => {};
 ```
 ```ts
+const foo = (▌) => {};
+```
+
+```ts
+const foo = (▌) => {};
+```
+```ts
 const foo = ▌ => {};
 ```
 
@@ -11,11 +18,18 @@ const foo = ▌ => {};
 const foo = () => {}▌;
 ```
 ```ts
-const foo = () => ▌;
+const foo = () => {▌};
 ```
 
 ```ts
 function foo()▌ {}
+```
+```ts
+function foo(▌) {}
+```
+
+```ts
+function foo(▌) {}
 ```
 ```ts
 function foo▌ {}
@@ -23,6 +37,13 @@ function foo▌ {}
 
 ```ts
 function foo() {}▌
+```
+```ts
+function foo() {▌}
+```
+
+```ts
+function foo() {▌}
 ```
 ```ts
 function foo() ▌
@@ -65,6 +86,17 @@ class foo {
 ```
 ```ts
 class foo {
+	bar(▌) {}
+}
+```
+
+```ts
+class foo {
+	bar(▌) {}
+}
+```
+```ts
+class foo {
 	bar▌ {}
 }
 ```
@@ -72,6 +104,17 @@ class foo {
 ```ts
 class foo {
 	bar() {}▌
+}
+```
+```ts
+class foo {
+	bar() {▌}
+}
+```
+
+```ts
+class foo {
+	bar() {▌}
 }
 ```
 ```ts

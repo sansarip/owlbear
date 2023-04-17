@@ -5,14 +5,14 @@
 const foo = <h1>▌</h1>
 ```
 ```tsx
-const foo = ▌
+const foo = <h1▌></h1>
 ```
 
 ```tsx
 const foo = <h1></h1>▌
 ```
 ```tsx
-const foo = ▌
+const foo = <h1></h1▌>
 ```
 
 ```tsx
@@ -26,7 +26,7 @@ const foo = ▌
 const foo = <h1></▌h1>
 ```
 ```tsx
-const foo = ▌
+const foo = <h1><▌/h1>
 ```
 
 ```tsx
@@ -40,28 +40,28 @@ const foo = ▌
 const foo = <a/>▌
 ```
 ```tsx
-const foo = ▌
+const foo = <a/▌>
 ```
 
 ```tsx
 const foo = <a/▌>
 ```
 ```tsx
-const foo = ▌
+const foo = <a▌/>
 ```
 
 ```tsx
 const foo = <>▌</>
 ```
 ```tsx
-const foo = ▌
+const foo = <▌></>
 ```
 
 ```tsx
 const foo = <></>▌
 ```
 ```tsx
-const foo = ▌
+const foo = <></▌>
 ```
 
 ```tsx
@@ -75,12 +75,12 @@ const foo = ▌
 const foo = <></▌>
 ```
 ```tsx
-const foo = ▌
+const foo = <><▌/>
 ```
 
 ## Nested Elements
 ```tsx
-const foo = <h1><p>▌</p></h1>
+const foo = <h1><▌p></p></h1>
 ```
 ```tsx
 const foo = <h1>▌</h1>

@@ -40,9 +40,10 @@
            :keys [delete-start-offset delete-end-offset]
            :as delete-result} (ts-delete/backward-delete src current-node-end-index nil :tsx)]
       (&testing "when cursor offset is at node end"
-        (is (< 1 (- delete-end-offset delete-start-offset))
-            "more than one char is deleted")
-        (is (> (count src) (count result-src))
-            "source length is reduced")
-        (is (contains? #{0 current-node-start-index} result-offset)
-            "offset is moved to node start or src start")))))
+        (is (and (nil? delete-start-offset)
+                 (nil? delete-end-offset))
+            "no chars are deleted")
+        (is (nil? result-src)
+            "source is unchanged")
+        (is (= (dec current-node-end-index) result-offset)
+            "offset is decremented")))))

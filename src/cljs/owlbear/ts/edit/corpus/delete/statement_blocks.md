@@ -4,7 +4,7 @@
 {}▌
 ```
 ```ts
-▌
+{▌}
 ```
 
 ```ts
@@ -15,28 +15,28 @@
 ```
 
 ```ts
-function foo() {}▌
+function foo() {▌}
 ```
 ```ts
 function foo() ▌
 ```
 
 ```ts
-while (true) {}▌
+while (true) {▌}
 ```
 ```ts
 while (true) ▌
 ```
 
 ```ts
-for (i of l) {}▌
+for (i of l) {▌}
 ```
 ```ts
 for (i of l) ▌
 ```
 
 ```ts
-switch (a) {}▌
+switch (a) {▌}
 ```
 ```ts
 switch (a) ▌
