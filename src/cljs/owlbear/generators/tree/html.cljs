@@ -78,8 +78,9 @@
 (defn hiccup->tree
   "Converts a hiccup vector to an HTML tree"
   [h]
-  (when (not-empty h)
-    (obp/src->tree! (html h) obp/html-lang-id)))
+  (obp/src->tree!
+   (if (empty? h) "<></>" (html h))
+   obp/html-lang-id))
 
 (defn tree
   "Generates an HTML tree 
