@@ -21,6 +21,7 @@
                      :htmlBackwardMove owlbear.edit/html-backward-move 
                      :htmlDownwardMove owlbear.edit/html-downward-move
                      :htmlForwardBarf owlbear.edit/html-forward-barf
+                     :htmlForwardDelete owlbear.edit/html-forward-delete
                      :htmlForwardMove owlbear.edit/html-forward-move
                      :htmlForwardSlurp owlbear.edit/html-forward-slurp
                      :htmlKill owlbear.edit/html-kill
@@ -32,6 +33,7 @@
                      :tsBackwardMove owlbear.edit/ts-backward-move
                      :tsDownwardMove owlbear.edit/ts-downward-move
                      :tsForwardBarf owlbear.edit/ts-forward-barf
+                     :tsForwardDelete owlbear.edit/ts-forward-delete
                      :tsForwardMove owlbear.edit/ts-forward-move
                      :tsForwardSlurp owlbear.edit/ts-forward-slurp
                      :tsKill owlbear.edit/ts-kill
@@ -42,6 +44,7 @@
                      :tsxBackwardMove owlbear.edit/tsx-backward-move
                      :tsxDownwardMove owlbear.edit/tsx-downward-move
                      :tsxForwardBarf owlbear.edit/tsx-forward-barf
+                     :tsxForwardDelete owlbear.edit/tsx-forward-delete
                      :tsxForwardMove owlbear.edit/tsx-forward-move
                      :tsxForwardSlurp owlbear.edit/tsx-forward-slurp
                      :tsxKill owlbear.edit/tsx-kill

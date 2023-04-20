@@ -30,6 +30,7 @@ type OwlbearOperation =
   | "BackwardDelete"
   | "BackwardMove"
   | "DownwardMove"
+  | "ForwardDelete"
   | "ForwardSlurp"
   | "ForwardBarf"
   | "ForwardMove"
@@ -92,7 +93,11 @@ const doEditOp: Edit = (obOp: OwlbearOperation) => {
 
 const deleteLeft = (): void => {
   vscodeCommands.executeCommand('deleteLeft');
-}
+};
+
+const deleteRight = (): void => {
+  vscodeCommands.executeCommand('deleteRight');
+};
 
 const backwardDelete: Handler = async () => {
   const editCtx = getEditCtx("BackwardDelete");
@@ -113,7 +118,7 @@ const backwardDelete: Handler = async () => {
     return;
   }
   return edit(editor, editCtx);
-}
+};
 
 const backwardMove: Handler = () => doEditOp("BackwardMove");
 
@@ -124,6 +129,27 @@ const upwardMove: Handler = () => doEditOp("UpwardMove");
 const forwardSlurp: Handler = () => doEditOp("ForwardSlurp");
 
 const forwardBarf: Handler = () => doEditOp("ForwardBarf");
+
+const forwardDelete: Handler = async () => {
+  const editCtx = getEditCtx("ForwardDelete");
+  if (!editCtx || isEmptyObj(editCtx)) {
+    deleteRight();
+    return;
+  }
+  
+  const {deleteStartOffset, deleteEndOffset} = editCtx;
+  const numCharsToDelete = deleteEndOffset - deleteStartOffset;
+  if (numCharsToDelete === 1) {
+    deleteRight();
+    return;
+  }
+
+  const editor = window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
+  return edit(editor, editCtx);
+};
 
 const forwardMove: Handler = () => doEditOp("ForwardMove");
 
@@ -168,6 +194,7 @@ const commands: Command[] = [
   { id: "owlbear.cut", handler: cut },
   { id: "owlbear.downwardMove", handler: downwardMove },
   { id: "owlbear.forwardBarf", handler: forwardBarf },
+  { id: "owlbear.forwardDelete", handler: forwardDelete },
   { id: "owlbear.forwardMove", handler: forwardMove },
   { id: "owlbear.forwardSlurp", handler: forwardSlurp },
   { id: "owlbear.kill", handler: kill },

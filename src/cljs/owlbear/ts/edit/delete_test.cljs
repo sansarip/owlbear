@@ -16,34 +16,72 @@
                          current-node-end-index]} (gen/let [src (gen/no-shrink obgt-ts/empty-subject)]
                                                     (let [tree (obp/src->tree! src obp/tsx-lang-id)
                                                           root-node (obu/noget+ tree :?rootNode)
-                                                          [backward-delete-target] (obpr/filter-descendants
-                                                                                    #(and (ts-rules/subject-node %)
-                                                                                          (ts-rules/empty-node? %))
-                                                                                    root-node)]
+                                                          [delete-target] (obpr/filter-descendants
+                                                                           #(and (ts-rules/subject-node %)
+                                                                                 (ts-rules/empty-node? %))
+                                                                           root-node)]
                                                       {:src src
-                                                       :current-node-text (obu/noget+ backward-delete-target :?text)
-                                                       :current-node-start-index (obu/noget+ backward-delete-target :?startIndex)
-                                                       :current-node-end-index (obu/noget+ backward-delete-target :?endIndex)}))]
-    (let [{result-src :src
-           result-offset :offset
-           :keys [delete-start-offset delete-end-offset]
-           :as delete-result} (ts-delete/backward-delete src (inc current-node-start-index) nil :tsx)]
-      (&testing "when cursor is at node start"
-        (is (< 1 (- delete-end-offset delete-start-offset))
-            "more than one char is deleted")
-        (is (> (count src) (count result-src))
-            "source length is reduced")
-        (is (contains? #{0 current-node-start-index} result-offset)
-            "offset is moved to node start or src start")))
-    (let [{result-src :src
-           result-offset :offset
-           :keys [delete-start-offset delete-end-offset]
-           :as delete-result} (ts-delete/backward-delete src current-node-end-index nil :tsx)]
-      (&testing "when cursor offset is at node end"
-        (is (and (nil? delete-start-offset)
-                 (nil? delete-end-offset))
-            "no chars are deleted")
-        (is (nil? result-src)
-            "source is unchanged")
-        (is (= (dec current-node-end-index) result-offset)
-            "offset is decremented")))))
+                                                       :current-node-text (obu/noget+ delete-target :?text)
+                                                       :current-node-start-index (obu/noget+ delete-target :?startIndex)
+                                                       :current-node-end-index (obu/noget+ delete-target :?endIndex)}))]
+    (&testing ""
+      (let [{result-src :src
+             result-offset :offset
+             :keys [delete-start-offset delete-end-offset]
+             :as delete-result} (ts-delete/backward-delete src (inc current-node-start-index) nil :tsx)]
+        (&testing "when cursor is at node start"
+          (is (< 1 (- delete-end-offset delete-start-offset))
+              "more than one char is deleted")
+          (is (> (count src) (count result-src))
+              "source length is reduced")
+          (is (contains? #{0 current-node-start-index} result-offset)
+              "offset is moved to node start or src start")))
+      (let [{result-src :src
+             result-offset :offset
+             :keys [delete-start-offset delete-end-offset]
+             :as delete-result} (ts-delete/backward-delete src current-node-end-index nil :tsx)]
+        (&testing "when cursor offset is at node end"
+          (is (= 0 (+ delete-start-offset delete-end-offset))
+              "no chars are deleted")
+          (is (nil? result-src)
+              "source is unchanged")
+          (is (= (dec current-node-end-index) result-offset)
+              "offset is decremented"))))))
+
+(defspec forward-delete-spec 5
+  (prop/for-all [{:keys [src
+                         current-node-start-index
+                         current-node-end-index]} (gen/let [src (gen/no-shrink obgt-ts/empty-subject)]
+                                                    (let [tree (obp/src->tree! src obp/tsx-lang-id)
+                                                          root-node (obu/noget+ tree :?rootNode)
+                                                          [delete-target] (obpr/filter-descendants
+                                                                           #(and (ts-rules/subject-node %)
+                                                                                 (ts-rules/empty-node? %))
+                                                                           root-node)]
+                                                      {:src src
+                                                       :current-node-text (obu/noget+ delete-target :?text)
+                                                       :current-node-start-index (obu/noget+ delete-target :?startIndex)
+                                                       :current-node-end-index (obu/noget+ delete-target :?endIndex)}))]
+    (&testing ""
+      (let [{result-src :src
+             result-offset :offset
+             :keys [delete-start-offset delete-end-offset]
+             :as delete-result} (ts-delete/forward-delete src current-node-start-index nil :tsx)]
+        (&testing "when cursor is at node start"
+          (is (= 0 (+ delete-start-offset delete-end-offset))
+              "no chars are deleted")
+          (is (nil? result-src)
+              "source is unchanged")
+          (is (= (dec current-node-end-index) result-offset)
+              "offset is decremented")))
+      (let [{result-src :src
+             result-offset :offset
+             :keys [delete-start-offset delete-end-offset]
+             :as delete-result} (ts-delete/forward-delete src (dec current-node-end-index) nil :tsx)]
+        (&testing "when cursor offset is at node end"
+          (is (< 1 (- delete-end-offset delete-start-offset))
+              "more than one char is deleted")
+          (is (> (count src) (count result-src))
+              "source length is reduced")
+          (is (contains? #{0 current-node-start-index} result-offset)
+              "offset is moved to node start or src start"))))))

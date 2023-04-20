@@ -62,14 +62,21 @@
   (when (or (= html-missing (oget node :?type)) (ocall node :?isMissing))
     node))
 
-(defn comment-start-tag-node 
+(defn comment-start-tag-node
   "Given a node, 
    returns the node if it is a comment start-tag node"
   [node]
   (when (= html-comment-start-tag (oget node :?type))
     node))
 
-(defn element-start-tag-node 
+(defn comment-end-tag-node
+  "Given a node, 
+   returns the node if it is a comment end-tag node"
+  [node]
+  (when (= html-comment-end-tag (oget node :?type))
+    node))
+
+(defn element-start-tag-node
   "Given a node, 
    returns the node if it is an element start-tag node"
   [node]
@@ -113,6 +120,19 @@
                      end-tag-node
                      (oget :?text)
                      (not= "</>")))
+    node))
+
+(defn implicit-node
+  "Given a node, 
+   returns the node if it is an implicit element node
+   
+   This implementation is more of a hack; ideally these nodes would be identified via the grammar"
+  [node]
+  (when (and (element-node node)
+             (->  node
+                  (obu/noget+ :?lastChild)
+                  end-tag-node
+                  (#(or (not %) (missing-node (obu/noget+ % :?firstChild))))))
     node))
 
 (defn comment-node
@@ -317,7 +337,7 @@
   (when tag-node*
     (let [current-node (->> offset
                             (obpr/node->current-nodes tag-node*)
-                            (filter #(or (object-node %) 
+                            (filter #(or (object-node %)
                                          (tag-node %)
                                          (tag-name-node %)))
                             last)]

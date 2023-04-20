@@ -68,6 +68,11 @@
         "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
+        "command": "owlbear.forwardDelete",
+        "title": "Owlbear: Delete Forward",
+        "enablement": "editorLangId in owlbear:supportedLanguages"
+      },
+      {
         "command": "owlbear.forwardMove",
         "title": "Owlbear: Move Cursor Forward",
         "enablement": "editorLangId in owlbear:supportedLanguages"
@@ -132,6 +137,11 @@
       {
         "command": "owlbear.forwardBarf",
         "key": "ctrl+alt+left",
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
+      },
+      {
+        "command": "owlbear.forwardDelete",
+        "key": "delete",
         "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
