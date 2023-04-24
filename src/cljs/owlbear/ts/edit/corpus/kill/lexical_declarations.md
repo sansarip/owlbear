@@ -90,3 +90,32 @@ const foo = ▌bar();
 ```typescript
 const foo = ▌;
 ```
+
+## Destructured
+```tsx
+const {▌a, b} = foo;
+```
+```tsx
+const {▌ b} = foo;
+```
+
+```tsx
+const {▌a: a_, b} = foo;
+```
+```tsx
+const {▌ b} = foo;
+```
+
+```tsx
+const {a: ▌a_, b} = foo;
+```
+```tsx
+const {a: ▌, b} = foo;
+```
+
+```tsx
+const [▌a, b] = foo;
+```
+```tsx
+const [▌ b] = foo;
+```

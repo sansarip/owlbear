@@ -56,7 +56,7 @@
             :from-subject-container? false})
           :forward-object-node
           (as-> $
-                ;; Avoids the colon and colon in type-annotations      
+                ;; Avoids the colon in type-annotations      
                 (if (ts-rules/ts-type-annotation-node $)
                   (obu/noget+ $ :?children.?1)
                   $))

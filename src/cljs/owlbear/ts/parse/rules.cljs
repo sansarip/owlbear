@@ -31,6 +31,7 @@
 (def ts-computed-property-name "computed_property_name")
 (def ts-error "ERROR")
 (def ts-escape-sequence "escape_sequence")
+(def ts-export-specifier "export_specifier")
 (def ts-export-statement "export_statement")
 (def ts-expression-statement "expression_statement")
 (def ts-for-statement "for_statement")
@@ -57,6 +58,7 @@
 (def ts-object "object")
 (def ts-object-type "object_type")
 (def ts-pair "pair")
+(def ts-pair-pattern "pair_pattern")
 (def ts-parenthesized-expression "parenthesized_expression")
 (def ts-predefined-type "predefined_type")
 (def ts-program "program")
@@ -67,6 +69,7 @@
 (def ts-required-parameter "required_parameter")
 (def ts-return-statement "return_statement")
 (def ts-shorthand-property-identifier "shorthand_property_identifier")
+(def ts-shorthand-property-identifier-pattern "shorthand_property_identifier_pattern")
 (def ts-spread-element "spread_element")
 (def ts-statement-block "statement_block")
 (def ts-string "string")
@@ -119,6 +122,22 @@
    if it is an escape sequence"
   [^js node]
   (when (and node (= ts-escape-sequence (.-type node)))
+    node))
+
+(defn ts-export-specifier-node
+  "Given a `node`, 
+   returns the `node`
+   if it is an export-specifier node"
+  [^js node]
+  (when (and node (= ts-export-specifier (.-type node)))
+    node))
+
+(defn ts-import-specifier-node
+  "Given a `node`, 
+   returns the `node`
+   if it is an import-specifier node"
+  [^js node]
+  (when (and node (= ts-import-specifier (.-type node)))
     node))
 
 (defn ts-member-expression-node
@@ -398,6 +417,7 @@
                    ts-computed-property-name
                    ts-error
                    ts-escape-sequence
+                   ts-export-specifier
                    ts-export-statement
                    ts-expression-statement
                    ts-for-statement
@@ -422,6 +442,7 @@
                    ts-number
                    ts-object
                    ts-pair
+                   ts-pair-pattern
                    ts-parenthesized-expression
                    ts-predefined-type
                    ts-property-identifier
@@ -432,6 +453,7 @@
                    ts-return-statement
                    ts-spread-element
                    ts-shorthand-property-identifier
+                   ts-shorthand-property-identifier-pattern
                    ts-string
                    ts-string-fragment
                    ts-switch-statement

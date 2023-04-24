@@ -78,3 +78,11 @@ import {▌a, b, c} from '/foo'
 ```tsx
 import {▌ b, c} from '/foo'
 ```
+
+## Exports
+```tsx
+export {▌a, b, c} from '/foo'
+```
+```tsx
+export {▌ b, c} from '/foo'
+```

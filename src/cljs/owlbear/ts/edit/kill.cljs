@@ -88,4 +88,5 @@
 (comment
   (kill "<><h1></h1></>" 2 :tsx)
   (kill "type foo = {a: string;}" 12 :tsx)
-  (kill "type foo = {abc: string;}" 17 :tsx))
+  (kill "type foo = {abc: string;}" 17 :tsx)
+  (kill "const {a, b} = foo;" 7 :tsx))
