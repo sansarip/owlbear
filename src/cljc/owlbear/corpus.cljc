@@ -35,6 +35,7 @@
    "TypeScript Forward Move" (with-tsx 'owlbear.ts.edit.move/forward-move)
    "TypeScript Kill" (with-tsx 'owlbear.ts.edit.kill/kill)
    "TypeScript Raise" (with-tsx 'owlbear.ts.edit.raise/raise)
+   "TypeScript Splice" (with-tsx 'owlbear.ts.edit.splice/splice)
    "TypeScript Upward Move" (with-tsx 'owlbear.ts.edit.move/upward-move)})
 
 (defn src->cursor-ctx

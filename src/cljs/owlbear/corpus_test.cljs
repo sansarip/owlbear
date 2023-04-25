@@ -10,6 +10,7 @@
             [owlbear.ts.edit.move]
             [owlbear.ts.edit.raise]
             [owlbear.ts.edit.slurp]
+            [owlbear.ts.edit.splice]
             [owlbear.utilities]
             [shadow.resource]))
 

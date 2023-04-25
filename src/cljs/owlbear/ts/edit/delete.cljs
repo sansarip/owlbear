@@ -90,7 +90,7 @@
     node))
 
 (defn group-start-syntax-node [node]
-  (when (re-matches #"[\(\{\[\<]" (obu/noget+ node :?type))
+  (when (re-matches #"[\(\{\[\<]|(\$\{)" (obu/noget+ node :?type))
     node))
 
 (defn group-end-syntax-node [node]
@@ -107,6 +107,13 @@
       (group-end-syntax-node node)
       (= "/>" (obu/noget+ node :?text)) ;; This is because of how fragment end tags are tokenized
       (ts-rules/end-node node)))
+
+(defn boundary-nodes [node]
+  (let [start-nodes (ts-rules/start-nodes node start-node)
+        end-nodes (ts-rules/end-nodes node end-node)]
+    {:start-nodes (remove (fn [^js node] (some #(.equals ^js % node) end-nodes)) start-nodes)
+     :end-nodes (remove (fn [^js node] (some #(.equals ^js % node) start-nodes)) end-nodes)
+     :boundary-nodes (into start-nodes end-nodes)}))
 
 (defn ->delete-ctx [root-node offset direction]
   (let [delete-offset ((case direction
@@ -126,7 +133,7 @@
                                                              (assoc :current-node %))))
                                          last)]
     (when current-node
-      (let [start-nodes (ts-rules/start-nodes current-node start-node)
+      (let [{:keys [boundary-nodes end-nodes start-nodes]} (boundary-nodes current-node)
             ;; Below can be done in a recursive manner to get the deepest start nodes, 
             ;; but this works for now
             one-lvl-deeper-start-nodes (into []
@@ -135,15 +142,13 @@
                                                          snodes
                                                          [sn])))
                                              start-nodes)
-            end-nodes (ts-rules/end-nodes current-node end-node)
             ;; Same as above
             one-lvl-deeper-end-nodes (into []
                                            (mapcat (fn [en]
                                                      (if-let [enodes (ts-rules/end-nodes en end-node)]
                                                        enodes
                                                        [en])))
-                                           end-nodes)
-            boundary-nodes (into start-nodes end-nodes)]
+                                           end-nodes)]
         {:current-node current-node
          :boundary-nodes boundary-nodes
          :classification classification

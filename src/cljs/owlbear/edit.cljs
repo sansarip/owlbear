@@ -13,6 +13,7 @@
             [owlbear.ts.edit.move :as ts-move]
             [owlbear.ts.edit.raise :as ts-raise]
             [owlbear.ts.edit.slurp :as ts-slurp]
+            [owlbear.ts.edit.splice :as ts-splice]
             [owlbear.utilities :as obu]))
 
 (defn ->js* [m]
@@ -46,5 +47,7 @@
 (def tsx-kill (comp ->js* #(ts-kill/kill % %2 %3 :tsx)))
 (def ts-raise (comp ->js* ts-raise/raise))
 (def tsx-raise (comp ->js* #(ts-raise/raise % %2 %3 :tsx)))
+(def ts-splice (comp ->js* ts-splice/splice))
+(def tsx-splice (comp ->js* #(ts-splice/splice % %2 %3 :tsx)))
 (def ts-upward-move (comp ->js* ts-move/upward-move))
 (def tsx-upward-move (comp ->js* #(ts-move/upward-move % %2 %3 :tsx)))

@@ -1,5 +1,6 @@
 (ns owlbear.parse.rules
-  "General utility tooling around any Tree-sitter tree")
+  "General utility tooling around any Tree-sitter tree"
+  (:require [owlbear.utilities :as obu]))
 
 (defn range-in-node?
   "Given a node, a start offset, and a stop offset, 
@@ -180,3 +181,30 @@
    returns true if the `node` is in the `nodes`"
   [^js node nodes]
   (boolean (some #(.equals node %) nodes)))
+
+(defn remove-nodes
+  "Given a `src` string and a sequence of `nodes`, 
+   returns a map containing the updated `src` string 
+   without the contents of the `nodes` and an `edit-history` 
+   vector containing the changes made to the `src` string"
+  ([src nodes]
+   (remove-nodes src nodes []))
+  ([src nodes edit-history]
+   (reduce (fn [{edit-history* :edit-history
+                 :keys [src]} ^js node]
+             (let [node-start (obu/update-offset
+                               (.-startIndex node)
+                               edit-history*)
+                   node-end (obu/update-offset
+                             (.-endIndex node)
+                             edit-history*)
+                   src* (obu/str-remove src node-start node-end)]
+               {:src src*
+                :edit-history (conj edit-history*
+                                    {:type :delete
+                                     :offset node-start
+                                     :text (.-text node)
+                                     :src src*})}))
+           {:src src
+            :edit-history edit-history}
+           nodes)))
