@@ -18,6 +18,7 @@
                            'owlbear.html.edit.kill-test
                            'owlbear.html.edit.move-test
                            'owlbear.html.edit.raise-test
+                           'owlbear.html.edit.splice-test
                            'owlbear.html.edit.slurp-test
                            'owlbear.html.parse.rules-test
                            'owlbear.parse.rules-test
@@ -27,6 +28,7 @@
                            'owlbear.ts.edit.move-test
                            'owlbear.ts.edit.raise-test
                            'owlbear.ts.edit.slurp-test
+                           'owlbear.ts.edit.splice-test
                            'owlbear.ts.parse.rules-test))]
     (println test-result-str)
     (when-not (success? test-result-str)

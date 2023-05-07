@@ -36,6 +36,7 @@ type OwlbearOperation =
   | "ForwardMove"
   | "Kill"
   | "Raise"
+  | "Splice"
   | "UpwardMove";
 
 const getOwlbearFunction = (
@@ -174,6 +175,10 @@ const raise: Handler = () => {
   return doEditOp("Raise");
 };
 
+const splice: Handler = () => {
+  return doEditOp("Splice");
+};
+
 const toggleAutoformat: Handler = async () => {
   const autoFormatEnabled = workspace.getConfiguration().get(`${AUTOFORMAT_NAMESPACE}.enabled`);
   await workspace.getConfiguration().update(`${AUTOFORMAT_NAMESPACE}.enabled`, !autoFormatEnabled);
@@ -199,6 +204,7 @@ const commands: Command[] = [
   { id: "owlbear.forwardSlurp", handler: forwardSlurp },
   { id: "owlbear.kill", handler: kill },
   { id: "owlbear.raise", handler: raise },
+  { id: "owlbear.splice", handler: splice },
   { id: "owlbear.toggleAutoformat", handler: toggleAutoformat},
   { id: "owlbear.toggleParedit", handler: toggleParedit},
   { id: "owlbear.upwardMove", handler: upwardMove },

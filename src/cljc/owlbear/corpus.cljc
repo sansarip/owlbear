@@ -26,6 +26,7 @@
    "HTML Forward Delete" (partial list 'owlbear.html.edit.delete/forward-delete)
    "HTML Forward Move" (partial list 'owlbear.html.edit.move/forward-move)
    "HTML Upward Move" (partial list 'owlbear.html.edit.move/upward-move)
+   "HTML Splice" (partial list 'owlbear.html.edit.splice/splice)
    "TypeScript Backward Delete" (with-tsx 'owlbear.ts.edit.delete/backward-delete)
    "TypeScript Backward Move" (with-tsx 'owlbear.ts.edit.move/backward-move)
    "TypeScript Downward Move" (with-tsx 'owlbear.ts.edit.move/downward-move)
@@ -35,6 +36,7 @@
    "TypeScript Forward Move" (with-tsx 'owlbear.ts.edit.move/forward-move)
    "TypeScript Kill" (with-tsx 'owlbear.ts.edit.kill/kill)
    "TypeScript Raise" (with-tsx 'owlbear.ts.edit.raise/raise)
+   "TypeScript Splice" (with-tsx 'owlbear.ts.edit.splice/splice)
    "TypeScript Upward Move" (with-tsx 'owlbear.ts.edit.move/upward-move)})
 
 (defn src->cursor-ctx
