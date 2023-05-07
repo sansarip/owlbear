@@ -342,3 +342,9 @@
                                          (tag-name-node %)))
                             last)]
       (.equals tag-node* current-node))))
+
+(defn empty-node? [^js node]
+  (every? (comp not
+                #(or (object-node %)
+                     (obpr/all-white-space-chars node)))
+          (.-children node)))

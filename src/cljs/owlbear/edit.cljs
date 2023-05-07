@@ -7,6 +7,7 @@
             [owlbear.html.edit.move :as html-move]
             [owlbear.html.edit.raise :as html-raise]
             [owlbear.html.edit.slurp :as html-slurp]
+            [owlbear.html.edit.splice :as html-splice]
             [owlbear.ts.edit.barf :as ts-barf]
             [owlbear.ts.edit.delete :as ts-delete]
             [owlbear.ts.edit.kill :as ts-kill]
@@ -28,6 +29,7 @@
 (def html-forward-slurp (comp ->js* html-slurp/forward-slurp))
 (def html-kill (comp ->js* html-kill/kill))
 (def html-raise (comp ->js* html-raise/raise))
+(def html-splice (comp ->js* html-splice/splice))
 (def html-upward-move (comp ->js* html-move/upward-move))
 (def ts-backward-delete (comp ->js* ts-delete/backward-delete))
 (def tsx-backward-delete (comp ->js* #(ts-delete/backward-delete % %2 %3 :tsx)))

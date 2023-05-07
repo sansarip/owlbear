@@ -4,6 +4,7 @@
             [owlbear.corpus :refer-macros [deftests watch-corpus-files]]
             [owlbear.html.edit.move]
             [owlbear.html.edit.delete]
+            [owlbear.html.edit.splice]
             [owlbear.ts.edit.barf]
             [owlbear.ts.edit.delete]
             [owlbear.ts.edit.kill]

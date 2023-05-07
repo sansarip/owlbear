@@ -27,6 +27,7 @@
                      :htmlKill owlbear.edit/html-kill
                      :htmlLangId owlbear.parse/html-lang-id
                      :htmlRaise owlbear.edit/html-raise
+                     :htmlSplice owlbear.edit/html-splice
                      :htmlUpwardMove owlbear.edit/html-upward-move
                      :loadLanguageWasm owlbear.parse/load-language-wasm!
                      :tsBackwardDelete owlbear.edit/ts-backward-delete
