@@ -36,7 +36,7 @@ The most commonly used commands are <a href="#slurp-forward">Slurp Forward</a> a
     <span>Move the closing node forward, away from the cursor, past the following node, if any.</span> 
     <details open>
       <summary>📼</summary>
-      <video class="example" src="/assets/examples/tsx-slurp-forward-20230507-00.mp4" controls="controls" autoplay loop muted/>
+      <video class="example" src="assets/examples/tsx-slurp-forward-20230507-00.mp4" controls="controls" autoplay loop muted/>
     </details>
   </dd>
 </dl>
@@ -53,7 +53,7 @@ The most commonly used commands are <a href="#slurp-forward">Slurp Forward</a> a
     <span>Move the closing node backward, toward the cursor, past the preceding form.</span> 
     <details open>
       <summary>📼</summary>
-      <video class="example" src="/assets/examples/tsx-barf-forward-20230507-00.mp4" controls="controls" autoplay loop muted/>
+      <video class="example" src="assets/examples/tsx-barf-forward-20230507-00.mp4" controls="controls" autoplay loop muted/>
     </details>
   </dd>
 </dl>
@@ -70,7 +70,7 @@ The most commonly used commands are <a href="#slurp-forward">Slurp Forward</a> a
     <span>Remove the enclosing nodes.</span> 
     <details open>
       <summary>📼</summary>
-      <video class="example" src="/assets/examples/tsx-splice-20230509-00.mp4" controls="controls" autoplay loop muted/>
+      <video class="example" src="assets/examples/tsx-splice-20230509-00.mp4" controls="controls" autoplay loop muted/>
     </details>
   </dd>
 </dl>
@@ -87,7 +87,7 @@ The most commonly used commands are <a href="#slurp-forward">Slurp Forward</a> a
     <span>Replace the enclosing node with the current node.</span> 
     <details open>
       <summary>📼</summary>
-      <video class="example" src="/assets/examples/tsx-raise-20230507-00.mp4" controls="controls" autoplay loop muted/>
+      <video class="example" src="assets/examples/tsx-raise-20230507-00.mp4" controls="controls" autoplay loop muted/>
     </details>
   </dd>
 </dl>
@@ -104,7 +104,7 @@ The most commonly used commands are <a href="#slurp-forward">Slurp Forward</a> a
     <span>Delete the current node.</span> 
     <details open>
       <summary>📼</summary>
-      <video class="example" src="/assets/examples/tsx-kill-20230507-00.mp4" controls="controls" autoplay loop muted/>
+      <video class="example" src="assets/examples/tsx-kill-20230507-00.mp4" controls="controls" autoplay loop muted/>
     </details>
   </dd>
 </dl>
@@ -121,7 +121,7 @@ The most commonly used commands are <a href="#slurp-forward">Slurp Forward</a> a
     <span>Delete and copy the deleted node into the clipboard.</span> 
     <details open>
       <summary>📼</summary>
-      <video class="example" src="/assets/examples/tsx-kill-20230507-00.mp4" controls="controls" autoplay loop muted/>
+      <video class="example" src="assets/examples/tsx-kill-20230507-00.mp4" controls="controls" autoplay loop muted/>
     </details>
   </dd>
 </dl>
@@ -163,7 +163,7 @@ By default this feature is not enabled, but it can be toggled on using the `Togg
     <span>Delete one character backwards, unless it will unbalance a form. Otherwise, moves past the character instead of deleting it. If the node is empty, then it is removed.</span> 
     <details open>
       <summary>📼</summary>
-      <video class="example" src="/assets/examples/tsx-delete-backward-20230508-00.mp4" controls="controls" autoplay loop muted/>
+      <video class="example" src="assets/examples/tsx-delete-backward-20230508-00.mp4" controls="controls" autoplay loop muted/>
     </details>
   </dd>
 </dl>
@@ -180,7 +180,7 @@ By default this feature is not enabled, but it can be toggled on using the `Togg
     <span>Delete one character forward, unless it will unbalance a form. Otherwise, move past the character instead of deleting it. If the node is empty, then remove it.</span> 
     <details open>
       <summary>📼</summary>
-      <video class="example" src="/assets/examples/tsx-delete-forward-20230508-00.mp4" controls="controls" autoplay loop muted/>
+      <video class="example" src="assets/examples/tsx-delete-forward-20230508-00.mp4" controls="controls" autoplay loop muted/>
     </details>
   </dd>
 </dl>
@@ -200,7 +200,7 @@ These commands are used to navigate the doc.
   <dt>Description</dt>
   <dd class="description">
     <span>Move the cursor forward to the next sibling node.</span> 
-    <video class="example" src="/assets/examples/tsx-move-forward-20230509-00.mp4" controls="controls" autoplay loop muted/>
+    <video class="example" src="assets/examples/tsx-move-forward-20230509-00.mp4" controls="controls" autoplay loop muted/>
   </dd>
 </dl>
 
@@ -214,7 +214,7 @@ These commands are used to navigate the doc.
   <dt>Description</dt>
   <dd class="description">
     <span>Move the cursor backward to the previous sibling node.</span> 
-    <video class="example" src="/assets/examples/tsx-move-backward-20230509-00.mp4" controls="controls" autoplay loop muted/>
+    <video class="example" src="assets/examples/tsx-move-backward-20230509-00.mp4" controls="controls" autoplay loop muted/>
   </dd>
 </dl>
 
@@ -228,7 +228,7 @@ These commands are used to navigate the doc.
   <dt>Description</dt>
   <dd class="description">
     <span>Move the cursor up to the parent node.</span> 
-    <video class="example" src="/assets/examples/tsx-move-up-20230509-00.mp4" controls="controls" autoplay loop muted/>
+    <video class="example" src="assets/examples/tsx-move-up-20230509-00.mp4" controls="controls" autoplay loop muted/>
   </dd>
 </dl>
 
@@ -242,6 +242,6 @@ These commands are used to navigate the doc.
   <dt>Description</dt>
   <dd class="description">
     <span>Move the cursor down to the first child node.</span> 
-    <video class="example" src="/assets/examples/tsx-move-down-20230509-00.mp4" controls="controls" autoplay loop muted/>
+    <video class="example" src="assets/examples/tsx-move-down-20230509-00.mp4" controls="controls" autoplay loop muted/>
   </dd>
 </dl>

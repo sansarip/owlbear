@@ -11,7 +11,7 @@ Owlbear is a VS Code extension aiming to bring the [paredit-like structural edit
 Try Owlbear without installing it first in Gitpod!
 
 <a target="_blank" href="https://gitpod.io/#https://github.com/sansarip/owlbear">
-  <img src="/assets/images/gitpod-button.svg"/>
+  <img src="assets/images/gitpod-button.svg"/>
 </a>
 
 ## Installation
