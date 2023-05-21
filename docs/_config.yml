@@ -1,0 +1,19 @@
+title: Owlbear User Guide
+description: Paredit-like structural editing for HTML, TypeScript-React, and JavaScript-React in VS Code.
+theme: just-the-docs
+
+url: https://sansarip.github.io/owlbear
+
+aux_links:
+  "Owlbear on Github": https://github.com/sansarip/owlbear
+
+favicon_ico: "/assets/images/favicon.ico"
+
+logo: "/assets/images/owlbear-logo_cool.svg"
+
+color_scheme: main
+
+callouts:
+  note:
+    title: Note
+    color: oxford-blue

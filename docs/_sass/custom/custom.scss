@@ -1,0 +1,53 @@
+.invisible {
+  height: 0px;
+  margin: 0px;
+  padding: 0px;
+  visibility: hidden;
+  width: 0px;
+}
+
+.small-break {
+  padding: 0px;
+  margin: 0px;
+  height: 1.25rem;
+}
+
+video.example {
+  height: 95%;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.main-content dl {
+  @extend .table-wrapper;
+
+  display: flex;
+  flex-direction: column;
+  margin: 0px !important;
+  padding: 1.5rem 1.825rem;
+  overflow: hidden;
+  background-color: $oxford-blue-500;
+
+  h4 {
+    font-size: 1rem !important;
+    font-weight: 500;
+    margin: 0px 0px 0.25rem 0px;
+  }
+
+  dt {
+    margin: 0.75rem 0px 0.25rem 0px;
+    text-align: left;
+
+    &::after {
+      content: "";
+    }
+  }
+
+  dd {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0px;
+  }
+}
