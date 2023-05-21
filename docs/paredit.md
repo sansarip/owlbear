@@ -121,7 +121,7 @@ The most commonly used commands are <a href="#slurp-forward">Slurp Forward</a> a
     <span>Delete and copy the deleted node into the clipboard.</span> 
     <details>
       <summary>📼</summary>
-      <video class="example" src="assets/examples/tsx-kill-20230507-00.mp4" controls="controls" autoplay loop muted/>
+      <video class="example" src="assets/examples/tsx-cut-20230507-00.mp4" controls="controls" autoplay loop muted/>
     </details>
   </dd>
 </dl>
