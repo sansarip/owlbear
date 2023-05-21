@@ -22,7 +22,7 @@ It's also recommended that you install the [Auto Rename Tag](https://marketplace
 
 ## How does it work?
 
-Owlbear uses a mixture of ClojureScipt, TypeScript, and WebAssembly (thanks to [Tree-sitter](https://tree-sitter.github.io/tree-sitter/)) to parse and edit code. Everything Owlbear does is client-side, meaning none of your data leaves your machine when using Owlbear, and Owlbear works totally fine offline. All of the code is available on [Github](https://github.com/sansarip/owlbear).
+Owlbear uses a mixture of ClojureScipt, TypeScript, and WebAssembly (thanks to [Tree-sitter](https://tree-sitter.github.io/tree-sitter/)) to parse and edit code. Everything Owlbear does is client-side, meaning none of your data leaves your machine when using Owlbear, and Owlbear works totally fine offline. All of Owlbear's code is available on [Github](https://github.com/sansarip/owlbear).
 
 <br>
 
