@@ -2,8 +2,8 @@ name: Deploy Jekyll site to Pages
 
 on:
   push:
-    branches: ["96-add-docs"]
-    # paths: ["docs/**"]
+    branches: ["main"]
+    paths: ["docs/**"]
 
   workflow_dispatch:
 
@@ -28,10 +28,10 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'
+          ruby-version: "3.1"
           bundler-cache: true
           cache-version: 0
-          working-directory: '${{ github.workspace }}/docs'
+          working-directory: "${{ github.workspace }}/docs"
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v2
