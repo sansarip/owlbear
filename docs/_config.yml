@@ -11,7 +11,9 @@ favicon_ico: "/assets/images/favicon.ico"
 
 logo: "/assets/images/owlbear-logo_warm.svg"
 
+color_scheme: main
+
 callouts:
   note:
     title: Note
-    color: blue
+    color: oxford-blue
