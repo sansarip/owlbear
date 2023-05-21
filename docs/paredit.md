@@ -10,7 +10,7 @@ nav_order: 1
 {: .no_toc }
 ## What is Paredit?
 
-Paredit is a portmanteau of "parenthesis" and "editing". Paredit [originated in the Lisp community](https://www.emacswiki.org/emacs/ParEdit), but it's not limited to Lisps. It's a powerful way of structurally editing code that is often overlooked by mainstream editors.
+A portmanteau of "parenthesis" and "editing", Paredit [originated in the Lisp community](https://www.emacswiki.org/emacs/ParEdit), but it's not limited to Lisps. It's a powerful way of structurally editing code that is often overlooked by popular editors.
 
 {: .no_toc }
 ## Commands

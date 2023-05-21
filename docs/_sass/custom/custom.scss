@@ -15,7 +15,7 @@
 video.example {
   height: 95%;
   width: 100%;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .main-content dl {
@@ -50,4 +50,9 @@ video.example {
     gap: 1rem;
     margin: 0px;
   }
+}
+
+.filter-shadow {
+  -webkit-filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, .66));
+  filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, .66));
 }
