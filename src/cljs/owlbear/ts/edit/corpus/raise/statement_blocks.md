@@ -39,6 +39,17 @@ function foo () ▌{
 }
 ```
 
+```typescript
+function () ▌{
+  return null;
+}
+```
+```typescript
+▌{
+  return null;
+}
+```
+
 ## While-Loop Statement Block
 ```typescript
 while (true) ▌{
