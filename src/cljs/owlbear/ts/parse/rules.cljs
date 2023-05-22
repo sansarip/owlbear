@@ -37,6 +37,7 @@
 (def ts-for-statement "for_statement")
 (def ts-for-in-statement "for_in_statement")
 (def ts-formal-parameters "formal_parameters")
+(def ts-function "function")
 (def ts-function-declaration "function_declaration")
 (def ts-function-type "function_type")
 (def ts-generator-function-declaration "generator_function_declaration")
@@ -402,6 +403,15 @@
           (contains? green-list node-type) node
           :else nil)))))
 
+(defn ts-function-node
+  "Given a `node`, 
+   returns the `node` 
+   if it is a nameless function node"
+  [^js node]
+  ;; Avoiding the literal 'function' token
+  (when (and node (= ts-function (.-type node)) (not= ts-function (.-text node)))
+    node))
+
 ;; *1
 (let [green-list #{jsx-self-closing-element
                    ts-abstract-class-declaration
@@ -488,6 +498,7 @@
                                             node)
               (= node-type jsx-text) (when-not (obpr/all-white-space-chars node)
                                        node)
+              (= node-type ts-function) (ts-function-node node)
               :else nil))
           (subject-node node)))))
 
@@ -590,6 +601,7 @@
                   ts-expression-statement
                   ts-for-statement
                   ts-for-in-statement
+                  ts-function
                   ts-function-declaration
                   ts-generator-function-declaration
                   ts-if-statement
