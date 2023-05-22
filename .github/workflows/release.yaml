@@ -1,18 +1,26 @@
 name: Release
 
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       version:
+#         description: 'The new version to tag and release'
+#         default: ''
+#         required: true
+#         type: string
+
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'The new version to tag and release'
-        default: ''
-        required: true
-        type: string
+  push:
+    branches:
+      - release-1.0.0
 
 jobs:
   update-version:
     name: Update package version
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
       - name: 
-        run: npx json -I -f package.json -e 'this.version="${{ inputs.version }}"'
+        run: npx json -I -f package.json -e 'this.version="1.0.0"'
