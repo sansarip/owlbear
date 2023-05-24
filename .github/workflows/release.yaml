@@ -1,18 +1,13 @@
 name: Release
 
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       version:
-#         description: 'The new version to tag and release'
-#         default: ''
-#         required: true
-#         type: string
-
 on:
-  push:
-    branches:
-      - release-1.0.0
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The new version to tag and release'
+        default: ''
+        required: true
+        type: string
 
 jobs:
   release:
@@ -31,8 +26,17 @@ jobs:
       - name: Install Node modules
         run: npm ci
 
+      - name: Change package version
+        run: npx json -I -f package.json -e 'this.version="${{ inputs.version }}"'
+
       - name: Compile extension
-        run: npm run compile-vsix --no-update-package-json --no-git-tag-version 1.0.0
+        run: npm run compile-vsix 
+      
+      - name: Commit and push version
+        uses: actions-js/push@master
+        with:
+          message: "🏷 Bump version to ${{ inputs.version }}"
+          github_token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Create Github release
         uses: actions/create-release@v1
@@ -41,18 +45,21 @@ jobs:
           draft: false
           prerelease: false
           release_name: ${{ steps.version.outputs.version }}
-          tag_name: 1.0.0
+          tag_name: ${{ inputs.version }}
           body_path: CHANGELOG.md
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       
-      - name: Upload extension artifact
+      - name: Upload extension artifact to Github release
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: owlbear-1.0.0.vsix
-          asset_name: owlbear-1.0.0.vsix
+          asset_path: owlbear-${{ inputs.version }}.vsix
+          asset_name: owlbear-${{ inputs.version }}.vsix
           asset_content_type: vsix
+
+      - name: Publish extension
+        run: npx vsce publish -p ${{ secrets.MARKETPLACE_TOKEN }} -i owlbear-${{ inputs.version }}.vsix
 
