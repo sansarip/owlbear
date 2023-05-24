@@ -8,9 +8,15 @@ on:
         default: ''
         required: true
         type: string
+      changelog-confirmation:
+        description: 'Confirm that you have updated the change log variable'
+        default: false
+        required: true
+        type: boolean
 
 jobs:
   release:
+    if: inputs.changelog-confirmation == true
     name: "Build, release, and deploy"
     runs-on: "ubuntu-latest"
     steps:
@@ -30,7 +36,12 @@ jobs:
         run: npx json -I -f package.json -e 'this.version="${{ inputs.version }}"'
 
       - name: Compile extension
-        run: npm run compile-vsix 
+        run: npm run compile-vsix
+      
+      - name: Update change log
+        run: |
+          echo "\n" >> CHANGELOG.md 
+          echo ${{ vars.CHANGELOG }} >> CHANGELOG.md
       
       - name: Commit and push version
         uses: actions-js/push@master
