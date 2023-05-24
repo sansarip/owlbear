@@ -90,8 +90,8 @@ jobs:
       - name: Publish extension
         run: |
           if [ "${{ inputs.prerelease }}" = true ] ; then
-            npx vsce publish --pre-release -p ${{ secrets.MARKETPLACE_TOKEN }} -i owlbear-${{ inputs.version }}.vsix
+            npx vsce publish --pre-release -p ${{ secrets.MARKETPLACE_ACCESS_TOKEN }} -i owlbear-${{ inputs.version }}.vsix
           else
-            npx vsce publish -p ${{ secrets.MARKETPLACE_TOKEN }} -i owlbear-${{ inputs.version }}.vsix
+            npx vsce publish -p ${{ secrets.MARKETPLACE_ACCESS_TOKEN }} -i owlbear-${{ inputs.version }}.vsix
           fi
 
