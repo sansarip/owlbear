@@ -57,7 +57,7 @@ jobs:
         if: inputs.skip-changelog == false
         run: |
           echo -e "\n" >> CHANGELOG.md && 
-          echo ${{ vars.CHANGELOG }} >> CHANGELOG.md
+          echo -e '${{ vars.CHANGELOG }}' >> CHANGELOG.md
       
       - name: Commit and push version
         uses: actions-js/push@master
