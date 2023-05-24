@@ -46,7 +46,12 @@ jobs:
         run: npx json -I -f package.json -e 'this.version="${{ inputs.version }}"'
 
       - name: Compile extension
-        run: npm run compile-vsix
+        run: |
+          if [ "${{ inputs.prerelease }}" = true ] ; then
+            npm run compile-vsix -- --pre-release
+          else
+            npm run compile-vsix
+          fi
       
       - name: Update change log
         if: inputs.skip-changelog == false

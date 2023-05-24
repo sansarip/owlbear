@@ -7,7 +7,7 @@
   "icon": "assets/images/owlbear-logo-warm.png",
   "version": "1.0.0-SNAPSHOT",
   "engines": {
-    "vscode": "^1.62.0"
+    "vscode": "^1.63.0"
   },
   "categories": [
     "Other"
@@ -211,7 +211,7 @@
     "@types/glob": "^7.1.4",
     "@types/mocha": "^9.0.0",
     "@types/node": "14.x",
-    "@types/vscode": "^1.62.0",
+    "@types/vscode": "^1.63.0",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
     "@vscode/test-electron": "^1.6.2",
