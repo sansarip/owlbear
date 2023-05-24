@@ -1,9 +1,7 @@
 # Change Log
 
-All notable changes to the "owlbear" extension will be documented in this file.
+All notable changes to the Owlbear extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
+## [1.0.0] - 2023-05-23
 
 - Initial release

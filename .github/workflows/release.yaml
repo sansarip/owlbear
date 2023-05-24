@@ -15,12 +15,44 @@ on:
       - release-1.0.0
 
 jobs:
-  update-version:
-    name: Update package version
-    runs-on: ubuntu-latest
+  release:
+    name: "Build, release, and deploy"
+    runs-on: "ubuntu-latest"
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
 
-      - name: 
-        run: npx json -I -f package.json -e 'this.version="1.0.0"'
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install Node modules
+        run: npm ci
+
+      - name: Compile extension
+        run: npm run compile-vsix --no-update-package-json --no-git-tag-version 1.0.0
+
+      - name: Create Github release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: 1.0.0
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      
+      - name: Upload extension artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: owlbear-1.0.0.vsix
+          asset_name: owlbear-1.0.0.vsix
+          asset_content_type: vsix
+
