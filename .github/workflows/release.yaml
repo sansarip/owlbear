@@ -51,7 +51,7 @@ jobs:
       - name: Update change log
         if: inputs.skip-changelog == false
         run: |
-          echo "\n" >> CHANGELOG.md 
+          echo -e "\n" >> CHANGELOG.md && 
           echo ${{ vars.CHANGELOG }} >> CHANGELOG.md
       
       - name: Commit and push version
