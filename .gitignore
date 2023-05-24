@@ -123,3 +123,4 @@ scratch.html
 
 # VS Code
 workspace.code-workspace
+*.vsix
