@@ -18,6 +18,11 @@ on:
         default: false
         required: true
         type: boolean
+      prerelease:
+        description: 'Publish as prerelease'
+        default: false
+        required: true
+        type: boolean
 
 jobs:
   release:
@@ -78,5 +83,10 @@ jobs:
           asset_content_type: vsix
 
       - name: Publish extension
-        run: npx vsce publish -p ${{ secrets.MARKETPLACE_TOKEN }} -i owlbear-${{ inputs.version }}.vsix
+        run: |
+          if [ "${{ inputs.prerelease }}" = true ] ; then
+            npx vsce publish --pre-release -p ${{ secrets.MARKETPLACE_TOKEN }} -i owlbear-${{ inputs.version }}.vsix
+          else
+            npx vsce publish -p ${{ secrets.MARKETPLACE_TOKEN }} -i owlbear-${{ inputs.version }}.vsix
+          fi
 
