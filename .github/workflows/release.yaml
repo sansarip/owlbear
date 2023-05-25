@@ -8,25 +8,18 @@ on:
         default: ''
         required: true
         type: string
-      skip-changelog:
-        description: 'Skip updating the change log'
-        default: false
-        required: true
-        type: boolean
-      changelog-confirmation:
-        description: 'Confirm that you have updated the change log variable'
-        default: false
-        required: true
-        type: boolean
       prerelease:
         description: 'Publish as prerelease'
         default: false
-        required: true
         type: boolean
+      changelog-action:
+        description: 'The action to take on the change log'
+        options: ['update', 'skip']
+        required: true
+        type: choice
 
 jobs:
   release:
-    if: inputs.changelog-confirmation == true || inputs.skip-changelog == true
     name: "Build, release, and publish"
     runs-on: "ubuntu-latest"
     steps:
@@ -54,7 +47,7 @@ jobs:
           fi
       
       - name: Update change log
-        if: inputs.skip-changelog == false
+        if: inputs.changelog-action == 'update'
         run: |
           echo -e "\n" >> CHANGELOG.md && 
           echo -e '${{ vars.CHANGELOG }}' >> CHANGELOG.md
