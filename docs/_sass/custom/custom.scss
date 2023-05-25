@@ -56,3 +56,8 @@ video.example {
   -webkit-filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, .66));
   filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, .66));
 }
+
+.search-result-doc.search-result-doc-parent {
+  font-size: .75rem !important;
+  opacity: 1;
+}
