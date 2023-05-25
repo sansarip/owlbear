@@ -63,6 +63,16 @@
         "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
+        "command": "owlbear.forceBackwardDelete",
+        "title": "Owlbear: Force Delete Backward",
+        "enablement": "editorLangId in owlbear:supportedLanguages"
+      },
+      {
+        "command": "owlbear.forceForwardDelete",
+        "title": "Owlbear: Force Delete Forward",
+        "enablement": "editorLangId in owlbear:supportedLanguages"
+      },
+      {
         "command": "owlbear.forwardBarf",
         "title": "Owlbear: Barf Forward",
         "enablement": "editorLangId in owlbear:supportedLanguages"
@@ -138,6 +148,16 @@
         "command": "owlbear.downwardMove",
         "key": "ctrl+down",
         "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
+      },
+      {
+        "command": "owlbear.forceBackwardDelete",
+        "key": "alt+backspace",
+        "when": "!editorReadOnly && editorTextFocus && editorLangId in owlbear:supportedLanguages"
+      },
+      {
+        "command": "owlbear.forceForwardDelete",
+        "key": "alt+delete",
+        "when": "!editorReadOnly && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
         "command": "owlbear.forwardBarf",

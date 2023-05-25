@@ -9,13 +9,15 @@ import { EditCtx, OwlbearFunction } from "./types";
 import { getDocCtx, edit, isEmptyObj } from "./utilities";
 import clipboard from "clipboardy";
 import { docUriToTreeIdMap, setNewTreeIdForDocUri } from "./tree";
-import { AUTOFORMAT_NAMESPACE, PAREDIT_NAMESPACE, setContextFromConfig } from "./config";
+import {
+  AUTOFORMAT_NAMESPACE,
+  PAREDIT_NAMESPACE,
+  setContextFromConfig,
+} from "./config";
 
 const ob = require("../../../out/cljs/owlbear");
 
-type Handler = (
-  editCtx?: EditCtx
-) => undefined | Thenable<EditCtx | undefined>;
+type Handler = (editCtx?: EditCtx) => undefined | Thenable<EditCtx | undefined>;
 
 type Command = {
   id: string;
@@ -88,16 +90,28 @@ const doEditOp: Edit = (obOp: OwlbearOperation) => {
   if (!editor || !editCtx || isEmptyObj(editCtx)) {
     return;
   }
-  const shouldFormat = !!workspace.getConfiguration().get(`${AUTOFORMAT_NAMESPACE}.enabled`);
+  const shouldFormat = !!workspace
+    .getConfiguration()
+    .get(`${AUTOFORMAT_NAMESPACE}.enabled`);
   return edit(editor, editCtx, shouldFormat);
 };
 
 const deleteLeft = (): void => {
-  vscodeCommands.executeCommand('deleteLeft');
+  vscodeCommands.executeCommand("deleteLeft");
 };
 
 const deleteRight = (): void => {
-  vscodeCommands.executeCommand('deleteRight');
+  vscodeCommands.executeCommand("deleteRight");
+};
+
+const forceBackwardDelete: Handler = async () => {
+  deleteLeft();
+  return undefined;
+};
+
+const forceForwardDelete: Handler = async () => {
+  deleteRight();
+  return undefined;
 };
 
 const backwardDelete: Handler = async () => {
@@ -106,8 +120,8 @@ const backwardDelete: Handler = async () => {
     deleteLeft();
     return;
   }
-  
-  const {deleteStartOffset, deleteEndOffset} = editCtx;
+
+  const { deleteStartOffset, deleteEndOffset } = editCtx;
   const numCharsToDelete = deleteEndOffset - deleteStartOffset;
   if (numCharsToDelete === 1) {
     deleteLeft();
@@ -137,8 +151,8 @@ const forwardDelete: Handler = async () => {
     deleteRight();
     return;
   }
-  
-  const {deleteStartOffset, deleteEndOffset} = editCtx;
+
+  const { deleteStartOffset, deleteEndOffset } = editCtx;
   const numCharsToDelete = deleteEndOffset - deleteStartOffset;
   if (numCharsToDelete === 1) {
     deleteRight();
@@ -180,15 +194,23 @@ const splice: Handler = () => {
 };
 
 const toggleAutoformat: Handler = async () => {
-  const autoFormatEnabled = workspace.getConfiguration().get(`${AUTOFORMAT_NAMESPACE}.enabled`);
-  await workspace.getConfiguration().update(`${AUTOFORMAT_NAMESPACE}.enabled`, !autoFormatEnabled);
+  const autoFormatEnabled = workspace
+    .getConfiguration()
+    .get(`${AUTOFORMAT_NAMESPACE}.enabled`);
+  await workspace
+    .getConfiguration()
+    .update(`${AUTOFORMAT_NAMESPACE}.enabled`, !autoFormatEnabled);
   return undefined;
 };
 
 const toggleParedit: Handler = async () => {
-  const pareditEnabled = workspace.getConfiguration().get(`${PAREDIT_NAMESPACE}.enabled`);
-  await workspace.getConfiguration().update(`${PAREDIT_NAMESPACE}.enabled`, !pareditEnabled);
-  setContextFromConfig('enabled', PAREDIT_NAMESPACE);
+  const pareditEnabled = workspace
+    .getConfiguration()
+    .get(`${PAREDIT_NAMESPACE}.enabled`);
+  await workspace
+    .getConfiguration()
+    .update(`${PAREDIT_NAMESPACE}.enabled`, !pareditEnabled);
+  setContextFromConfig("enabled", PAREDIT_NAMESPACE);
   return undefined;
 };
 
@@ -198,6 +220,8 @@ const commands: Command[] = [
   { id: "owlbear.copy", handler: copy },
   { id: "owlbear.cut", handler: cut },
   { id: "owlbear.downwardMove", handler: downwardMove },
+  { id: "owlbear.forceBackwardDelete", handler: forceBackwardDelete },
+  { id: "owlbear.forceForwardDelete", handler: forceForwardDelete },
   { id: "owlbear.forwardBarf", handler: forwardBarf },
   { id: "owlbear.forwardDelete", handler: forwardDelete },
   { id: "owlbear.forwardMove", handler: forwardMove },
@@ -205,8 +229,8 @@ const commands: Command[] = [
   { id: "owlbear.kill", handler: kill },
   { id: "owlbear.raise", handler: raise },
   { id: "owlbear.splice", handler: splice },
-  { id: "owlbear.toggleAutoformat", handler: toggleAutoformat},
-  { id: "owlbear.toggleParedit", handler: toggleParedit},
+  { id: "owlbear.toggleAutoformat", handler: toggleAutoformat },
+  { id: "owlbear.toggleParedit", handler: toggleParedit },
   { id: "owlbear.upwardMove", handler: upwardMove },
 ];
 

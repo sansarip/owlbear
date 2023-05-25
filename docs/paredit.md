@@ -164,7 +164,7 @@ By default this feature is not enabled, but it can be toggled on using the `Togg
   <dd><span><code>backspace</code></span></dd>
   <dt>Description</dt>
   <dd class="description">
-    <span>Delete one character backwards, unless it will unbalance a form. Otherwise, moves past the character instead of deleting it. If the node is empty, then it is removed.</span> 
+    <span>Delete one character backwards, unless it will unbalance a form. Otherwise, moves past the character instead of deleting it. If the node is empty, then it is removed. You can always force backward deletion with <code>Force Delete Backward</code> (<code>alt+backspace</code>).</span> 
     <details>
       <summary>📼</summary>
       <video class="example" src="assets/examples/tsx-delete-backward-20230508-00.mp4" controls="controls" autoplay loop muted/>
@@ -181,7 +181,7 @@ By default this feature is not enabled, but it can be toggled on using the `Togg
   <dd><span><code>delete</code></span></dd>
   <dt>Description</dt>
   <dd class="description">
-    <span>Delete one character forward, unless it will unbalance a form. Otherwise, move past the character instead of deleting it. If the node is empty, then remove it.</span> 
+    <span>Delete one character forward, unless it will unbalance a form. Otherwise, move past the character instead of deleting it. If the node is empty, then remove it. You can always force forward deletion with <code>Force Delete Forward</code> (<code>alt+delete</code>).</span> 
     <details>
       <summary>📼</summary>
       <video class="example" src="assets/examples/tsx-delete-forward-20230508-00.mp4" controls="controls" autoplay loop muted/>
