@@ -24,3 +24,10 @@ All notable changes to the Owlbear extension will be documented in this file.
 ### Changed
 
 - Marketplace description
+
+
+## [1.1.2] - 2023-05-24
+
+### Changed
+
+- Update Marketplace homepage URL
