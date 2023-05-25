@@ -1,4 +1,4 @@
-![Build Status](https://img.shields.io/github/actions/workflow/status/sansarip/owlbear/build.yaml?style=flat-square) <a href="https://gitmoji.dev">
+![Release Status](https://img.shields.io/github/v/release/sansarip/owlbear?display_name=release&style=flat-square) ![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/sansarip/owlbear/test.yaml?branch=main&label=tests&style=flat-square) <a href="https://gitmoji.dev">
   <img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square" alt="Gitmoji">
 </a>
 
@@ -7,30 +7,20 @@
   <img src="https://raw.githubusercontent.com/sansarip/owlbear/main/assets/images/owlbear-logo-cool.png" alt="Owlbear Logo" title="Owlbear" width="250px" align="right">
 </picture>
 
-# Owlbear (👷 WIP)
+# Owlbear
 
-A Visual Studio Code extension to support [paredit](https://github.com/sansarip/owlbear/wiki/Glossary#par-edit)-like features for HTML and TS!
+A better way to wrangle tags in VS Code!
 
-View the docs page [here](https://sansarip.github.io/owlbear)!
+Owlbear supports [paredit](https://github.com/sansarip/owlbear/wiki/Glossary#par-edit)-like structural-editing features for HTML, TypeScript, TypeScript-React, JavaScript, and JavaScript-React!
 
-https://user-images.githubusercontent.com/12676521/174647579-db69403b-2711-4d3d-8584-377d330536a6.mov
+After installing the extension, simply execute `cmd+shift+p` in VS Code and search for `Owlbear` to get started!
+
+And, for more details, view the [docs page](https://sansarip.github.io/owlbear)!
+
+
+You can also try Owlbear without installing it, in Gitpod.
 
 <a href="https://gitpod.io/#https://github.com/sansarip/owlbear"><img src="https://camo.githubusercontent.com/76e60919474807718793857d8eb615e7a50b18b04050577e5a35c19421f260a3/68747470733a2f2f676974706f642e696f2f627574746f6e2f6f70656e2d696e2d676974706f642e737667"/></a>
-
-## Installing the extension
-
-Until official releases are created for this project, there should be a `.vsix` file in the root project folder that you can use to install Owlbear manually.
-
-*OR*
-
-You can build the `.vsix` file yourself! 👇
-
-```sh
-npm i
-npm run compile-vsix
-```
-
-To install the `.vsix` file, simply open your VS Code's extensions view `(cmd + shift + x)` and then click the ellipsis menu at the top right of the view. Or, you can run `npm run install-vsix`!
 
 ## Contributing
 If you wish to contribute code to Owlbear, then see the [wiki](https://github.com/sansarip/owlbear/wiki/Contributing) for information on how to compile and run Owlbear locally!
