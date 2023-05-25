@@ -17,3 +17,10 @@ All notable changes to the Owlbear extension will be documented in this file.
 
 - Updated README to be more marketplace friendly
 - Updated contrast on some docs links when searching
+
+
+## [1.1.1] - 2023-05-24
+
+### Changed
+
+- Marketplace description
