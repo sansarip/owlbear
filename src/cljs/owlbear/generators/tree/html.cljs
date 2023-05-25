@@ -15,7 +15,7 @@
 ;; when children have the same tag name as their parent with certain tag names
 (def ^:dynamic *container-tag-names*
   "Collection of tag names that must have an end tag"
-  (disj hiccupsrt/container-tags "p" "dd" "li"))
+  (disj hiccupsrt/container-tags "p" "dd" "li" "dt"))
 
 (def ^:dynamic *html-element-container-tag-names*
   "Collection of tag names that can have HTML element children"
