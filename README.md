@@ -1,5 +1,5 @@
 ![Release Status](https://img.shields.io/github/v/release/sansarip/owlbear?display_name=release&style=flat-square) ![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/sansarip/owlbear/test.yaml?branch=main&label=tests&style=flat-square) <a href="https://gitmoji.dev">
-  <img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square" alt="Gitmoji">
+  <img src="https://img.shields.io/badge/gitmoji-%20🦉%20🐻-FFDD67.svg?style=flat-square" alt="Gitmoji">
 </a>
 
 <picture>
