@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import { registerCommands } from "./commands";
 import { setContexts } from "./config";
 import { deleteTree, editTree } from "./tree";
-import { log } from "./utilities";
+import { log, makePath } from "./utilities";
 
 const ob = require("../../../out/cljs/owlbear");
 
@@ -18,7 +18,7 @@ const loadWasms = async (context: vscode.ExtensionContext) => {
   try {
     await ob.loadLanguageWasm(
       ob.htmlLangId,
-      `${context.extensionPath}/resources/tree-sitter-html.wasm`
+      makePath(context.extensionPath, "resources", "tree-sitter-html.wasm")
     );
   } catch (err) {
     logWasmLoadingErr(err, ob.htmlLangId);
@@ -27,7 +27,7 @@ const loadWasms = async (context: vscode.ExtensionContext) => {
   try {
     await ob.loadLanguageWasm(
       ob.tsxLangId,
-      `${context.extensionPath}/resources/tree-sitter-tsx.wasm`
+      makePath(context.extensionPath, "resources", "tree-sitter-tsx.wasm")
     );
   } catch (err) {
     logWasmLoadingErr(err, ob.tsxLangId);
@@ -36,7 +36,7 @@ const loadWasms = async (context: vscode.ExtensionContext) => {
   try {
     await ob.loadLanguageWasm(
       ob.tsLangId,
-      `${context.extensionPath}/resources/tree-sitter-typescript.wasm`
+      makePath(context.extensionPath, "resources", "tree-sitter-typescript.wasm")
     );
   } catch (err) {
     logWasmLoadingErr(err, ob.tsLangId);
