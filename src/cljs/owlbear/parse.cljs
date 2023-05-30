@@ -20,6 +20,9 @@
 (defn trees->js []
   (->js @trees))
 
+(defn languages->js []
+  (->js @languages))
+
 (defn set-tree! [tree-id tree]
   (swap! trees assoc tree-id tree))
 
