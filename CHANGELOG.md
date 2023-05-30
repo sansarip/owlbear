@@ -31,3 +31,11 @@ All notable changes to the Owlbear extension will be documented in this file.
 ### Changed
 
 - Update Marketplace homepage URL
+
+
+## [1.1.3] - 2023-05-29
+
+### Fixed
+
+- Fix Owlbear commands not working in HTML and TS/JS files
+
