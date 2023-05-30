@@ -38,3 +38,6 @@ cp-tsx-wasm:
 
 cp-typescript-wasm:
 	cp languages/tree-sitter-typescript/typescript/tree-sitter-typescript.wasm resources
+
+cp-html-wasm:
+	cp languages/tree-sitter-html/tree-sitter-html.wasm resources
