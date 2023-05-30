@@ -124,3 +124,4 @@ scratch.html
 # VS Code
 workspace.code-workspace
 *.vsix
+.vscode/settings.json
