@@ -25,7 +25,7 @@ const loadWasms = async (context: vscode.ExtensionContext) => {
   }
 
   try {
-    ob.loadLanguageWasm(
+    await ob.loadLanguageWasm(
       ob.tsxLangId,
       `${context.extensionPath}/resources/tree-sitter-tsx.wasm`
     );
@@ -34,7 +34,7 @@ const loadWasms = async (context: vscode.ExtensionContext) => {
   }
 
   try {
-    ob.loadLanguageWasm(
+    await ob.loadLanguageWasm(
       ob.tsLangId,
       `${context.extensionPath}/resources/tree-sitter-typescript.wasm`
     );
