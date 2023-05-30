@@ -9,7 +9,7 @@
 
 (def html-lang-id :html)
 (def md-lang-id :markdown)
-(def ts-lang-id :typescript)
+(def ts-lang-id :tsx)
 (def tsx-lang-id :tsx)
 
 (defonce trees (atom {}))
@@ -19,6 +19,9 @@
 
 (defn trees->js []
   (->js @trees))
+
+(defn languages->js []
+  (->js @languages))
 
 (defn set-tree! [tree-id tree]
   (swap! trees assoc tree-id tree))

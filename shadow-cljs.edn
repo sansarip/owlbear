@@ -15,6 +15,7 @@
           {:target :node-library
            :exports {:deleteTree owlbear.parse/delete-tree!
                      :editTree owlbear.parse/edit-tree!
+                     :getLanguages owlbear.parse/languages->js
                      :getTree owlbear.parse/get-tree
                      :getTrees owlbear.parse/trees->js
                      :htmlBackwardDelete owlbear.edit/html-backward-delete
