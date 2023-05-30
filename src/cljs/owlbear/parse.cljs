@@ -9,7 +9,7 @@
 
 (def html-lang-id :html)
 (def md-lang-id :markdown)
-(def ts-lang-id :tsx)
+(def ts-lang-id :typescript)
 (def tsx-lang-id :tsx)
 
 (defonce trees (atom {}))

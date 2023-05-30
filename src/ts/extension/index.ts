@@ -4,28 +4,58 @@ import * as vscode from "vscode";
 import { registerCommands } from "./commands";
 import { setContexts } from "./config";
 import { deleteTree, editTree } from "./tree";
+import output from "./output";
 
 const ob = require("../../../out/cljs/owlbear");
 
+const logWasmLoadingErr = (err: any, lang: string) => {
+  output.append(`Error loading WASM for ${lang}: ${err}`);
+};
+
+const loadWasms = async (context: vscode.ExtensionContext) => {
+  // Loading in sequence because an error loading one WASM can affect the loading of others if done concurrently
+  // See: https://github.com/sansarip/owlbear/issues/107
+  try {
+    await ob.loadLanguageWasm(
+      ob.htmlLangId,
+      `${context.extensionPath}/resources/tree-sitter-html.wasm`
+    );
+  } catch (err) {
+    logWasmLoadingErr(err, ob.htmlLangId);
+  }
+
+  try {
+    ob.loadLanguageWasm(
+      ob.tsxLangId,
+      `${context.extensionPath}/resources/tree-sitter-tsx.wasm`
+    );
+  } catch (err) {
+    logWasmLoadingErr(err, ob.tsxLangId);
+  }
+
+  try {
+    ob.loadLanguageWasm(
+      ob.tsLangId,
+      `${context.extensionPath}/resources/tree-sitter-typescript.wasm`
+    );
+  } catch (err) {
+    logWasmLoadingErr(err, ob.tsLangId);
+  }
+};
+
 export function activate(context: vscode.ExtensionContext) {
-  ob.loadLanguageWasm(
-    ob.htmlLangId,
-    `${context.extensionPath}/resources/tree-sitter-html.wasm`
+  loadWasms(context);
+
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeTextDocument((event) => {
+      editTree(event);
+    })
   );
-  ob.loadLanguageWasm(
-    ob.tsLangId,
-    `${context.extensionPath}/resources/tree-sitter-typescript.wasm`
+  context.subscriptions.push(
+    vscode.workspace.onDidCloseTextDocument((document) => {
+      deleteTree(document);
+    })
   );
-  ob.loadLanguageWasm(
-    ob.tsxLangId,
-    `${context.extensionPath}/resources/tree-sitter-tsx.wasm`
-  );
-  context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((event) => {
-    editTree(event);
-  }));
-  context.subscriptions.push(vscode.workspace.onDidCloseTextDocument((document) => {
-    deleteTree(document);
-  }));
   setContexts();
   registerCommands(context);
 }
