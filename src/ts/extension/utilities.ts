@@ -8,6 +8,7 @@ import {
   TextEditorEdit,
 } from "vscode";
 import { DocCtx, EditCtx, Point } from "./types";
+import output from "./output";
 
 export const textRange = (document: TextDocument): Range => {
   const firstLine = document.lineAt(0);
@@ -85,5 +86,9 @@ export const asPoint = (pos: Position): Point => ({
   row: pos.line,
   column: pos.character,
 });
+
+export const log = (msg: string) => { 
+  output.append(msg);
+};
 
 export const isEmptyObj = (obj: object): boolean => Object.keys(obj).length === 0;

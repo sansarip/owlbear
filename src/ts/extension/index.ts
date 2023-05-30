@@ -4,12 +4,12 @@ import * as vscode from "vscode";
 import { registerCommands } from "./commands";
 import { setContexts } from "./config";
 import { deleteTree, editTree } from "./tree";
-import output from "./output";
+import { log } from "./utilities";
 
 const ob = require("../../../out/cljs/owlbear");
 
 const logWasmLoadingErr = (err: any, lang: string) => {
-  output.append(`Error loading WASM for ${lang}: ${err}`);
+  log(`Error loading WASM for ${lang}: ${err}`);
 };
 
 const loadWasms = async (context: vscode.ExtensionContext) => {
