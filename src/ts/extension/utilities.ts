@@ -55,20 +55,20 @@ export const edit = async (
       didReplace = true;
     }
 
+    // Move the cursor to the new offset
     if (newCursorOffset) {
       moveCursor(editor, newCursorOffset);
     }
 
-    if (!didReplace && !newCursorOffset) {
-      return false;
-    }
-
-    // Format doc if src edits were made
-    if (shouldFormat && didReplace) {
-      commands.executeCommand("editor.action.formatDocument");
-    }
-    return true;
+    const didEdit = didReplace || !!newCursorOffset;
+    return didEdit;
   });
+
+  // Format doc if src/cursor edits were made
+  if (shouldFormat && didEdit) {
+    await commands.executeCommand("editor.action.formatDocument");
+  }
+
   return didEdit ? editCtx : undefined;
 };
 
