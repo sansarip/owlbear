@@ -39,3 +39,15 @@ All notable changes to the Owlbear extension will be documented in this file.
 
 - Fix Owlbear commands not working in HTML and TS/JS files
 
+
+
+## [1.1.4] - 2023-05-31
+
+### Added
+
+- Added a caveat to the docs
+
+### Fixed
+
+- Fixed Owlbear commands not auto-formatting after execution
+- Fixed Owlbear on Windows
