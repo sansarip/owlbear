@@ -88,12 +88,14 @@ export const asPoint = (pos: Position): Point => ({
   column: pos.character,
 });
 
-export const log = (msg: string) => { 
+export const log = (msg: string) => {
   output.append(msg);
 };
 
-export const makePath = (...pathNames: string[]): string => pathNames.join(path.sep);
+export const makePath = (...pathNames: string[]): string =>
+  pathNames.join(path.sep);
 
-export const isEmptyObj = (obj: object): boolean => Object.keys(obj).length === 0;
+export const isEmptyObj = (obj: object): boolean =>
+  Object.keys(obj).length === 0;
 
 export const localTimeNow = (): string => new Date().toLocaleTimeString();
