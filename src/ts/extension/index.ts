@@ -4,21 +4,24 @@ import * as vscode from "vscode";
 import { registerCommands } from "./commands";
 import { setContexts } from "./config";
 import { deleteTree, editTree } from "./tree";
-import output from "./output";
+import { localTimeNow, log, makePath } from "./utilities";
+import { owlbearAscii } from "./constants";
 
 const ob = require("../../../out/cljs/owlbear");
 
 const logWasmLoadingErr = (err: any, lang: string) => {
-  output.append(`Error loading WASM for ${lang}: ${err}`);
+  log(`Error loading WASM for ${lang}: ${err}`);
 };
 
 const loadWasms = async (context: vscode.ExtensionContext) => {
+  log(`${localTimeNow()} ⏳ Loading assets...\n`);
+
   // Loading in sequence because an error loading one WASM can affect the loading of others if done concurrently
   // See: https://github.com/sansarip/owlbear/issues/107
   try {
     await ob.loadLanguageWasm(
       ob.htmlLangId,
-      `${context.extensionPath}/resources/tree-sitter-html.wasm`
+      makePath(context.extensionPath, "resources", "tree-sitter-html.wasm")
     );
   } catch (err) {
     logWasmLoadingErr(err, ob.htmlLangId);
@@ -27,7 +30,7 @@ const loadWasms = async (context: vscode.ExtensionContext) => {
   try {
     await ob.loadLanguageWasm(
       ob.tsxLangId,
-      `${context.extensionPath}/resources/tree-sitter-tsx.wasm`
+      makePath(context.extensionPath, "resources", "tree-sitter-tsx.wasm")
     );
   } catch (err) {
     logWasmLoadingErr(err, ob.tsxLangId);
@@ -36,14 +39,17 @@ const loadWasms = async (context: vscode.ExtensionContext) => {
   try {
     await ob.loadLanguageWasm(
       ob.tsLangId,
-      `${context.extensionPath}/resources/tree-sitter-typescript.wasm`
+      makePath(context.extensionPath, "resources", "tree-sitter-typescript.wasm")
     );
   } catch (err) {
     logWasmLoadingErr(err, ob.tsLangId);
   }
+
+  log(`${localTimeNow()} ⌛️ Finished loading assets!`);
 };
 
 export function activate(context: vscode.ExtensionContext) {
+  log(owlbearAscii);
   loadWasms(context);
 
   context.subscriptions.push(
