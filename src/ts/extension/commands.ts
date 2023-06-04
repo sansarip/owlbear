@@ -14,8 +14,8 @@ import {
   PAREDIT_NAMESPACE,
   setContextFromConfig,
 } from "./config";
+import ob from "./ob";
 
-const ob = require("../../../out/cljs/owlbear");
 
 type Handler = (editCtx?: EditCtx) => undefined | Thenable<EditCtx | undefined>;
 
