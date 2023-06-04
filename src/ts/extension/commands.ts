@@ -6,8 +6,14 @@ import {
   workspace,
 } from "vscode";
 import { EditCtx, OwlbearFunction } from "./types";
-import { getDocCtx, edit, isEmptyObj } from "./utilities";
-import clipboard from "clipboardy";
+import {
+  getDocCtx,
+  edit,
+  isEmptyObj,
+  copyRangeToClipboard,
+  cutRangeToClipboard,
+  moveCursor,
+} from "./utilities";
 import { docUriToTreeIdMap, setNewTreeIdForDocUri } from "./tree";
 import {
   AUTOFORMAT_NAMESPACE,
@@ -15,7 +21,6 @@ import {
   setContextFromConfig,
 } from "./config";
 import ob from "./ob";
-
 
 type Handler = (editCtx?: EditCtx) => undefined | Thenable<EditCtx | undefined>;
 
@@ -40,6 +45,11 @@ type OwlbearOperation =
   | "Raise"
   | "Splice"
   | "UpwardMove";
+
+enum ClipboardOp {
+  copy = "Copy",
+  cut = "Cut",
+}
 
 const getOwlbearFunction = (
   operation: OwlbearOperation
@@ -94,6 +104,21 @@ const doEditOp: Edit = (obOp: OwlbearOperation) => {
     .getConfiguration()
     .get(`${AUTOFORMAT_NAMESPACE}.enabled`);
   return edit(editor, editCtx, shouldFormat);
+};
+
+const doClipboardOp = async (op: ClipboardOp) => {
+  const ctx = getEditCtx("Kill");
+  const removedText = ctx?.removedText;
+  const editor = window.activeTextEditor;
+  if (!removedText || !editor) {
+    return;
+  }
+  const startIndex = ctx.offset;
+  const endIndex = startIndex + removedText.length;
+  const clipboardOpFn =
+    op === ClipboardOp.copy ? copyRangeToClipboard : cutRangeToClipboard;
+  await clipboardOpFn(editor, startIndex, endIndex);
+  return ctx;
 };
 
 const deleteLeft = (): void => {
@@ -170,19 +195,19 @@ const forwardMove: Handler = () => doEditOp("ForwardMove");
 
 const kill: Handler = () => doEditOp("Kill");
 
-const copy: Handler = async (editCtx = undefined) => {
-  const ctx = editCtx ?? getEditCtx("Kill");
-  const removedText = ctx?.removedText;
-  if (!removedText) {
-    return;
-  }
-  clipboard.writeSync(ctx.removedText);
-  return ctx;
+const copy: Handler = async () => {
+  return doClipboardOp(ClipboardOp.copy);
 };
 
 const cut: Handler = async () => {
-  const editCtx = await kill();
-  return await copy(editCtx);
+  const ctx = await doClipboardOp(ClipboardOp.cut);
+  const editor = window.activeTextEditor;
+  if (!ctx?.removedText || !editor) {
+    return;
+  }
+  const startIndex = ctx.offset;
+  moveCursor(editor, startIndex);
+  return ctx;
 };
 
 const raise: Handler = () => {
