@@ -99,3 +99,33 @@ export const isEmptyObj = (obj: object): boolean =>
   Object.keys(obj).length === 0;
 
 export const localTimeNow = (): string => new Date().toLocaleTimeString();
+
+export const selectRange = (
+  editor: TextEditor,
+  startIndex: number,
+  endIndex: number
+): void => {
+  const document = editor.document;
+  const startPosition = document.positionAt(startIndex);
+  const endPosition = document.positionAt(endIndex);
+  const customSelection = new Selection(startPosition, endPosition);
+  editor.selection = customSelection;
+};
+
+export const copyRangeToClipboard = async (
+  editor: TextEditor,
+  startIndex: number,
+  endIndex: number
+): Promise<void> => {
+  selectRange(editor, startIndex, endIndex);
+  await commands.executeCommand("editor.action.clipboardCopyAction");
+};
+
+export const cutRangeToClipboard = async (
+  editor: TextEditor,
+  startIndex: number,
+  endIndex: number
+): Promise<void> => {
+  selectRange(editor, startIndex, endIndex);
+  await commands.executeCommand("editor.action.clipboardCutAction");
+};

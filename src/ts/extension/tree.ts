@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto";
 import { TextDocumentChangeEvent, TextDocument } from "vscode";
 import { asPoint } from "./utilities";
+import ob from "./ob";
 
-const ob = require("../../../out/cljs/owlbear");
 export const docUriToTreeIdMap: { [key: string]: string } = {};
 
 export const setNewTreeIdForDocUri = (docUri: string): string => {

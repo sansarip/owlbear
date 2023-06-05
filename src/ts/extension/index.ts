@@ -6,8 +6,7 @@ import { setContexts } from "./config";
 import { deleteTree, editTree } from "./tree";
 import { localTimeNow, log, makePath } from "./utilities";
 import { owlbearAscii } from "./constants";
-
-const ob = require("../../../out/cljs/owlbear");
+import ob from "./ob";
 
 const logWasmLoadingErr = (err: any, lang: string) => {
   log(`Error loading WASM for ${lang}: ${err}`);
@@ -39,7 +38,11 @@ const loadWasms = async (context: vscode.ExtensionContext) => {
   try {
     await ob.loadLanguageWasm(
       ob.tsLangId,
-      makePath(context.extensionPath, "resources", "tree-sitter-typescript.wasm")
+      makePath(
+        context.extensionPath,
+        "resources",
+        "tree-sitter-typescript.wasm"
+      )
     );
   } catch (err) {
     logWasmLoadingErr(err, ob.tsLangId);
