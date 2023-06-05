@@ -51,3 +51,10 @@ All notable changes to the Owlbear extension will be documented in this file.
 
 - Fixed Owlbear commands not auto-formatting after execution
 - Fixed Owlbear on Windows
+
+
+# [1.1.5] - 2023-06-04
+
+### Fixed
+
+- Fixed Owlbear on Windows (for real)
