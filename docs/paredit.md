@@ -64,7 +64,7 @@ The most commonly used commands are <a href="#slurp-forward">Slurp Forward</a> a
 <dl class="table-wrapper">
   <a href="#splice"><h4>🦠 Splice</h4></a>
   <dt>Keybinding</dt>
-  <dd><span><code>ctrl+alt+left</code></span></dd>
+  <dd><span><code>ctrl+alt+s</code></span></dd>
   <dt>Description</dt>
   <dd class="description">
     <span>Remove the enclosing nodes.</span> 
