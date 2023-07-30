@@ -15,6 +15,7 @@
                          in-bounds-offset
                          out-of-bounds-offset
                          parent-node-start-offset
+                         parent-node-end-offset
                          current-node-text
                          current-node-start-index
                          current-node-end-index]} (gen/let [tree (obgt-html/tree {:hiccup-gen-opts
@@ -27,7 +28,8 @@
                                                                 in-bounds-offset (gen/elements [(noget+ current-node :?startIndex) (dec (noget+ current-node :?endIndex))])]
                                                         {:src (noget+ root-node :?text)
                                                          :parent-node-text (noget+ current-node :?parent.?text)
-                                                         :parent-node-start-offset (noget+ current-node :?parent.?startIndex)
+                                                         :parent-node-start-offset (noget+ current-node :?parent.?startIndex) 
+                                                         :parent-node-end-offset (noget+ current-node :?parent.?endIndex)
                                                          :in-bounds-offset in-bounds-offset
                                                          :out-of-bounds-offset (inc (noget+ root-node :?endIndex))
                                                          :current-node-text (noget+ current-node :?text)
@@ -38,6 +40,7 @@
           "no result"))
     (let [{result-src :src
            result-offset :offset
+           result-scope :scope
            :as result} (html-raise/raise src in-bounds-offset)]
       (&testing "when cursor in bounds"
         (is (some? result)
@@ -52,6 +55,8 @@
             "resulting offset is smaller")
         (is (>= result-offset 0)
             "resulting offset is non-negative")
+        (is (= {:start-offset parent-node-start-offset :end-offset (+ parent-node-start-offset (count current-node-text))} result-scope)
+            "scope is correct")
         (is (= (-> result-src
                    (obp/src->tree! obp/html-lang-id)
                    (noget+ :?rootNode)

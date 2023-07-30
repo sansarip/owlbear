@@ -41,12 +41,24 @@ export const moveCursor = (
   return true;
 };
 
+export const selectRange = (
+  editor: TextEditor,
+  startIndex: number,
+  endIndex: number
+): void => {
+  const document = editor.document;
+  const startPosition = document.positionAt(startIndex);
+  const endPosition = document.positionAt(endIndex);
+  const customSelection = new Selection(startPosition, endPosition);
+  editor.selection = customSelection;
+};
+
 export const edit = async (
   editor: TextEditor,
   editCtx: EditCtx,
   shouldFormat = true
 ): Promise<EditCtx | undefined> => {
-  const { src: newSrc, offset: newCursorOffset } = editCtx;
+  const { src: newSrc, offset: newCursorOffset, scope } = editCtx;
   const didEdit = await editor.edit((editBuilder: TextEditorEdit) => {
     let didReplace = false;
     // Replace the entire document with the new text
@@ -65,8 +77,10 @@ export const edit = async (
   });
 
   // Format doc if src/cursor edits were made
-  if (shouldFormat && didEdit) {
-    await commands.executeCommand("editor.action.formatDocument");
+  if (shouldFormat && scope && didEdit) {
+    const { startOffset, endOffset } = scope;
+    selectRange(editor, startOffset, endOffset);
+    await commands.executeCommand("editor.action.formatSelection");
   }
 
   return didEdit ? editCtx : undefined;
@@ -99,18 +113,6 @@ export const isEmptyObj = (obj: object): boolean =>
   Object.keys(obj).length === 0;
 
 export const localTimeNow = (): string => new Date().toLocaleTimeString();
-
-export const selectRange = (
-  editor: TextEditor,
-  startIndex: number,
-  endIndex: number
-): void => {
-  const document = editor.document;
-  const startPosition = document.positionAt(startIndex);
-  const endPosition = document.positionAt(endIndex);
-  const customSelection = new Selection(startPosition, endPosition);
-  editor.selection = customSelection;
-};
 
 export const copyRangeToClipboard = async (
   editor: TextEditor,

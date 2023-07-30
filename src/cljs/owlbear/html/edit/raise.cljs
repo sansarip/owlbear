@@ -34,7 +34,9 @@
            {:src (-> src
                      (obu/str-remove current-parent-node-start current-parent-node-end)
                      (obu/str-insert current-node-text current-parent-node-start))
-            :offset (+ current-parent-node-start (- offset current-node-start))}))))))
+            :offset (+ current-parent-node-start (- offset current-node-start))
+            :scope {:start-offset current-parent-node-start 
+                    :end-offset (+ current-parent-node-start (count current-node-text))}}))))))
 
 (comment
   ;; Examples

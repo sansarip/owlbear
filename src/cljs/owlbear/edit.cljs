@@ -1,6 +1,7 @@
 (ns owlbear.edit
   "Public-facing JS API for Owlbear's paredit-like operations"
   (:require [cljs-bean.core :refer [->js]]
+            [clojure.walk :refer [postwalk]]
             [owlbear.html.edit.barf :as html-barf]
             [owlbear.html.edit.delete :as html-delete]
             [owlbear.html.edit.kill :as html-kill]
@@ -18,7 +19,13 @@
             [owlbear.utilities :as obu]))
 
 (defn ->js* [m]
-  (->js (update-keys m (comp obu/kabob->camel name))))
+  (postwalk
+   (fn [x]
+     (cond
+       (keyword? x) (obu/kabob->camel (name x))
+       (map? x) (->js x)
+       :else x))
+   m))
 
 (def html-backward-delete (comp ->js* html-delete/backward-delete))
 (def html-backward-move (comp ->js* html-move/backward-move))

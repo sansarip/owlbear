@@ -4,6 +4,10 @@ export type EditCtx = {
   removedText: string;
   deleteStartOffset: number;
   deleteEndOffset: number;
+  scope: {
+    startOffset: number;
+    endOffset: number;
+  };
 };
 export type DocCtx = { docUri: string } & Pick<EditCtx, "src" | "offset">;
 export type OwlbearFunction = (
