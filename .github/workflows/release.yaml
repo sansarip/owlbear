@@ -46,11 +46,13 @@ jobs:
             npm run compile-vsix
           fi
       
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
       - name: Update change log
-        if: inputs.changelog-action == 'update'
         run: |
-          echo -e "\n" >> CHANGELOG.md && 
-          echo -e '${{ vars.CHANGELOG }}' >> CHANGELOG.md
+          sed -i 's/\[Unreleased\]/[${{ inputs.version }}] - ${{ steps.date.outputs.date }}/' CHANGELOG.md
       
       - name: Commit and push version
         uses: actions-js/push@master
