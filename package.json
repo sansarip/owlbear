@@ -13,7 +13,9 @@
   "categories": [
     "Other"
   ],
-  "extensionKind": ["ui"],
+  "extensionKind": [
+    "ui"
+  ],
   "activationEvents": [
     "onLanguage:html",
     "onLanguage:javascript",
