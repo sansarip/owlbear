@@ -4,6 +4,8 @@ All notable changes to the Owlbear extension will be documented in this file.
 
 ## [Unreleased]
 
+- Add remote development support [#114](https://github.com/sansarip/owlbear/issues/114)
+
 ## [1.1.5] - 2023-06-04
 
 ### Fixed
