@@ -140,7 +140,7 @@
   (let [insert-separator? (and (or (ts-rules/not-empty-ts-arguments-node ancestor-node)
                                    (ts-rules/not-empty-ts-collection-node ancestor-node)
                                    (ts-rules/ts-statement-block-node ancestor-node))
-                               (some #(contains? #{ts-rules/ts-array ts-rules/ts-arguments} %)
+                               (some #(contains? #{ts-rules/ts-array ts-rules/ts-arguments ts-rules/ts-pair} %)
                                      [(obu/noget+ ancestor-node :?parent.?type)
                                       (obu/noget+ ancestor-node :?parent.?parent.?type)]))
         insert-offset (when insert-separator?
@@ -169,7 +169,9 @@
     :as ctx}]
   (let [rm-separators? (and (or (ts-rules/ts-arguments-node ancestor-node)
                                 (ts-rules/not-empty-ts-array-node ancestor-node)
-                                (ts-rules/incomplete-ts-object-node ancestor-node))
+                                (ts-rules/incomplete-ts-object-node ancestor-node)
+                                (and (ts-rules/ts-object-ends-with-pair ancestor-node)
+                                     (ts-rules/ts-pair-node (obu/noget+ ancestor-node :?parent))))
                             (ts-rules/ts-syntax-node (obu/noget+ child-node :?previousSibling)))
         separators (when rm-separators?
                      (take-while #(and (ts-rules/ts-syntax-node %)
@@ -273,8 +275,11 @@
                                                (obu/noget+ :?rootNode)
                                                (ts-rules/node->current-last-child-object-ctx offset)
                                                (update :last-child-object-node
-                                                       #(cond
-                                                          (ts-rules/ts-pair-node %)
+                                                       #(cond 
+                                                          ;; const foo = ▌{a: 1} => const foo = ▌{a: } 1 
+                                                          ;; const foo = {a: ▌{b: c}} => const foo = {a: ▌{}, b: c}
+                                                          (and (ts-rules/ts-pair-node %)
+                                                               (not (ts-rules/ts-pair-node (obu/noget+ % :?parent.?parent))))
                                                           (ocall % :?childForFieldName "value")
 
                                                           (ts-rules/ts-property-signature-node %)
