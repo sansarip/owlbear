@@ -31,7 +31,7 @@
    // e.g. after a slurp      ⬇️
    interface foo {a: string; b:}
    ```"
-  [current-node forward-node]
+  [current-node forward-node] 
   (letfn [(object-type-needs-semicolon? []
             (and (ts-rules/ts-object-type-node current-node)
                  (not= ";" (some-> current-node
@@ -39,6 +39,9 @@
                                    first
                                    (obu/noget+ :?type)))))]
     (cond
+      ;; don't want to apply end-node prefix in a nested object type
+      (ts-rules/ts-property-signature-node forward-node) nil
+     
       ;; type foo = {a: string;▌} b => type foo = {a: string; b:;▌} 
       (and (ts-rules/complete-ts-object-node current-node)
            (object-type-needs-semicolon?))
@@ -180,7 +183,7 @@
    
    Also updates the offset and edit-history of the given context 
    if updates were made"
-  [{:keys [src offset edit-history] :or {edit-history []} :as ctx} current-node]
+  [{:keys [src offset edit-history] :or {edit-history []} :as ctx} current-node forward-node]
   (let [parent-node (obu/noget+ current-node :?parent)
         separator (cond (and (or (ts-rules/not-empty-ts-array-node current-node)
                                  (ts-rules/ts-object-ends-with-pair current-node))
@@ -197,7 +200,8 @@
                                  (obu/noget+ :?nextSibling.?type)
                                  (not= ",")))
                         ","
-                        (ts-rules/complete-ts-object-node current-node)
+                        (and (ts-rules/complete-ts-object-node current-node)
+                             (not (ts-rules/ts-property-signature-node forward-node)))
                         ";"
                         :else nil)
         insert-offset (when separator
@@ -225,6 +229,9 @@
   (let [rm-separators? (and (or (ts-rules/empty-ts-arguments-node current-node)
                                 (ts-rules/empty-ts-collection-node current-node)
                                 (ts-rules/ts-statement-block-node current-node)
+                                ;; e.g. type foo = {a: ▌{}; b: string;}
+                                (and (ts-rules/empty-ts-object-type-node current-node)
+                                     (ts-rules/ts-property-signature-node forward-node))
                                 ;; e.g. [{a: }, 1]
                                 (and (ts-rules/ts-object-node current-node)
                                      (not (ts-rules/ts-object-ends-with-pair current-node))))
@@ -302,7 +309,7 @@
                                                               end-node-insert-offset)))))
 
 (defn subject-container-node [^js node]
-      (ts-rules/subject-container-node node {:container-type-greenlist #{ts-rules/ts-pair}}))
+      (ts-rules/subject-container-node node {:container-type-greenlist #{ts-rules/ts-pair ts-rules/ts-property-signature}}))
 
 (defn forward-slurp
   "Given a `src` string and character `offset`, 
@@ -341,7 +348,7 @@
                 :offset offset}
                (move-end-nodes current-node forward-object-node)
                (remove-item-separators current-node forward-object-node)
-               (insert-item-separator current-node)
+               (insert-item-separator current-node forward-object-node)
                (escape-string current-node forward-object-node)
                (escape-comment-block current-node forward-object-node)
                (insert-computed-property-brackets current-node forward-object-node)
