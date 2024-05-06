@@ -385,7 +385,7 @@
        ctx {:src src :offset offset}]
       (-> ctx
           (move-end-nodes current-node forward-object-node)
-          (insert-item-separator current-node)))
+          (insert-item-separator current-node forward-object-node)))
  (let [src "const foo = {};\na"
        offset 13
        {:keys [current-node
