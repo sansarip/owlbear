@@ -173,6 +173,14 @@
   (when (and node (= ts-object-type (.-type node)))
     node))
 
+(defn ts-type-alias-declaration-node
+  "Given a `node`,
+    returns the `node` 
+    if it is a TS type alias declaration"
+  [^js node]
+  (when (and node (= ts-type-alias-declaration (.-type node)))
+    node))
+
 (defn ts-type-annotation-node
   "Given a `node`, 
    returns the `node` 

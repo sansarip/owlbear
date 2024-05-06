@@ -73,14 +73,14 @@ foo(() => {▌},bar())
 foo(a, b,▌)
 ```
 ```typescript
-foo(a ,▌)b
+foo(a ▌)b
 ```
 
 ```typescript
 foo(a, b,,,▌)
 ```
 ```typescript
-foo(a ,,,▌)b
+foo(a ▌)b
 ```
 
 ```typescript
