@@ -2,7 +2,15 @@
 
 All notable changes to the Owlbear extension will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Add slurping/barfing support from within nested objects and object types
+
 ## [1.1.6] - 2024-02-23
+
+### Added
 
 - Add remote development support [#114](https://github.com/sansarip/owlbear/issues/114)
 
