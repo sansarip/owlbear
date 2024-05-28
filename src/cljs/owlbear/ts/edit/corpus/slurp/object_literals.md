@@ -163,3 +163,20 @@ b
 ```typescript
 {a: {b: ▌{ c: d}}}
 ```
+
+```typescript
+const foo = {
+  a: {
+    ▌b: number
+  },
+  c: string
+};
+```
+```typescript
+const foo = {
+  a: {
+    ▌b: number
+  ,
+  c: string}
+};
+```

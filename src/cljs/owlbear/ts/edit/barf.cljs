@@ -27,11 +27,17 @@
    
    Also updates the offset and edit-history of the given context 
    if updates were made"
-  [{:keys [offset ancestor-node src] :as ctx}]
+  [{:keys [offset ancestor-node child-node src] :as ctx}]
   (let [rm-syntax? (and (or (ts-rules/ts-arguments-node ancestor-node)
-                            (ts-rules/not-empty-ts-array-node ancestor-node)
                             (ts-rules/incomplete-ts-object-node ancestor-node)
+                            (ts-rules/not-empty-ts-collection-node ancestor-node)
                             (ts-rules/ts-object-type-node ancestor-node))
+                        ;; Compensates for the hackery of resolving pair nodes to their values
+                        ;; A test will fail if this is removed.
+                        (-> child-node
+                            (obu/noget+ :?parent)
+                            ts-rules/ts-pair-node
+                            not)
                         (ts-rules/ts-syntax-node (obu/noget+ ancestor-node :?lastChild.?previousSibling)))
         [rm-start-offset
          syntax-nodes-text] (when rm-syntax?
@@ -42,7 +48,7 @@
                                                            (obu/noget+ % :?id))))
                                    ((juxt (comp #(obu/noget+ % :?previousSibling.?startIndex) last)
                                           (comp str/join
-                                                (fn [nodes] (map #(obu/noget+ % :?text) nodes)))))))]
+                                                (fn [nodes] (map #(obu/noget+ % :?text) nodes)))))))] 
     (cond-> ctx
       rm-syntax? (-> (update :src obu/str-remove rm-start-offset (+ rm-start-offset (count syntax-nodes-text)))
                      (update :edit-history conj {:type :delete
@@ -374,8 +380,8 @@
       (-> ctx
           move-end-nodes
           remove-item-separators))
- (let [src "[{a: \"ddd\"}];"
-       offset 2
+ (let [src "{a: {b: c,}}"
+       offset 4
        {:keys [last-child-object-node
                current-node]} (-> src
                                   (obp/src->tree! obp/tsx-lang-id)
@@ -459,8 +465,8 @@
       (-> ctx
           move-end-nodes
           ts-clean/unescape-comments)) 
- (let [src "interface foo {a: string;}"
-       offset 25
+ (let [src "const foo = {a: 1,}"
+       offset 12
        {:keys [last-child-object-node
                current-node]} (-> src
                                   (obp/src->tree! obp/tsx-lang-id)

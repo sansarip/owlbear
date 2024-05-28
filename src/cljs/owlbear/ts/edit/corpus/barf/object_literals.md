@@ -89,3 +89,10 @@
 ```typescript
 {a: ▌{},b }
 ```
+
+```typescript
+{a: ▌{b: c,}}
+```
+```typescript
+{a: ▌{},b: c}
+```
