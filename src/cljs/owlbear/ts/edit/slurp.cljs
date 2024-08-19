@@ -276,7 +276,6 @@
         forward-object-node-end-index (obu/update-offset
                                        (obu/noget+ forward-node :?endIndex)
                                        edit-history)
-        current-end-node-text-len (count current-end-node-text)
         end-node-prefix-len (count end-node-prefix)
         current-end-node-start-index (-> current-end-nodes
                                          first
@@ -285,7 +284,8 @@
         current-end-node-end-index (-> current-end-nodes
                                        last
                                        (obu/noget+ :?endIndex)
-                                       (obu/update-offset edit-history))
+                                       (obu/update-offset edit-history)) 
+        current-end-node-text-len (+ end-node-prefix-len (- current-end-node-end-index current-end-node-start-index))
         end-node-insert-offset (- forward-object-node-end-index
                                   (- current-end-node-text-len
                                      end-node-prefix-len))]
