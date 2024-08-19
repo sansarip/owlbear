@@ -102,3 +102,18 @@ interface bar {a: string};
 declare namespace Foo {
 interface bar {a: string}▌};
 ```
+
+## Nested Object Types
+```ts
+type foo = {a: ▌{b: string;}; c: string;}
+```
+```ts
+type foo = {a: ▌{b: string; c: string;};}
+```
+
+```ts
+type foo = {a: ▌{}; b: string;}
+```
+```ts
+type foo = {a: ▌{ b: string};}
+```

@@ -173,6 +173,14 @@
   (when (and node (= ts-object-type (.-type node)))
     node))
 
+(defn ts-type-alias-declaration-node
+  "Given a `node`,
+    returns the `node` 
+    if it is a TS type alias declaration"
+  [^js node]
+  (when (and node (= ts-type-alias-declaration (.-type node)))
+    node))
+
 (defn ts-type-annotation-node
   "Given a `node`, 
    returns the `node` 
@@ -850,18 +858,19 @@
    and whether the forward node should be found from the subject container of the current node, `:from-subject-container?`"
   ([node offset]
    (node->current-forward-object-ctx node offset {}))
-  ([node offset {:keys [object-nodes? from-subject-container?]
-                 :or {from-subject-container? true}}]
-   {:pre [(<= 0 offset)]}
+  ([node offset {:keys [object-nodes? from-subject-container? subject-container-fn]
+                 :or {from-subject-container? true
+                      subject-container-fn subject-container-node}}]
+   {:pre [(<= 0 offset) (fn? subject-container-fn)]}
    (let [current-nodes-fn (if object-nodes?
                             node->current-object-nodes
                             node->current-subject-nodes)
-         subject-container-fn (if from-subject-container?
-                                subject-container-node
+         subject-container-fn* (if from-subject-container?
+                                subject-container-fn
                                 identity)]
      (some->> (current-nodes-fn node offset)
               (keep (fn [current-node]
-                      (when-let [forward-object-node (node->forward-object-node (subject-container-fn current-node))]
+                      (when-let [forward-object-node (node->forward-object-node (subject-container-fn* current-node))]
                         {:forward-object-node forward-object-node
                          :current-node current-node})))
               last))))

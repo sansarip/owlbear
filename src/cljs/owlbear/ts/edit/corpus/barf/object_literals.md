@@ -60,3 +60,39 @@
 ```typescript
 [{▌},a ,1, 2]
 ```
+
+## In Objects
+```typescript
+{a: ▌{b: c}}
+```
+```typescript
+{a: ▌{},b: c}
+```
+
+```typescript
+{a: ▌{b: c, c: d}}
+```
+```typescript
+{a: ▌{b: c },c: d}
+```
+
+```typescript
+{a: ▌{[b]: }}
+```
+```typescript
+{a: ▌{},b }
+```
+
+```typescript
+{a: ▌{b: }}
+```
+```typescript
+{a: ▌{},b }
+```
+
+```typescript
+{a: ▌{b: c,}}
+```
+```typescript
+{a: ▌{},b: c}
+```

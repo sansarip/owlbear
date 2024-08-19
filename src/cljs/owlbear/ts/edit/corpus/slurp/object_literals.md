@@ -127,3 +127,56 @@ b
 ```typescript
 [{[a]: b, [c▌]:}]
 ```
+
+## In Objects
+```typescript
+{a: ▌{}, b: c}
+```
+```typescript
+{a: ▌{ b: c}}
+```
+
+```typescript
+{a: ▌{b: c}, c: d}
+```
+```typescript
+{a: ▌{b: c, c: d}}
+```
+
+```typescript
+{a: {b: c▌}, c: d}
+```
+```typescript
+{a: {b: c, c: d▌}}
+```
+
+```typescript
+{a: ▌{b: c, c: d}, b}
+```
+```typescript
+{a: ▌{b: c, c: d, [b]:}}
+```
+
+```typescript
+{a: {b: ▌{}, c: d}}
+```
+```typescript
+{a: {b: ▌{ c: d}}}
+```
+
+```typescript
+const foo = {
+  a: {
+    ▌b: number
+  },
+  c: string
+};
+```
+```typescript
+const foo = {
+  a: {
+    ▌b: number
+  ,
+  c: string}
+};
+```

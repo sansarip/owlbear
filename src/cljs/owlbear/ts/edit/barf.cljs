@@ -27,16 +27,18 @@
    
    Also updates the offset and edit-history of the given context 
    if updates were made"
-  [{:keys [offset ancestor-node src] :as ctx}]
+  [{:keys [offset ancestor-node child-node src] :as ctx}]
   (let [rm-syntax? (and (or (ts-rules/ts-arguments-node ancestor-node)
-                            (ts-rules/not-empty-ts-array-node ancestor-node)
                             (ts-rules/incomplete-ts-object-node ancestor-node)
-                            (ts-rules/incomplete-ts-object-type-node ancestor-node))
-                        (ts-rules/ts-syntax-node (obu/noget+ ancestor-node :?lastChild.?previousSibling))
-                        (->> (obu/noget+ ancestor-node :?children)
-                             (filter (comp not ts-rules/ts-syntax-node))
-                             count
-                             (= 1)))
+                            (ts-rules/not-empty-ts-collection-node ancestor-node)
+                            (ts-rules/ts-object-type-node ancestor-node))
+                        ;; Compensates for the hackery of resolving pair nodes to their values
+                        ;; A test will fail if this is removed.
+                        (-> child-node
+                            (obu/noget+ :?parent)
+                            ts-rules/ts-pair-node
+                            not)
+                        (ts-rules/ts-syntax-node (obu/noget+ ancestor-node :?lastChild.?previousSibling)))
         [rm-start-offset
          syntax-nodes-text] (when rm-syntax?
                               (->> (obu/noget+ ancestor-node :?lastChild)
@@ -46,7 +48,7 @@
                                                            (obu/noget+ % :?id))))
                                    ((juxt (comp #(obu/noget+ % :?previousSibling.?startIndex) last)
                                           (comp str/join
-                                                (fn [nodes] (map #(obu/noget+ % :?text) nodes)))))))]
+                                                (fn [nodes] (map #(obu/noget+ % :?text) nodes)))))))] 
     (cond-> ctx
       rm-syntax? (-> (update :src obu/str-remove rm-start-offset (+ rm-start-offset (count syntax-nodes-text)))
                      (update :edit-history conj {:type :delete
@@ -124,6 +126,47 @@
           (cond-> (>= offset rm-offset) (update :offset dec)))
       ctx)))
 
+(defn insert-semicolon
+      "Given a context, `ctx`, containing
+       a ancestor node, `ancestor-node`, 
+       and a child node, `child-node`, 
+       returns an updated context with a semicolon inserted in the src -if applicable, 
+       else returns the given `ctx`
+
+       e.g.
+       ```ts
+        const foo = {a: ▌{b: number};}; => const foo = {a: ▌{};b: number;};
+        //--------------------------------------------------------------^
+       ```
+       
+       Also updates the offset and edit-history of the given context 
+       if updates were made"
+      [{:keys [src offset edit-history ancestor-node child-node]
+        :or {edit-history []}
+        :as ctx}]
+      (let [insert-semicolon? (and (ts-rules/ts-object-type-node ancestor-node)
+                                   (cond
+                                    (and (ts-rules/ts-type-annotation-node (obu/noget+ ancestor-node :?parent))
+                                         (-> ancestor-node
+                                             (obu/noget+ :?parent.?parent.?nextSibling.?type)
+                                             (#{";" ","})
+                                             not)) true
+                                    (not (ts-rules/ts-type-annotation-node (obu/noget+ ancestor-node :?parent))) true
+                                    :else false))
+            insert-offset (when insert-semicolon?
+                                (obu/update-offset
+                                 (obu/noget+ child-node :?endIndex)
+                                 edit-history))]
+        (if insert-semicolon?
+          (-> ctx
+              (update :src obu/str-insert ";" insert-offset)
+              (update :edit-history conj {:type :insert
+                                          :offset insert-offset
+                                          :text ";"
+                                          :src src})
+              (cond-> (>= offset insert-offset) (update :offset inc)))
+          ctx)))
+
 (defn insert-item-separator
   "Given a context, `ctx`, containing
    a ancestor node, `ancestor-node`, 
@@ -137,23 +180,28 @@
   [{:keys [src offset edit-history ancestor-node child-node]
     :or {edit-history []}
     :as ctx}]
-  (let [insert-separator? (and (or (ts-rules/not-empty-ts-arguments-node ancestor-node)
-                                   (ts-rules/not-empty-ts-collection-node ancestor-node)
-                                   (ts-rules/ts-statement-block-node ancestor-node))
-                               (some #(contains? #{ts-rules/ts-array ts-rules/ts-arguments} %)
-                                     [(obu/noget+ ancestor-node :?parent.?type)
-                                      (obu/noget+ ancestor-node :?parent.?parent.?type)]))
-        insert-offset (when insert-separator?
+  (let [separator (cond (and (or (ts-rules/not-empty-ts-arguments-node ancestor-node)
+                                 (ts-rules/not-empty-ts-collection-node ancestor-node)
+                                 (ts-rules/ts-statement-block-node ancestor-node))
+                             (some #(contains? #{ts-rules/ts-array ts-rules/ts-arguments ts-rules/ts-pair} %)
+                                   [(obu/noget+ ancestor-node :?parent.?type)
+                                    (obu/noget+ ancestor-node :?parent.?parent.?type)]))
+                        \,
+                        (and (ts-rules/ts-object-type-node ancestor-node)
+                             (not (ts-rules/ts-syntax-node (obu/noget+ ancestor-node :?nextSibling)))) 
+                        \;
+                        :else nil)
+        insert-offset (when separator
                         (obu/update-offset
                          (obu/noget+ child-node :?startIndex)
                          edit-history))]
     (cond-> ctx
-      insert-separator? (assoc :src (obu/str-insert src \, insert-offset)
+      separator (assoc :src (obu/str-insert src separator insert-offset)
                                :edit-history (conj edit-history {:type :insert
                                                                  :offset insert-offset
-                                                                 :text ","
+                                                                 :text (str separator)
                                                                  :src src}))
-      (and insert-separator? (>= offset insert-offset)) (update :offset inc))))
+      (and separator (>= offset insert-offset)) (update :offset inc))))
 
 (defn remove-item-separators
   "Given a context, `ctx`, a ancestor node, `ancestor-node`, 
@@ -169,7 +217,9 @@
     :as ctx}]
   (let [rm-separators? (and (or (ts-rules/ts-arguments-node ancestor-node)
                                 (ts-rules/not-empty-ts-array-node ancestor-node)
-                                (ts-rules/incomplete-ts-object-node ancestor-node))
+                                (ts-rules/incomplete-ts-object-node ancestor-node)
+                                (and (ts-rules/ts-object-ends-with-pair ancestor-node)
+                                     (ts-rules/ts-pair-node (obu/noget+ ancestor-node :?parent))))
                             (ts-rules/ts-syntax-node (obu/noget+ child-node :?previousSibling)))
         separators (when rm-separators?
                      (take-while #(and (ts-rules/ts-syntax-node %)
@@ -273,12 +323,12 @@
                                                (obu/noget+ :?rootNode)
                                                (ts-rules/node->current-last-child-object-ctx offset)
                                                (update :last-child-object-node
-                                                       #(cond
-                                                          (ts-rules/ts-pair-node %)
+                                                       #(cond 
+                                                          ;; const foo = ▌{a: 1} => const foo = ▌{a: } 1 
+                                                          ;; const foo = {a: ▌{b: c}} => const foo = {a: ▌{}, b: c}
+                                                          (and (ts-rules/ts-pair-node %)
+                                                               (not (ts-rules/ts-pair-node (obu/noget+ % :?parent.?parent))))
                                                           (ocall % :?childForFieldName "value")
-
-                                                          (ts-rules/ts-property-signature-node %)
-                                                          (obu/noget+ (ocall % :?childForFieldName "type") :?children.?1)
 
                                                           :else %)))]
        (-> {:src src
@@ -295,136 +345,152 @@
            remove-pair-separator
            remove-item-separators
            insert-item-separator
+           insert-semicolon
            (select-keys [:src :offset]))))))
 
 (comment
   ;; Examples
-  (-> "<div><></></div>"
-      (obp/src->tree! obp/tsx-lang-id)
-      (obu/noget+ :?rootNode)
-      (ts-rules/node->current-last-child-object-ctx 1))
-  (let [src "<><div><input/></div></>"
-        offset 0
-        {:keys [last-child-object-node
-                current-node]} (-> src
-                                   (obp/src->tree! obp/tsx-lang-id)
-                                   (obu/noget+ :?rootNode)
-                                   (ts-rules/node->current-last-child-object-ctx offset))
-        ctx {:src src
-             :offset offset
-             :ancestor-node current-node
-             :child-node last-child-object-node}]
-    (move-end-nodes ctx))
-  (let [src "[foo(a, b)];"
-        offset 5
-        {:keys [last-child-object-node
-                current-node]} (-> src
-                                   (obp/src->tree! obp/tsx-lang-id)
-                                   (obu/noget+ :?rootNode)
-                                   (ts-rules/node->current-last-child-object-ctx offset))
-        ctx {:src src
-             :offset offset
-             :ancestor-node current-node
-             :child-node last-child-object-node}]
-    (-> ctx
-        move-end-nodes
-        remove-item-separators))
-  (let [src "[{a: \"ddd\"}];"
-        offset 2
-        {:keys [last-child-object-node
-                current-node]} (-> src
-                                   (obp/src->tree! obp/tsx-lang-id)
-                                   (obu/noget+ :?rootNode)
-                                   (ts-rules/node->current-last-child-object-ctx offset))
-        ctx {:src src
-             :offset offset
-             :ancestor-node current-node
-             :child-node last-child-object-node}]
-    (-> ctx
-        move-end-nodes
-        insert-item-separator))
-  (let [src "[{a: }];"
-        offset 2
-        {:keys [last-child-object-node
-                current-node]} (-> src
-                                   (obp/src->tree! obp/tsx-lang-id)
-                                   (obu/noget+ :?rootNode)
-                                   (ts-rules/node->current-last-child-object-ctx offset))
-        ctx {:src src
-             :offset offset
-             :ancestor-node current-node
-             :child-node last-child-object-node}]
-    (-> ctx
-        move-end-nodes
-        remove-pair-separator))
-  (let [src "[{[a]: }];"
-        offset 2
-        {:keys [last-child-object-node
-                current-node]} (-> src
-                                   (obp/src->tree! obp/tsx-lang-id)
-                                   (obu/noget+ :?rootNode)
-                                   (ts-rules/node->current-last-child-object-ctx offset))
-        ctx {:src src
-             :offset offset
-             :ancestor-node current-node
-             :child-node last-child-object-node}]
-    (-> ctx
-        move-end-nodes
-        remove-computed-property))
-  (let [src "'\\''"
-        offset 1
-        {:keys [last-child-object-node
-                current-node]} (-> src
-                                   (obp/src->tree! obp/tsx-lang-id)
-                                   (obu/noget+ :?rootNode)
-                                   (ts-rules/node->current-last-child-object-ctx offset))
-        ctx {:src src
-             :offset offset
-             :ancestor-node current-node
-             :target-node last-child-object-node}]
-    (-> ctx
-        move-end-nodes
-        ts-clean/unescape-escape-sequence))
-  (let [src "`${`${``}`}`"
-        offset 1
-        {:keys [last-child-object-node
-                current-node]} (-> src
-                                   (obp/src->tree! obp/tsx-lang-id)
-                                   (obu/noget+ :?rootNode)
-                                   (ts-rules/node->current-last-child-object-ctx offset))
-        ctx {:src src
-             :offset offset
-             :ancestor-node current-node
-             :child-node last-child-object-node}]
-    (-> ctx
-        move-end-nodes
-        ts-clean/escape-template-string))
-  (ts-clean/escaped-comment-backslash-offsets "\\/* \\/* *\\/ *\\/")
-  (let [src "/* \\/* \\/* *\\/ *\\/ */"
-        offset 1
-        {:keys [last-child-object-node
-                current-node]} (-> src
-                                   (obp/src->tree! obp/tsx-lang-id)
-                                   (obu/noget+ :?rootNode)
-                                   (ts-rules/node->current-last-child-object-ctx offset))
-        ctx {:src src
-             :offset offset
-             :ancestor-node current-node
-             :child-node last-child-object-node}]
-    (-> ctx
-        move-end-nodes
-        ts-clean/unescape-comments))
-  (let [src "interface foo {a: string;}"
-        offset 25
-        {:keys [last-child-object-node
-                current-node]} (-> src
-                                   (obp/src->tree! obp/tsx-lang-id)
-                                   (obu/noget+ :?rootNode)
-                                   (ts-rules/node->current-last-child-object-ctx offset))
-        ctx {:src src
-             :offset offset
-             :ancestor-node current-node
-             :child-node last-child-object-node}]
-    (-> ctx
-        move-end-nodes
-        remove-superfluous-syntax)))
+ (-> "<div><></></div>"
+     (obp/src->tree! obp/tsx-lang-id)
+     (obu/noget+ :?rootNode)
+     (ts-rules/node->current-last-child-object-ctx 1))
+ (let [src "<><div><input/></div></>"
+       offset 0
+       {:keys [last-child-object-node
+               current-node]} (-> src
+                                  (obp/src->tree! obp/tsx-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ts-rules/node->current-last-child-object-ctx offset))
+       ctx {:src src
+            :offset offset
+            :ancestor-node current-node
+            :child-node last-child-object-node}]
+      (move-end-nodes ctx))
+ (let [src "[foo(a, b)];"
+       offset 5
+       {:keys [last-child-object-node
+               current-node]} (-> src
+                                  (obp/src->tree! obp/tsx-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ts-rules/node->current-last-child-object-ctx offset))
+       ctx {:src src
+            :offset offset
+            :ancestor-node current-node
+            :child-node last-child-object-node}]
+      (-> ctx
+          move-end-nodes
+          remove-item-separators))
+ (let [src "{a: {b: c,}}"
+       offset 4
+       {:keys [last-child-object-node
+               current-node]} (-> src
+                                  (obp/src->tree! obp/tsx-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ts-rules/node->current-last-child-object-ctx offset))
+       ctx {:src src
+            :offset offset
+            :ancestor-node current-node
+            :child-node last-child-object-node}]
+      (-> ctx
+          move-end-nodes
+          insert-item-separator))
+ (let [src "[{a: }];"
+       offset 2
+       {:keys [last-child-object-node
+               current-node]} (-> src
+                                  (obp/src->tree! obp/tsx-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ts-rules/node->current-last-child-object-ctx offset))
+       ctx {:src src
+            :offset offset
+            :ancestor-node current-node
+            :child-node last-child-object-node}]
+      (-> ctx
+          move-end-nodes
+          remove-pair-separator))
+ (let [src "[{[a]: }];"
+       offset 2
+       {:keys [last-child-object-node
+               current-node]} (-> src
+                                  (obp/src->tree! obp/tsx-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ts-rules/node->current-last-child-object-ctx offset))
+       ctx {:src src
+            :offset offset
+            :ancestor-node current-node
+            :child-node last-child-object-node}]
+      (-> ctx
+          move-end-nodes
+          remove-computed-property))
+ (let [src "'\\''"
+       offset 1
+       {:keys [last-child-object-node
+               current-node]} (-> src
+                                  (obp/src->tree! obp/tsx-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ts-rules/node->current-last-child-object-ctx offset))
+       ctx {:src src
+            :offset offset
+            :ancestor-node current-node
+            :target-node last-child-object-node}]
+      (-> ctx
+          move-end-nodes
+          ts-clean/unescape-escape-sequence))
+ (let [src "`${`${``}`}`"
+       offset 1
+       {:keys [last-child-object-node
+               current-node]} (-> src
+                                  (obp/src->tree! obp/tsx-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ts-rules/node->current-last-child-object-ctx offset))
+       ctx {:src src
+            :offset offset
+            :ancestor-node current-node
+            :child-node last-child-object-node}]
+      (-> ctx
+          move-end-nodes
+          ts-clean/escape-template-string))
+ (ts-clean/escaped-comment-backslash-offsets "\\/* \\/* *\\/ *\\/")
+ (let [src "/* \\/* \\/* *\\/ *\\/ */"
+       offset 1
+       {:keys [last-child-object-node
+               current-node]} (-> src
+                                  (obp/src->tree! obp/tsx-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ts-rules/node->current-last-child-object-ctx offset))
+       ctx {:src src
+            :offset offset
+            :ancestor-node current-node
+            :child-node last-child-object-node}]
+      (-> ctx
+          move-end-nodes
+          ts-clean/unescape-comments)) 
+ (let [src "const foo = {a: 1,}"
+       offset 12
+       {:keys [last-child-object-node
+               current-node]} (-> src
+                                  (obp/src->tree! obp/tsx-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ts-rules/node->current-last-child-object-ctx offset))
+       ctx {:src src
+            :offset offset
+            :ancestor-node current-node
+            :child-node last-child-object-node}]
+      (-> ctx
+          move-end-nodes
+          remove-superfluous-syntax))
+ (let [src "type foo = {a: string};"
+       offset 11
+       {:keys [last-child-object-node
+               current-node]} (-> src
+                                  (obp/src->tree! obp/tsx-lang-id)
+                                  (obu/noget+ :?rootNode)
+                                  (ts-rules/node->current-last-child-object-ctx offset))
+       ctx {:src src
+            :offset offset
+            :ancestor-node current-node
+            :child-node last-child-object-node}]
+      (-> ctx
+          move-end-nodes
+          insert-semicolon)
+      (obu/noget+ current-node :?parent)))
