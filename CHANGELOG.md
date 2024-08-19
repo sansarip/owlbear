@@ -2,7 +2,7 @@
 
 All notable changes to the Owlbear extension will be documented in this file.
 
-## [Unreleased]
+## [1.1.7] - 2024-08-19
 
 ### Added
 
