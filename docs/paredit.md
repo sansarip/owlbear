@@ -143,6 +143,23 @@ The most commonly used commands are <a href="#slurp-forward">Slurp Forward</a> a
   </dd>
 </dl>
 
+{: .invisible}
+### Select Current Node
+
+<dl class="table-wrapper">
+  <a href="#select"><h4>🪜 Select Current Node</h4></a>
+  <dt>Keybinding</dt>
+  <dd><span><code>ctrl+alt+c ctrl+s</code></span></dd>
+  <dt>Description</dt>
+  <dd class="description">
+    <span>Select the current node.</span> 
+    <details>
+      <summary>📼</summary>
+      <video class="example" src="assets/examples/tsx-select-20240819-00.mp4" controls="controls" autoplay loop muted/>
+    </details>
+  </dd>
+</dl>
+
 <p class="small-break"></p>
 
 {: .note }
