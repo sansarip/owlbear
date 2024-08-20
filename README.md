@@ -18,9 +18,8 @@ After installing the extension, simply execute `cmd+shift+p` in VS Code and sear
 And, for more details, view the [docs page](https://sansarip.github.io/owlbear)!
 
 
-You can also try Owlbear without installing it, in Gitpod.
+You can also try Owlbear without installing it, in <a href="https://gitpod.io/#https://github.com/sansarip/owlbear">Gitpod</a>.
 
-<a href="https://gitpod.io/#https://github.com/sansarip/owlbear"><img src="https://camo.githubusercontent.com/76e60919474807718793857d8eb615e7a50b18b04050577e5a35c19421f260a3/68747470733a2f2f676974706f642e696f2f627574746f6e2f6f70656e2d696e2d676974706f642e737667"/></a>
 
 ## Contributing
 If you wish to contribute code to Owlbear, then see the [wiki](https://github.com/sansarip/owlbear/wiki/Contributing) for information on how to compile and run Owlbear locally!
