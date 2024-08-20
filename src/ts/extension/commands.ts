@@ -4,6 +4,7 @@ import {
   ExtensionContext,
   window,
   workspace,
+  TextEditor,
 } from "vscode";
 import { EditCtx, OwlbearFunction } from "./types";
 import {
@@ -13,6 +14,7 @@ import {
   copyRangeToClipboard,
   cutRangeToClipboard,
   moveCursor,
+  selectRange,
 } from "./utilities";
 import { docUriToTreeIdMap, setNewTreeIdForDocUri } from "./tree";
 import {
@@ -46,9 +48,10 @@ type OwlbearOperation =
   | "Splice"
   | "UpwardMove";
 
-enum ClipboardOp {
+enum SelectionOp {
   copy = "Copy",
   cut = "Cut",
+  select = "Select",
 }
 
 const getOwlbearFunction = (
@@ -106,18 +109,28 @@ const doEditOp: Edit = (obOp: OwlbearOperation) => {
   return edit(editor, editCtx, shouldFormat);
 };
 
-const doClipboardOp = async (op: ClipboardOp) => {
+const doSelectionOp = async (op: SelectionOp) => {
   const ctx = getEditCtx("Kill");
-  const removedText = ctx?.removedText;
+  const text = ctx?.removedText;
   const editor = window.activeTextEditor;
-  if (!removedText || !editor) {
+  if (!text || !editor) {
     return;
   }
   const startIndex = ctx.offset;
-  const endIndex = startIndex + removedText.length;
-  const clipboardOpFn =
-    op === ClipboardOp.copy ? copyRangeToClipboard : cutRangeToClipboard;
-  await clipboardOpFn(editor, startIndex, endIndex);
+  const endIndex = startIndex + text.length;
+  let selectOpFn: (editor: TextEditor, startIndex: number, endIndex: number) => Promise<void> | void;
+  switch (op) {
+    case SelectionOp.copy:
+      selectOpFn = copyRangeToClipboard;
+      break;
+    case SelectionOp.cut:
+      selectOpFn = cutRangeToClipboard;
+      break;
+    default:
+      selectOpFn = selectRange;
+      break;
+  }
+  await selectOpFn(editor, startIndex, endIndex);
   return ctx;
 };
 
@@ -196,11 +209,11 @@ const forwardMove: Handler = () => doEditOp("ForwardMove");
 const kill: Handler = () => doEditOp("Kill");
 
 const copy: Handler = async () => {
-  return doClipboardOp(ClipboardOp.copy);
+  return doSelectionOp(SelectionOp.copy);
 };
 
 const cut: Handler = async () => {
-  const ctx = await doClipboardOp(ClipboardOp.cut);
+  const ctx = await doSelectionOp(SelectionOp.cut);
   const editor = window.activeTextEditor;
   if (!ctx?.removedText || !editor) {
     return;
@@ -209,6 +222,10 @@ const cut: Handler = async () => {
   moveCursor(editor, startIndex);
   return ctx;
 };
+
+const select: Handler = async () => {
+  return doSelectionOp(SelectionOp.select);
+}
 
 const raise: Handler = () => {
   return doEditOp("Raise");
@@ -253,6 +270,7 @@ const commands: Command[] = [
   { id: "owlbear.forwardSlurp", handler: forwardSlurp },
   { id: "owlbear.kill", handler: kill },
   { id: "owlbear.raise", handler: raise },
+  { id: "owlbear.select", handler: select },
   { id: "owlbear.splice", handler: splice },
   { id: "owlbear.toggleAutoformat", handler: toggleAutoformat },
   { id: "owlbear.toggleParedit", handler: toggleParedit },

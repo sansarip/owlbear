@@ -107,6 +107,11 @@
         "enablement": "editorLangId in owlbear:supportedLanguages"
       },
       {
+        "command": "owlbear.select",
+        "title": "Owlbear: Select Current Node",
+        "enablement": "editorLangId in owlbear:supportedLanguages"
+      },
+      {
         "command": "owlbear.splice",
         "title": "Owlbear: Splice",
         "enablement": "editorLangId in owlbear:supportedLanguages"
@@ -191,6 +196,11 @@
       {
         "command": "owlbear.raise",
         "key": "ctrl+alt+p ctrl+alt+r",
+        "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
+      },
+      {
+        "command": "owlbear.select",
+        "key": "ctrl+alt+c ctrl+s",
         "when": "!editorReadOnly && !editorHasMultipleSelections && editorTextFocus && editorLangId in owlbear:supportedLanguages"
       },
       {
