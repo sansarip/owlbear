@@ -147,7 +147,7 @@ The most commonly used commands are <a href="#slurp-forward">Slurp Forward</a> a
 ### Select Current Node
 
 <dl class="table-wrapper">
-  <a href="#select"><h4>🪜 Select Current Node</h4></a>
+  <a href="#select-current-node"><h4>🔎 Select Current Node</h4></a>
   <dt>Keybinding</dt>
   <dd><span><code>ctrl+alt+c ctrl+s</code></span></dd>
   <dt>Description</dt>
