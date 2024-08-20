@@ -2,6 +2,12 @@
 
 All notable changes to the Owlbear extension will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Add command for selecting the current node
+
 ## [1.1.7] - 2024-08-19
 
 ### Added
